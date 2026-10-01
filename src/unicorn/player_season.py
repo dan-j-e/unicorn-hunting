@@ -35,7 +35,7 @@ MISC_COLS = ["PTS_PAINT", "PTS_2ND_CHANCE", "PTS_FB", "PTS_OFF_TOV"]
 DEFENSE_COLS = ["DEF_WS"]
 SHOT_ZONES = {"Restricted Area": "ra", "In The Paint (Non-RA)": "paint_non_ra", "Mid-Range": "mid",
               "Corner 3": "corner3", "Above the Break 3": "atb3", "Backcourt": "backcourt"}
-PER36 = ["pts", "reb", "oreb", "dreb", "ast", "stl", "blk", "tov", "fga", "fg3a", "fta"]
+PER36 = ["pts", "reb", "oreb", "dreb", "ast", "stl", "blk", "tov", "fga", "fg3a", "fta", "pf", "pfd"]
 
 # Listed position -> numeric scale for the derived-position work (D5). G=1 … C=5.
 POSITION_SCALE = {"G": 1.0, "G-F": 2.0, "F-G": 2.5, "F": 3.0, "F-C": 3.5, "C-F": 4.0, "C": 5.0}
@@ -96,6 +96,7 @@ def _add_draft(df):
     df = df.merge(dh[["PLAYER_ID", "DRAFT_YEAR", "DRAFT_ROUND", "DRAFT_NUMBER"]],
                   on="PLAYER_ID", how="left", validate="many_to_one")
     df["UNDRAFTED"] = df["DRAFT_NUMBER"].isna()
+    df["DRAFT_PICK_FILLED"] = df["DRAFT_NUMBER"].fillna(61)  # undrafted ranked after the last pick (60)
     return df
 
 
@@ -150,6 +151,13 @@ def _add_derived(df):
     df["FG3A_RATE"] = safe(df["FG3A"], df["FGA"])
     df["FTA_RATE"] = safe(df["FTA"], df["FGA"])
     df["RIM_RATE"] = safe(df["RA_FGA"], df["FGA"])
+    df["PAINT_NON_RA_RATE"] = safe(df["PAINT_NON_RA_FGA"], df["FGA"])
+    df["MID_RATE"] = safe(df["MID_FGA"], df["FGA"])
+    df["CORNER3_SHARE"] = safe(df["CORNER3_FGA"], df["FG3A"])  # share of 3PA from the corners
+    df["RIM_FG_PCT"] = safe(df["RA_FGM"], df["RA_FGA"])
+    df["AST_TOV"] = safe(df["AST"], df["TOV"])
+    df["STL_PER100"] = safe(100 * df["STL"], df["POSS"])
+    df["BLK_PER100"] = safe(100 * df["BLK"], df["POSS"])
     df["MIN_PER_GAME"] = safe(df["MIN"], df["GP"])
     df["START_RATE"] = safe(df["GS"], df["GP"])
     for stat in PER36:
