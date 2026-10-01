@@ -34,6 +34,10 @@ def build_requests():
                 reqs.append((leaguedashplayerstats.LeagueDashPlayerStats, dict(
                     season=season, season_type_all_star=season_type,
                     measure_type_detailed_defense=measure, per_mode_detailed="Totals")))
+            # Restricting to games started: GP here = games started (verified against PlayerCareerStats GS)
+            reqs.append((leaguedashplayerstats.LeagueDashPlayerStats, dict(
+                season=season, season_type_all_star=season_type, measure_type_detailed_defense="Base",
+                per_mode_detailed="Totals", starter_bench_nullable="Starters")))
             reqs.append((leaguedashplayershotlocations.LeagueDashPlayerShotLocations, dict(
                 season=season, season_type_all_star=season_type,
                 distance_range="By Zone", per_mode_detailed="Totals")))
