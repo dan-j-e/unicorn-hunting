@@ -65,10 +65,24 @@ def fetch_raw(endpoint, timeout=60, refresh=False, **params):
     return response
 
 
+def _to_frame(result_set):
+    headers = result_set["headers"]
+    if headers and isinstance(headers[0], dict):
+        # Grouped two-level header (e.g. shot locations): the first row names groups
+        # spanning `columnSpan` columns after `columnsToSkip` ID columns; the last row
+        # has the (repeating) leaf names. Flatten to "<group>__<leaf>".
+        group, leaves = headers[0], headers[-1]["columnNames"]
+        skip, span = group["columnsToSkip"], group["columnSpan"]
+        headers = list(leaves[:skip]) + [
+            f"{group['columnNames'][i // span]}__{leaf}" for i, leaf in enumerate(leaves[skip:])
+        ]
+    return pd.DataFrame(result_set["rowSet"], columns=headers)
+
+
 def fetch(endpoint, timeout=60, refresh=False, **params):
     """Return {result_set_name: DataFrame} for an nba_api endpoint, using the raw cache."""
     response = fetch_raw(endpoint, timeout=timeout, refresh=refresh, **params)
-    return {
-        rs["name"]: pd.DataFrame(rs["rowSet"], columns=rs["headers"])
-        for rs in response["resultSets"]
-    }
+    result_sets = response["resultSets"]
+    if isinstance(result_sets, dict):  # some endpoints return a single set, not a list
+        result_sets = [result_sets]
+    return {rs["name"]: _to_frame(rs) for rs in result_sets}
