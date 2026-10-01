@@ -1,0 +1,12 @@
+# Environment
+.venv/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.DS_Store
+
+# Data & artefacts are regenerated from code, not versioned
+data/raw/*
+data/processed/*
+models/*
+!**/.gitkeep
