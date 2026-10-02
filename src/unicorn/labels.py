@@ -67,6 +67,50 @@ def add_labels(df):
     return df
 
 
+STAR_PILLARS = {
+    # pillar -> (columns, weights); all season-relative z-scores, clipped to +-4
+    "scoring": (["pts_per36_z", "ts_pct_shr_z"], [1, 1]),
+    "creation": (["ast_pct_z", "tm_tov_pct_z"], [1, -0.5]),
+    "rebounding": (["oreb_pct_z", "dreb_pct_z"], [1, 1]),
+    "defense": (["stl_per100_z", "blk_per100_z", "def_rating_z"], [1, 1, -1]),
+    "impact": (["pie_z", "net_rating_z"], [1, 1]),
+    "trust": (["min_per_game_z"], [1]),  # how much the coach plays him
+}
+SIZE_ADJUSTMENT = 0.5  # 0 = raw pillars, 1 = fully relative to players of the same body size
+STAR_SCORE_PCTL = 0.95
+
+
+def add_star_score(df, size_adjustment=SIZE_ADJUSTMENT):
+    """Our own star metric: mean of six pillars, partly judged relative to players of the same size.
+
+    Uses only the season itself (no reputation, awards, draft slot or future). Each pillar is
+    blended between its raw value and its value relative to body size (`position_body`), with the
+    size relationship fitted per season on rotation players. A star season is the top 5% of
+    eligible player-seasons (>= 1,500 scaled minutes) that season.
+    """
+    df = df.copy()
+    pillars = pd.DataFrame({
+        p: sum(w * df[c].clip(-4, 4) for c, w in zip(cols, ws)) / sum(abs(w) for w in ws)
+        for p, (cols, ws) in STAR_PILLARS.items()
+    })
+    size = df["position_body"]
+    adjusted = pd.DataFrame(index=df.index, columns=pillars.columns, dtype=float)
+    for _, idx in df.groupby("season").groups.items():
+        ref = idx[(df.loc[idx, "min"] >= 500) & size[idx].notna()]
+        design = lambda rows: np.column_stack([np.ones(len(rows)), size[rows], size[rows] ** 2])
+        for p in pillars:
+            beta = np.linalg.lstsq(design(ref), pillars.loc[ref, p], rcond=None)[0]
+            adjusted.loc[idx, p] = pillars.loc[idx, p] - design(idx) @ beta
+    blended = (1 - size_adjustment) * pillars + size_adjustment * adjusted
+    for p in blended:
+        df[f"pillar_{p}"] = blended[p]
+    df["star_score"] = blended.mean(axis=1)
+    eligible = df["min_scaled"] >= STAR_MIN
+    df["star_pctl"] = df[eligible].groupby("season")["star_score"].rank(pct=True)
+    df["star_season"] = eligible & (df["star_pctl"] >= STAR_SCORE_PCTL)
+    return df
+
+
 def add_future(df, cols, horizon=1, name="next"):
     """For each column, whether it is True in any of the next `horizon` *calendar* seasons.
 
