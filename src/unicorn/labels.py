@@ -43,8 +43,15 @@ def _past_rate(df, num, den, window=3):
     return (n / d).groupby(by, sort=False).shift()
 
 
-def add_labels(df, real_season_min=REAL_SEASON_MIN):
-    """Breakout labels; `real_season_min` = minutes (scaled to 82 games) a breakout season needs."""
+BREAKOUT_RULES = {
+    "real_season_min": REAL_SEASON_MIN, "production_excess": PRODUCTION_EXCESS, "production_level": PRODUCTION_LEVEL,
+    "role_mpg": ROLE_MPG, "role_usg": ROLE_USG, "scoring_ppg": SCORING_PPG, "scoring_level": SCORING_LEVEL,
+    "efficiency_floor": EFFICIENCY_FLOOR,
+}
+
+
+def label_inputs(df):
+    """The (slower) quantities breakout rules are applied to; compute once, then apply any thresholds."""
     df = df.sort_values(["player_id", "season_start"]).reset_index(drop=True)
     df["min_scaled"] = df["min"] * 82 / df["season"].map(SEASON_GAMES).fillna(82)
     df["ppg"] = df["pts"] / df["gp"]
@@ -55,17 +62,29 @@ def add_labels(df, real_season_min=REAL_SEASON_MIN):
     age = np.floor(df["age"]).clip(19, 34)
     curve = df[curve_rows].groupby(age[curve_rows])["pie_z_vs_past"].mean()
     df["pie_excess_vs_age"] = df["pie_z_vs_past"] - age.map(curve)
+    return df
 
-    real = df["min_scaled"] >= real_season_min
-    efficient = df["ts_pct_shr_z_vs_past"] >= EFFICIENCY_FLOOR
-    df["breakout_production"] = real & (df["pie_excess_vs_age"] >= PRODUCTION_EXCESS) & (df["pie_z"] >= PRODUCTION_LEVEL)
-    df["breakout_role"] = (real & (df["min_per_game_vs_past"] >= ROLE_MPG)
-                           & (df["usg_pct_z_vs_past"] >= ROLE_USG) & efficient)
-    df["breakout_scoring"] = real & (df["ppg_vs_past"] >= SCORING_PPG) & (df["ppg"] >= SCORING_LEVEL) & efficient
+
+def apply_breakout_rules(df, **rules):
+    """Breakout labels from precomputed inputs; any rule in BREAKOUT_RULES can be overridden."""
+    r = {**BREAKOUT_RULES, **rules}
+    df = df.copy()
+    real = df["min_scaled"] >= r["real_season_min"]
+    efficient = df["ts_pct_shr_z_vs_past"] >= r["efficiency_floor"]
+    df["breakout_production"] = (real & (df["pie_excess_vs_age"] >= r["production_excess"])
+                                 & (df["pie_z"] >= r["production_level"]))
+    df["breakout_role"] = (real & (df["min_per_game_vs_past"] >= r["role_mpg"])
+                           & (df["usg_pct_z_vs_past"] >= r["role_usg"]) & efficient)
+    df["breakout_scoring"] = (real & (df["ppg_vs_past"] >= r["scoring_ppg"])
+                              & (df["ppg"] >= r["scoring_level"]) & efficient)
     df["breakout_any"] = df[["breakout_production", "breakout_role", "breakout_scoring"]].any(axis=1)
-
     df["star_season_pie"] = (df["min_scaled"] >= STAR_MIN) & (df["pie_pctl"] >= STAR_PIE_PCTL)
     return df
+
+
+def add_labels(df, real_season_min=REAL_SEASON_MIN, **rules):
+    """Breakout labels; `real_season_min` = minutes (scaled to 82 games) a breakout season needs."""
+    return apply_breakout_rules(label_inputs(df), real_season_min=real_season_min, **rules)
 
 
 STAR_PILLARS = {
@@ -81,35 +100,51 @@ SIZE_ADJUSTMENT = 0.5  # 0 = raw pillars, 1 = fully relative to players of the s
 STAR_SCORE_PCTL = 0.95
 
 
-def add_star_score(df, size_adjustment=SIZE_ADJUSTMENT):
-    """Our own star metric: mean of six pillars, partly judged relative to players of the same size.
+def star_pillars(df):
+    """Raw pillars and their body-size-relative versions (the slow part of the star score)."""
+    raw = pd.DataFrame({
+        p: sum(w * df[c].clip(-4, 4) for c, w in zip(cols, ws)) / sum(abs(w) for w in ws)
+        for p, (cols, ws) in STAR_PILLARS.items()
+    })
+    size = df["position_body"]
+    adjusted = pd.DataFrame(index=df.index, columns=raw.columns, dtype=float)
+    for _, idx in df.groupby("season").groups.items():
+        ref = idx[(df.loc[idx, "min"] >= 500) & size[idx].notna()]
+        design = lambda rows: np.column_stack([np.ones(len(rows)), size[rows], size[rows] ** 2])
+        for p in raw:
+            beta = np.linalg.lstsq(design(ref), raw.loc[ref, p], rcond=None)[0]
+            adjusted.loc[idx, p] = raw.loc[idx, p] - design(idx) @ beta
+    return raw, adjusted
+
+
+def apply_star_score(df, raw, adjusted, weights=None, size_adjustment=SIZE_ADJUSTMENT,
+                     star_pctl_cut=STAR_SCORE_PCTL, star_min=STAR_MIN):
+    """Star score = weighted mean of blended pillars (NaN pillars skipped); star season = top cut."""
+    df = df.copy()
+    weights = {p: 1.0 for p in STAR_PILLARS} | (weights or {})
+    blended = (1 - size_adjustment) * raw + size_adjustment * adjusted
+    for p in blended:
+        df[f"pillar_{p}"] = blended[p]
+    w = pd.Series(weights)[blended.columns]
+    present = blended.notna()
+    df["star_score"] = (blended.fillna(0) * w).sum(axis=1) / (present * w).sum(axis=1).replace(0, np.nan)
+    eligible = df["min_scaled"] >= star_min
+    df["star_pctl"] = df[eligible].groupby("season")["star_score"].rank(pct=True)
+    df["star_season"] = eligible & (df["star_pctl"] >= star_pctl_cut)
+    return df
+
+
+def add_star_score(df, size_adjustment=SIZE_ADJUSTMENT, weights=None):
+    """Our own star metric: weighted mean of six pillars (equal by default), partly judged relative
+    to players of the same size.
 
     Uses only the season itself (no reputation, awards, draft slot or future). Each pillar is
     blended between its raw value and its value relative to body size (`position_body`), with the
     size relationship fitted per season on rotation players. A star season is the top 5% of
     eligible player-seasons (>= 1,500 scaled minutes) that season.
     """
-    df = df.copy()
-    pillars = pd.DataFrame({
-        p: sum(w * df[c].clip(-4, 4) for c, w in zip(cols, ws)) / sum(abs(w) for w in ws)
-        for p, (cols, ws) in STAR_PILLARS.items()
-    })
-    size = df["position_body"]
-    adjusted = pd.DataFrame(index=df.index, columns=pillars.columns, dtype=float)
-    for _, idx in df.groupby("season").groups.items():
-        ref = idx[(df.loc[idx, "min"] >= 500) & size[idx].notna()]
-        design = lambda rows: np.column_stack([np.ones(len(rows)), size[rows], size[rows] ** 2])
-        for p in pillars:
-            beta = np.linalg.lstsq(design(ref), pillars.loc[ref, p], rcond=None)[0]
-            adjusted.loc[idx, p] = pillars.loc[idx, p] - design(idx) @ beta
-    blended = (1 - size_adjustment) * pillars + size_adjustment * adjusted
-    for p in blended:
-        df[f"pillar_{p}"] = blended[p]
-    df["star_score"] = blended.mean(axis=1)
-    eligible = df["min_scaled"] >= STAR_MIN
-    df["star_pctl"] = df[eligible].groupby("season")["star_score"].rank(pct=True)
-    df["star_season"] = eligible & (df["star_pctl"] >= STAR_SCORE_PCTL)
-    return df
+    raw, adjusted = star_pillars(df)
+    return apply_star_score(df, raw, adjusted, weights=weights, size_adjustment=size_adjustment)
 
 
 def add_future(df, cols, horizon=1, name="next"):

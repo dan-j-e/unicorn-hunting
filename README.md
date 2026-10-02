@@ -66,6 +66,22 @@ All figures are in [`outputs/figures/`](outputs/figures/); every notebook is sav
 - The "normal improvement" age curve is frozen on 2011-16.
 - Award data (Most Improved Player) is used for validation only.
 
+## Interactive dashboard
+
+```bash
+streamlit run dashboard/app.py      # from the project root, with the venv active
+```
+
+A local app (nothing is published) for experimenting with the definitions:
+- **Sidebar controls:** the six star-pillar weights, the size-fairness dial, the star and star-tier cut-offs, the minutes needed, and every breakout threshold.
+- **⭐ Stars:** top 25 for any season, with rank change vs the defaults; career star-season leaderboard; who gains or loses star seasons; guard and big shares.
+- **🚀 Breakouts:** counts by type per season, Most Improved capture, each season's breakouts, and **near misses** (failed exactly one condition, e.g. 14.98 ppg vs a 15-ppg bar).
+- **👤 Player:** one player's star-percentile path with breakout seasons marked.
+- **🛣️ Routes to stardom:** steady vs breakout route lists under your settings.
+- **🎯 Predictability:** re-runs the walk-forward breakout backtest with your rules (about 15 s).
+
+It uses the same `unicorn.labels` code as the notebooks; the defaults reproduce the notebook results exactly.
+
 ## Reproduce
 
 ```bash
@@ -95,6 +111,7 @@ src/unicorn/        reusable code
   backtest.py       walk-forward engine, models, metrics, bootstrap
   comps.py          historical nearest-neighbour comparables
   board.py          breakout board data + interactive HTML page
+dashboard/app.py    Streamlit app: tune weights and thresholds
   stats.py, plotting.py
 data/raw/, data/processed/   (git-ignored, regenerated from code)
 outputs/figures/, outputs/tables/
@@ -134,4 +151,4 @@ outputs/figures/, outputs/tables/
 
 ## Backlog (revisit later)
 - **External advanced metrics**: Basketball-Reference BPM / OBPM / DBPM / VORP / Win Shares / PER, and CraftedNBA metrics. Popular with analysts; would add impact measures that NBA.com lacks. Check each site's terms and rate limits before scraping. Use as features (lagged) and as alternative outcome definitions.
-- **Interactive star dashboard**: sliders for the six star-pillar weights and the size-fairness dial (`unicorn.labels.STAR_PILLARS`, `SIZE_ADJUSTMENT`), showing live who qualifies as a star by season. Current choice (D17): equal pillar weights, dial 0.5. One-dimensional scorers (Booker, Edwards, Brunson) rarely qualify under these settings, which is intended for now.
+- ~~**Interactive star dashboard**~~ (done: `dashboard/app.py`): sliders for the six star-pillar weights and the size-fairness dial (`unicorn.labels.STAR_PILLARS`, `SIZE_ADJUSTMENT`), showing live who qualifies as a star by season. Current choice (D17): equal pillar weights, dial 0.5. One-dimensional scorers (Booker, Edwards, Brunson) rarely qualify under these settings, which is intended for now.

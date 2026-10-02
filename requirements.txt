@@ -8,3 +8,4 @@ seaborn==0.13.2
 pyarrow==25.0.1
 jupyterlab==4.6.4
 ipykernel==7.4.0
+streamlit==1.64.0
