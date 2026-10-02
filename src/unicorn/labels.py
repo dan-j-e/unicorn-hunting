@@ -1,0 +1,85 @@
+"""Outcome labels for breakout and star analysis.
+
+Labels describe what happened in a season *relative to the player's own past*, so
+they deliberately use the season being labelled. When a model predicts from season t,
+the label is taken from t+1 (or t+1..t+3): labels are outcomes, never features.
+
+The age curve that defines "normal improvement" is frozen from the first training
+window (2011-12 → 2016-17) so later seasons cannot shape earlier labels.
+"""
+
+import numpy as np
+import pandas as pd
+
+# Most Improved Player winners (player_id), for validation only.
+# Source: https://en.wikipedia.org/wiki/NBA_Most_Improved_Player_Award (checked 2026-10-02)
+MIP_WINNERS = {
+    "2011-12": 201583, "2012-13": 202331, "2013-14": 201609, "2014-15": 202710, "2015-16": 203468,
+    "2016-17": 203507, "2017-18": 203506, "2018-19": 1627783, "2019-20": 1627742, "2020-21": 203944,
+    "2021-22": 1629630, "2022-23": 1628374, "2023-24": 1630178, "2024-25": 1630700, "2025-26": 1629638,
+}
+
+SEASON_GAMES = {"2011-12": 66, "2019-20": 72, "2020-21": 72}  # shortened seasons; others 82
+CURVE_WINDOW_END = 2016  # last season_start used to fit the "normal improvement" age curve
+
+# Thresholds (candidates; see notebook 05)
+REAL_SEASON_MIN = 1200   # minutes, scaled to an 82-game season
+PRODUCTION_EXCESS = 1.0  # PIE z above own past, beyond what is normal for his age
+PRODUCTION_LEVEL = 0.5   # ...and ending at least this far above an average rotation player
+ROLE_MPG = 6.0           # minutes per game above own past
+ROLE_USG = 0.5           # usage z above own past
+SCORING_PPG = 5.0        # points per game above own past
+SCORING_LEVEL = 15.0     # ...and at least this many points per game
+EFFICIENCY_FLOOR = -0.5  # shrunk TS% z may not drop more than this vs own past
+STAR_PIE_PCTL = 0.95     # top 5% of that season's rotation players by PIE
+STAR_MIN = 1500
+
+
+def _past_rate(df, num, den, window=3):
+    """Ratio of sums over the previous `window` seasons played (excluding the current one)."""
+    by = df["player_id"]
+    roll = lambda s: s.groupby(by, sort=False).rolling(window, min_periods=1).sum().reset_index(level=0, drop=True)
+    n, d = roll(df[num]), roll(df[den])
+    return (n / d).groupby(by, sort=False).shift()
+
+
+def add_labels(df):
+    df = df.sort_values(["player_id", "season_start"]).reset_index(drop=True)
+    df["min_scaled"] = df["min"] * 82 / df["season"].map(SEASON_GAMES).fillna(82)
+    df["ppg"] = df["pts"] / df["gp"]
+    df["ppg_vs_past"] = df["ppg"] - _past_rate(df, "pts", "gp")
+    df["mip"] = [MIP_WINNERS.get(s) == p for s, p in zip(df["season"], df["player_id"])]
+
+    curve_rows = (df["season_start"] <= CURVE_WINDOW_END) & (df["min"] >= 500) & df["pie_z_vs_past"].notna()
+    age = np.floor(df["age"]).clip(19, 34)
+    curve = df[curve_rows].groupby(age[curve_rows])["pie_z_vs_past"].mean()
+    df["pie_excess_vs_age"] = df["pie_z_vs_past"] - age.map(curve)
+
+    real = df["min_scaled"] >= REAL_SEASON_MIN
+    efficient = df["ts_pct_shr_z_vs_past"] >= EFFICIENCY_FLOOR
+    df["breakout_production"] = real & (df["pie_excess_vs_age"] >= PRODUCTION_EXCESS) & (df["pie_z"] >= PRODUCTION_LEVEL)
+    df["breakout_role"] = (real & (df["min_per_game_vs_past"] >= ROLE_MPG)
+                           & (df["usg_pct_z_vs_past"] >= ROLE_USG) & efficient)
+    df["breakout_scoring"] = real & (df["ppg_vs_past"] >= SCORING_PPG) & (df["ppg"] >= SCORING_LEVEL) & efficient
+    df["breakout_any"] = df[["breakout_production", "breakout_role", "breakout_scoring"]].any(axis=1)
+
+    df["star_season_pie"] = (df["min_scaled"] >= STAR_MIN) & (df["pie_pctl"] >= STAR_PIE_PCTL)
+    return df
+
+
+def add_future(df, cols, horizon=1, name="next"):
+    """For each column, whether it is True in any of the next `horizon` *calendar* seasons.
+
+    A season the player did not play counts as False (out of the league = no breakout).
+    Also adds `observable_{name}{horizon}`: False when the window runs past the last
+    season in the data, so those rows can be excluded rather than counted as negatives.
+    """
+    key = df.set_index(["player_id", "season_start"])
+    for c in cols:
+        hits = np.zeros(len(df), dtype=bool)
+        for k in range(1, horizon + 1):
+            idx = pd.MultiIndex.from_arrays([df["player_id"], df["season_start"] + k])
+            hits |= key[c].reindex(idx).fillna(False).astype(bool).to_numpy()
+        df[f"{c}_{name}{horizon}"] = hits
+    df[f"observable_{name}{horizon}"] = df["season_start"] + horizon <= df["season_start"].max()
+    return df
