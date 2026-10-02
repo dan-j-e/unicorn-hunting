@@ -43,7 +43,8 @@ def _past_rate(df, num, den, window=3):
     return (n / d).groupby(by, sort=False).shift()
 
 
-def add_labels(df):
+def add_labels(df, real_season_min=REAL_SEASON_MIN):
+    """Breakout labels; `real_season_min` = minutes (scaled to 82 games) a breakout season needs."""
     df = df.sort_values(["player_id", "season_start"]).reset_index(drop=True)
     df["min_scaled"] = df["min"] * 82 / df["season"].map(SEASON_GAMES).fillna(82)
     df["ppg"] = df["pts"] / df["gp"]
@@ -55,7 +56,7 @@ def add_labels(df):
     curve = df[curve_rows].groupby(age[curve_rows])["pie_z_vs_past"].mean()
     df["pie_excess_vs_age"] = df["pie_z_vs_past"] - age.map(curve)
 
-    real = df["min_scaled"] >= REAL_SEASON_MIN
+    real = df["min_scaled"] >= real_season_min
     efficient = df["ts_pct_shr_z_vs_past"] >= EFFICIENCY_FLOOR
     df["breakout_production"] = real & (df["pie_excess_vs_age"] >= PRODUCTION_EXCESS) & (df["pie_z"] >= PRODUCTION_LEVEL)
     df["breakout_role"] = (real & (df["min_per_game_vs_past"] >= ROLE_MPG)
