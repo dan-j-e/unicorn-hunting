@@ -117,6 +117,9 @@ data/raw/, data/processed/   (git-ignored, regenerated from code)
 outputs/figures/, outputs/tables/
 ```
 
+## What's next
+See [TODO.md](TODO.md): player archetypes and similarity, explained picks, a story-led write-up.
+
 ## Limitations
 - **Box-score and tracking-free data only** (NBA.com). No play-by-play, lineups, injuries, contracts or scouting information. On-court net rating mixes player and team quality.
 - **Small numbers of positives:** about 26 future stars and 28 production breakouts in the backtest window, so those results have wide intervals.
