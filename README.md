@@ -54,6 +54,7 @@ All figures are in [`outputs/figures/`](outputs/figures/); every notebook is sav
 | `05_breakout_hunting` | Objective breakout labels (production, role, scoring) relative to each player's own past; our own six-pillar star metric with a size-fairness dial |
 | `06_breakout_backtest` | Walk-forward backtest: rules, logistic, boosted trees, nearest comps; bootstrap CIs, calibration, minutes-threshold sensitivity |
 | `07_current_players` | 2026-27 breakout outlook; Dëmin profile and historical comps |
+| `08_breakout_board` | Every season's top-10 breakout picks vs what happened: poster (`outputs/figures/08_breakout_board.png`) and interactive page (`outputs/breakout_board.html`) |
 
 **Anti-leakage rules used throughout:**
 - Features for season *t* use seasons ≤ *t* only.
@@ -90,6 +91,7 @@ src/unicorn/        reusable code
   labels.py         breakout labels, star metric, future windows
   backtest.py       walk-forward engine, models, metrics, bootstrap
   comps.py          historical nearest-neighbour comparables
+  board.py          breakout board data + interactive HTML page
   stats.py, plotting.py
 data/raw/, data/processed/   (git-ignored, regenerated from code)
 outputs/figures/, outputs/tables/
