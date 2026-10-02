@@ -18,7 +18,9 @@ This project treats player scouting like backtesting an investment strategy. For
 
 **3. For stardom, current all-round quality beats everything.** With only ~26 future stars to learn from, extra features overfit. Being good *relative to peers* early is the most reliable signal.
 
-**4. The model learns from trajectories, not single seasons.** Shai Gilgeous-Alexander was ranked 37th of 229 young players after his rookie year (not flagged), then **12th after year 2**, once his usage, minutes and self-creation trajectory appeared.
+**4. There are two routes to stardom.** Some stars *break out* (Shai, Giannis, Jokić, Tatum); others *climb steadily* without a single breakout season (Anthony Edwards, Booker, Mitchell, Kawhi). Steady risers are visible early from current quality alone (8.6× random); breakout-route stars need trajectory signals (4.6–5.6×).
+
+**4b. The model learns from trajectories, not single seasons.** Shai Gilgeous-Alexander was ranked 37th of 229 young players after his rookie year (not flagged), then **12th after year 2**, once his usage, minutes and self-creation trajectory appeared.
 
 **5. Unicorns come in two kinds.** *Combination unicorns* have rare mixes of strengths (Giannis, Jokić, Durant, LeBron, Porziņģis). *Extreme unicorns* have no comparable players at all; Wembanyama is the most extreme player in the dataset.
 
@@ -55,6 +57,7 @@ All figures are in [`outputs/figures/`](outputs/figures/); every notebook is sav
 | `06_breakout_backtest` | Walk-forward backtest: rules, logistic, boosted trees, nearest comps; bootstrap CIs, calibration, minutes-threshold sensitivity |
 | `07_current_players` | 2026-27 breakout outlook; Dëmin profile and historical comps |
 | `08_breakout_board` | Every season's top-10 breakout picks vs what happened: poster (`outputs/figures/08_breakout_board.png`) and interactive page (`outputs/breakout_board.html`) |
+| `09_routes_to_stardom` | Breakout route vs steady route into the star tier (top 10%); which is more predictable; live outlook |
 
 **Anti-leakage rules used throughout:**
 - Features for season *t* use seasons ≤ *t* only.
@@ -127,6 +130,7 @@ outputs/figures/, outputs/tables/
 | D18 | **Walk-forward backtest**: test season *t* uses features ≤ *t*; a training row from season *s* is used only if its outcome was known by *t* (*s* + horizon ≤ *t*); preprocessing fitted per fold. Population: all players aged ≤ 25 (stars excluded for the star outcome). Metrics: average precision and lift, top-*k* hit rate | Breakouts are rare (1–7%), so accuracy is meaningless. First results: any breakout 3.4×, scoring 4.8×, star-within-3 10× (current star score). |
 | D19 | Production models: **boosted trees** for breakout probabilities (best lift and calibration); **current star score** for star potential; **nearest comps** for explanation only | Backtest with player-bootstrap CIs: trees 4.2× any / 6.1× scoring; star score 10× for star-within-3, beating every trained model; inner-window tuning did not help. |
 | D20 | **No minimum-minutes filter** on the prediction population | Cut-offs leave the top-10 hit rate unchanged (36–40%) but drop up to 17% of future breakouts and 19% of future stars. Breakout-season minutes (900/1,200/1,500) don't change conclusions. |
+| D21 | **Two routes to the star tier** (top 10% by star score, within 3 seasons): *breakout route* (≥ 1 breakout season on the way) vs *steady route* (no breakout season, ≥ 10 percentile-point climb from the latest known level). Repeated breakouts are kept as-is | Captures stars like Anthony Edwards who never 'break out' but climb consistently. Hard breakout thresholds kept for now (e.g. Anthony Black at 14.98 ppg just misses the 15-ppg scoring bar). |
 
 ## Backlog (revisit later)
 - **External advanced metrics**: Basketball-Reference BPM / OBPM / DBPM / VORP / Win Shares / PER, and CraftedNBA metrics. Popular with analysts; would add impact measures that NBA.com lacks. Check each site's terms and rate limits before scraping. Use as features (lagged) and as alternative outcome definitions.

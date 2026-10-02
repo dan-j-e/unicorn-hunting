@@ -128,3 +128,39 @@ def add_future(df, cols, horizon=1, name="next"):
         df[f"{c}_{name}{horizon}"] = hits
     df[f"observable_{name}{horizon}"] = df["season_start"] + horizon <= df["season_start"].max()
     return df
+
+
+STAR_TIER_PCTL = 0.90  # "star tier": top 10% of eligible players by star score (~19 a season)
+STEADY_MIN_RISE = 0.10  # a steady riser must climb at least this many percentile points
+
+
+def add_star_routes(df, horizon=3, tier=STAR_TIER_PCTL, min_rise=STEADY_MIN_RISE):
+    """Two routes into the star tier within `horizon` seasons, for players not yet in it.
+
+    star_tier_next{h}   reaches the star tier in one of the next h calendar seasons
+    route_breakout      ...and had at least one breakout season on the way (up to and including arrival)
+    route_steady        ...with NO breakout season on the way and a rise of >= `min_rise` percentile points
+    """
+    df = df.copy()
+    df["star_tier"] = df["star_pctl"].fillna(0) >= tier
+    key = df.set_index(["player_id", "season_start"])
+    reached = np.zeros(len(df), dtype=bool)
+    broke_out = np.zeros(len(df), dtype=bool)
+    arrival_pctl = np.full(len(df), np.nan)
+    for k in range(1, horizon + 1):
+        idx = pd.MultiIndex.from_arrays([df["player_id"], df["season_start"] + k])
+        tier_k = key["star_tier"].reindex(idx).fillna(False).astype(bool).to_numpy()
+        brk_k = key["breakout_any"].reindex(idx).fillna(False).astype(bool).to_numpy()
+        pct_k = key["star_pctl"].reindex(idx).to_numpy()
+        not_yet = ~reached
+        broke_out |= not_yet & brk_k                 # breakouts count up to (and including) the arrival season
+        arrive = not_yet & tier_k
+        arrival_pctl[arrive] = pct_k[arrive]
+        reached |= tier_k
+    # Starting level = most recent known star percentile (injury-shortened seasons have none); past-only
+    start = df.sort_values("season_start").groupby("player_id")["star_pctl"].ffill().reindex(df.index).fillna(0).to_numpy()
+    eligible = ~df["star_tier"].to_numpy()
+    df[f"star_tier_next{horizon}"] = eligible & reached
+    df["route_breakout"] = eligible & reached & broke_out
+    df["route_steady"] = eligible & reached & ~broke_out & (arrival_pctl - start >= min_rise)
+    return df
