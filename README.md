@@ -85,7 +85,7 @@ It uses the same `unicorn.labels` code as the notebooks; the defaults reproduce 
 ## Reproduce
 
 ```bash
-git clone <this repo> && cd <repo>
+git clone https://github.com/dan-j-e/unicorn-hunting.git && cd unicorn-hunting
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 pip install -e .                 # makes `import unicorn` (src/unicorn) available
