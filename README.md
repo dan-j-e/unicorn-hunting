@@ -74,11 +74,11 @@ streamlit run dashboard/app.py      # from the project root, with the venv activ
 
 A local app (nothing is published) for experimenting with the definitions:
 - **Sidebar controls:** the six star-pillar weights, the size-fairness dial, the star and star-tier cut-offs, the minutes needed, and every breakout threshold.
-- **⭐ Stars:** top 25 for any season, with rank change vs the defaults; career star-season leaderboard; who gains or loses star seasons; guard and big shares.
-- **🚀 Breakouts:** counts by type per season, Most Improved capture, each season's breakouts, and **near misses** (failed exactly one condition, e.g. 14.98 ppg vs a 15-ppg bar).
-- **👤 Player:** one player's star-percentile path with breakout seasons marked.
-- **🛣️ Routes to stardom:** steady vs breakout route lists under your settings.
-- **🎯 Predictability:** re-runs the walk-forward breakout backtest with your rules (about 15 s).
+- **Stars:** top 25 for any season, with rank change vs the defaults; career star-season leaderboard; who gains or loses star seasons; guard and big shares.
+- **Breakouts:** counts by type per season, Most Improved capture, each season's breakouts, and **near misses** (failed exactly one condition, e.g. 14.98 ppg vs a 15-ppg bar).
+- **Player:** one player's star-percentile path with breakout seasons marked.
+- **Routes to stardom:** steady vs breakout route lists under your settings.
+- **Predictability:** re-runs the walk-forward breakout backtest with your rules (about 15 s).
 
 It uses the same `unicorn.labels` code as the notebooks; the defaults reproduce the notebook results exactly.
 
