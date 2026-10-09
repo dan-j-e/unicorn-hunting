@@ -13,6 +13,8 @@ from scipy.special import logsumexp
 
 DELTAS = ["ppg_delta", "rpg_delta", "apg_delta", "mpg_delta", "game_score_delta", "ts_delta", "usg_delta", "start_rate_delta"]
 GAMELOG_DELTAS = ["ppg_delta", "rpg_delta", "apg_delta", "mpg_delta", "game_score_delta", "ts_delta"]  # usable mid-season
+DEFENSE = ["spg_delta", "bpg_delta", "def_rating_delta"]
+GAMELOG_DEFENSE = ["spg_delta", "bpg_delta"]  # defensive rating is season-long, so not used mid-season
 RELATIVE = ["ppg_rel", "game_score_rel"]
 LEVEL = ["game_score", "ppg", "base_game_score"]          # where he ended up, and where he started
 SEASON_LEVEL = ["star_score", "base_star_score", "became_starter"]
