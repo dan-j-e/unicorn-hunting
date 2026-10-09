@@ -12,6 +12,11 @@ from scipy.optimize import minimize
 from scipy.special import logsumexp
 
 DELTAS = ["ppg_delta", "rpg_delta", "apg_delta", "mpg_delta", "game_score_delta", "ts_delta", "usg_delta", "start_rate_delta"]
+GAMELOG_DELTAS = ["ppg_delta", "rpg_delta", "apg_delta", "mpg_delta", "game_score_delta", "ts_delta"]  # usable mid-season
+RELATIVE = ["ppg_rel", "game_score_rel"]
+LEVEL = ["game_score", "ppg", "base_game_score"]          # where he ended up, and where he started
+SEASON_LEVEL = ["star_score", "base_star_score", "became_starter"]
+AGE = ["age"]
 L2_GRID = (0.1, 0.3, 1.0, 3.0, 10.0)
 
 
@@ -24,21 +29,25 @@ class ChoiceModel:
         return (X - self.mean_) / self.std_
 
     def fit(self, df, season_col="season", target="mip"):
-        X = df[self.features].fillna(0.0).to_numpy(float)
+        # keep only seasons with exactly one winner, rows contiguous by season (vectorized softmax)
+        winners_per_season = df.groupby(season_col)[target].transform("sum")
+        d = df[winners_per_season == 1].sort_values(season_col, kind="stable")
+        X = d[self.features].fillna(0.0).to_numpy(float)
         self.mean_, self.std_ = X.mean(axis=0), X.std(axis=0) + 1e-9
         X = (X - self.mean_) / self.std_
-        groups = [np.flatnonzero(m) for m in pd.get_dummies(df[season_col]).to_numpy(bool).T]
-        winners = [idx[df[target].to_numpy()[idx]] for idx in groups]
-        groups = [(idx, w[0]) for idx, w in zip(groups, winners) if len(w) == 1]
+        group = pd.factorize(d[season_col])[0]
+        starts = np.flatnonzero(np.r_[True, group[1:] != group[:-1]])
+        x_win = X[d[target].to_numpy(bool)].sum(axis=0)
 
         def loss(beta):
             s = X @ beta
-            nll, grad = 0.0, np.zeros_like(beta)
-            for idx, win in groups:
-                lse = logsumexp(s[idx])
-                p = np.exp(s[idx] - lse)
-                nll -= s[win] - lse
-                grad -= X[win] - p @ X[idx]
+            m = np.maximum.reduceat(s, starts)
+            e = np.exp(s - m[group])
+            den = np.add.reduceat(e, starts)
+            lse = m + np.log(den)
+            p = e / den[group]
+            nll = -(x_win @ beta - lse.sum())
+            grad = -(x_win - p @ X)
             return nll + 0.5 * self.l2 * beta @ beta, grad + self.l2 * beta
 
         self.coef_ = minimize(loss, np.zeros(X.shape[1]), jac=True, method="L-BFGS-B").x
@@ -46,7 +55,8 @@ class ChoiceModel:
 
     def predict_proba(self, df, season_col="season"):
         s = pd.Series(self._design(df) @ self.coef_, index=df.index)
-        return s.groupby(df[season_col]).transform(lambda v: np.exp(v - logsumexp(v)))
+        lse = s.groupby(df[season_col]).transform(logsumexp)
+        return np.exp(s - lse)
 
     def coefficients(self):
         return pd.Series(self.coef_, index=self.features)
@@ -98,3 +108,43 @@ def summarize(df, proba, target="mip"):
     return {"seasons": len(w), "winner #1": int((w["rank"] == 1).sum()), "winner top 3": int((w["rank"] <= 3).sum()),
             "median winner rank": float(w["rank"].median()), "mean winner probability": float(w["p"].mean()),
             "log-likelihood vs random pick": float(np.mean(np.log(w["p"]) - np.log(1 / pool[w["season"]].to_numpy())))}
+
+
+def probability_bars(P, title, subtitle, path, top_n=5):
+    """Small multiples: each season's top-n players by win probability (full names); our top 3 in blue,
+    the actual winner starred; if the winner is outside the top n he is appended with his rank."""
+    import matplotlib.pyplot as plt
+    from unicorn.plotting import BLUE, INK, INK2, MUTED, ORANGE
+
+    P = P.copy()
+    P["rank"] = P.groupby("season")["p"].rank(ascending=False, method="min").astype(int)
+    seasons = sorted(P["season"].unique())
+    ncols = 5
+    nrows = int(np.ceil(len(seasons) / ncols))
+    fig, axes = plt.subplots(nrows, ncols, figsize=(21, 3.6 * nrows + 0.8))
+    for ax in axes.flat[len(seasons):]:
+        ax.axis("off")
+    for ax, s in zip(axes.flat, seasons):
+        d = P[P["season"] == s].sort_values("p", ascending=False)
+        show, winner = d.head(top_n), d[d["mip"]]
+        if not winner.empty and winner.index[0] not in show.index:
+            show = pd.concat([show, winner])
+        show = show.iloc[::-1]
+        y = np.arange(len(show))
+        ax.barh(y, show["p"], color=[BLUE if r <= 3 else MUTED for r in show["rank"]], height=0.66)
+        for yi, (_, r) in zip(y, show.iterrows()):
+            ax.annotate(f"{r['p']:.0%}" + (f"  (#{r['rank']})" if r["rank"] > top_n else ""), (r["p"], yi), xytext=(4, 0),
+                        textcoords="offset points", va="center", fontsize=8, color=INK2)
+            if r["mip"]:
+                ax.scatter([-0.03], [yi], marker="*", s=130, color=ORANGE, clip_on=False, zorder=4,
+                           transform=ax.get_yaxis_transform())
+        ax.set_yticks(y, show["player_name"], fontsize=8.5)
+        ax.set_xlim(0, max(0.85, show["p"].max() * 1.3)); ax.set_xticks([]); ax.grid(False)
+        ax.spines["bottom"].set_visible(False); ax.tick_params(axis="y", length=0, pad=18)
+        hit = "★ in our top 3" if (not winner.empty and winner["rank"].iloc[0] <= 3) else f"winner ranked #{winner['rank'].iloc[0]}"
+        ax.set_title(f"{s}   {hit}", loc="left", fontsize=10, color=INK)
+    fig.suptitle(title, x=0.01, ha="left", fontsize=13, fontweight="bold")
+    fig.text(0.01, 1 - 0.55 / fig.get_figheight(), subtitle, ha="left", fontsize=10, color=INK2)
+    fig.tight_layout(rect=(0, 0, 1, 1 - 0.75 / fig.get_figheight())); fig.subplots_adjust(wspace=0.95)
+    fig.savefig(path, dpi=150, bbox_inches="tight")
+    return fig

@@ -91,7 +91,7 @@ def build_game_table(g=None):
     return g.merge(base[keep], on=["player_id", "season_start"], how="left"), base, asb.reset_index()
 
 
-def mip_candidates(games, player_season, min_prior_seasons=2, games_rule="half"):
+def mip_candidates(games, player_season, min_prior_seasons=2, games_rule="half", levels=None, season_stats=True):
     """One row per player-season: improvement ("delta") vs his most recent previous season, plus eligibility.
 
     Eligibility: >= `min_prior_seasons` previous NBA seasons (official roster experience), a baseline
@@ -101,6 +101,12 @@ def mip_candidates(games, player_season, min_prior_seasons=2, games_rule="half")
 
     Deltas: points, rebounds, assists, minutes, game score and true shooting from game logs; usage
     and start rate from the season table (previous season played; missing for 2011-12).
+    Relative deltas: log ratio of this season to the baseline (1 -> 11 ppg counts far more than 21 -> 31).
+    Levels: this season's game score/ppg, the baseline game score, optional `levels` (player_id,
+    season_start, star_score) with its previous-season value, "became a starter", and age.
+
+    Pass a subset of `games` (e.g. before the All-Star break) for a mid-season view, with
+    season_stats=False so season-long stats (usage, start rate, star score) are not used.
     """
     g = games
     key = [g["player_id"], g["season_start"]]
@@ -133,4 +139,14 @@ def mip_candidates(games, player_season, min_prior_seasons=2, games_rule="half")
         c[f"{stat}_delta"] = c[stat] - c[f"base_{stat}"]
     c["usg_delta"] = c["usg_pct"] - c["usg_prev"]
     c["start_rate_delta"] = c["start_rate"] - c["start_rate_prev"]
+    c["ppg_rel"] = np.log((c["ppg"] + 2) / (c["base_ppg"] + 2))
+    c["game_score_rel"] = np.log((c["game_score"].clip(lower=-4) + 5) / (c["base_game_score"].clip(lower=-4) + 5))
+    c["became_starter"] = ((c["start_rate"] >= 0.5) & (c["start_rate_prev"] < 0.5)).astype(float)
+    c = c.merge(player_season[["player_id", "season_start", "age"]], on=["player_id", "season_start"], how="left")
+    if levels is not None:
+        lv = levels.sort_values(["player_id", "season_start"])[["player_id", "season_start", "star_score"]].copy()
+        lv["base_star_score"] = lv.groupby("player_id")["star_score"].shift()
+        c = c.merge(lv, on=["player_id", "season_start"], how="left")
+    if not season_stats:
+        c[["usg_delta", "start_rate_delta", "became_starter"]] = np.nan
     return c
