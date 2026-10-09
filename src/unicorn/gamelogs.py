@@ -91,12 +91,16 @@ def build_game_table(g=None):
     return g.merge(base[keep], on=["player_id", "season_start"], how="left"), base, asb.reset_index()
 
 
-def mip_candidates(games, player_season, min_prior_seasons=2):
-    """One row per player-season: improvement vs his most recent previous season, plus MIP eligibility.
+def mip_candidates(games, player_season, min_prior_seasons=2, games_rule="half"):
+    """One row per player-season: improvement ("delta") vs his most recent previous season, plus eligibility.
 
     Eligibility: >= `min_prior_seasons` previous NBA seasons (official roster experience), a baseline
-    season, and enough games: the 65-game award rule from 2023-24 (a game counts at 20+ min; up to two
-    15-20 min games also count), and before that, at least half of the season's games as a stand-in.
+    season, and enough games. games_rule="half" (default): at least half the season's games, every
+    season. games_rule="65": the 65-game award rule from 2023-24 (20+ min games count, up to two
+    15-20 min games also count) and half-season before.
+
+    Deltas: points, rebounds, assists, minutes, game score and true shooting from game logs; usage
+    and start rate from the season table (previous season played; missing for 2011-12).
     """
     g = games
     key = [g["player_id"], g["season_start"]]
@@ -104,18 +108,29 @@ def mip_candidates(games, player_season, min_prior_seasons=2):
                    + np.minimum(2, ((g["min"] >= 15) & (g["min"] < 20)).groupby(key).sum()))
     c = g.groupby(["player_id", "season_start", "season"]).agg(
         player_name=("player_name", "last"), team=("team_abbreviation", "last"), games=("game_id", "size"),
-        ppg=("pts", "mean"), game_score=("game_score", "mean"), mpg=("min", "mean"),
-        base_season_start=("base_season_start", "first"), base_ppg=("base_pts", "first"),
-        base_game_score=("base_game_score", "first"), base_mpg=("base_min", "first"),
-        seasons_before=("seasons_before", "first")).reset_index()
+        ppg=("pts", "mean"), rpg=("reb", "mean"), apg=("ast", "mean"), mpg=("min", "mean"),
+        game_score=("game_score", "mean"), pts_sum=("pts", "sum"), tsa_sum=("tsa", "sum"),
+        base_season_start=("base_season_start", "first"), base_ppg=("base_pts", "first"), base_rpg=("base_reb", "first"),
+        base_apg=("base_ast", "first"), base_mpg=("base_min", "first"), base_game_score=("base_game_score", "first"),
+        base_ts=("base_ts_pct", "first"), seasons_before=("seasons_before", "first")).reset_index()
+    c["ts"] = c["pts_sum"] / (2 * c["tsa_sum"]).replace(0, np.nan)
+    c = c.drop(columns=["pts_sum", "tsa_sum"])
     c["award_games"] = c.set_index(["player_id", "season_start"]).index.map(award_games)
     season_len = g.groupby("season").apply(lambda d: d.groupby("team_id")["game_id"].nunique().max(), include_groups=False)
     c["season_games"] = c["season"].map(season_len)
-    c = c.merge(player_season[["player_id", "season_start", "exp"]], on=["player_id", "season_start"], how="left")
+
+    s = player_season.sort_values(["player_id", "season_start"])[["player_id", "season_start", "exp", "usg_pct", "start_rate"]].copy()
+    prev = s.groupby("player_id")[["season_start", "usg_pct", "start_rate"]].shift()
+    s["usg_prev"] = prev["usg_pct"].where(prev["season_start"] == s.groupby("player_id")["season_start"].shift())
+    s["start_rate_prev"] = prev["start_rate"]
+    c = c.merge(s[["player_id", "season_start", "exp", "usg_pct", "start_rate", "usg_prev", "start_rate_prev"]],
+                on=["player_id", "season_start"], how="left")
     c["prior_seasons"] = c["exp"].fillna(c["seasons_before"])
-    enough_games = np.where(c["season_start"] >= 2023, c["award_games"] >= 65, c["games"] >= c["season_games"] / 2)
+    half = c["games"] >= c["season_games"] / 2
+    enough_games = np.where(c["season_start"] >= 2023, c["award_games"] >= 65, half) if games_rule == "65" else half
     c["eligible"] = (c["prior_seasons"] >= min_prior_seasons) & c["base_ppg"].notna() & enough_games
-    c["ppg_delta"] = c["ppg"] - c["base_ppg"]
-    c["game_score_delta"] = c["game_score"] - c["base_game_score"]
-    c["mpg_delta"] = c["mpg"] - c["base_mpg"]
+    for stat in ["ppg", "rpg", "apg", "mpg", "game_score", "ts"]:
+        c[f"{stat}_delta"] = c[stat] - c[f"base_{stat}"]
+    c["usg_delta"] = c["usg_pct"] - c["usg_prev"]
+    c["start_rate_delta"] = c["start_rate"] - c["start_rate_prev"]
     return c
