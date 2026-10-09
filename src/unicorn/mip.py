@@ -227,3 +227,18 @@ def top7_vs_votes_chart(P, votes, all_candidates, title, subtitle, path, k=7):
     fig.subplots_adjust(left=0.085, right=0.99, top=1 - 1.1 / fig.get_figheight(), bottom=0.07, wspace=1.05, hspace=0.8)
     fig.savefig(path, dpi=150, bbox_inches="tight")
     return fig
+
+
+def bootstrap_weights(df, features, l2, n_boot=500, seed=0):
+    """Weight uncertainty: refit on seasons resampled with replacement (a season = one vote).
+
+    Returns an (n_boot x n_features) array of weights on the standardized scale.
+    """
+    rng = np.random.default_rng(seed)
+    seasons = df["season"].unique()
+    out = []
+    for _ in range(n_boot):
+        pick = rng.choice(seasons, len(seasons))
+        d = pd.concat([df[df["season"] == s].assign(season=f"{s}#{i}") for i, s in enumerate(pick)])
+        out.append(ChoiceModel(features, l2).fit(d).coef_)
+    return np.array(out)
