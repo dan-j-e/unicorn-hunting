@@ -11,11 +11,17 @@ import pandas as pd
 from scipy.optimize import minimize
 from scipy.special import logsumexp
 
+from unicorn.labels import MIP_WINNERS as MIP_WINNER_IDS
+
 DELTAS = ["ppg_delta", "rpg_delta", "apg_delta", "mpg_delta", "game_score_delta", "ts_delta", "usg_delta", "start_rate_delta"]
 GAMELOG_DELTAS = ["ppg_delta", "rpg_delta", "apg_delta", "mpg_delta", "game_score_delta", "ts_delta"]  # usable mid-season
 DEFENSE = ["spg_delta", "bpg_delta", "def_rating_delta"]
 GAMELOG_DEFENSE = ["spg_delta", "bpg_delta"]  # defensive rating is season-long, so not used mid-season
 RELATIVE = ["ppg_rel", "game_score_rel"]
+ABSOLUTE_ALL = DELTAS + DEFENSE   # every ΔX
+RELATIVE_ALL = ["ppg_rel", "rpg_rel", "apg_rel", "spg_rel", "bpg_rel", "mpg_rel", "game_score_rel", "ts_rel", "usg_rel",
+                "def_rating_rel"]  # every Δ%
+TEAM = ["team_win_delta"]
 LEVEL = ["game_score", "ppg", "base_game_score"]          # where he ended up, and where he started
 SEASON_LEVEL = ["star_score", "base_star_score", "became_starter"]
 AGE = ["age"]
@@ -148,5 +154,74 @@ def probability_bars(P, title, subtitle, path, top_n=5):
     fig.suptitle(title, x=0.01, ha="left", fontsize=13, fontweight="bold")
     fig.text(0.01, 1 - 0.55 / fig.get_figheight(), subtitle, ha="left", fontsize=10, color=INK2)
     fig.tight_layout(rect=(0, 0, 1, 1 - 0.75 / fig.get_figheight())); fig.subplots_adjust(wspace=0.95)
+    fig.savefig(path, dpi=150, bbox_inches="tight")
+    return fig
+
+
+def top_k_overlap(df, proba, votes, k=7):
+    """Per season: how many of our top-k (by predicted chance) were in the real top-k of the voting."""
+    d = df.assign(p=proba).dropna(subset=["p"])
+    ours = d.sort_values("p", ascending=False).groupby("season").head(k)
+    real = votes[votes["vote_rank"] <= k]
+    out = []
+    for s, o in ours.groupby("season"):
+        r = set(real.loc[real["season"] == s, "player_id"].dropna().astype(int))
+        out.append({"season": s, "overlap": len(set(o["player_id"].astype(int)) & r), "real_top_k": len(r)})
+    return pd.DataFrame(out).set_index("season")
+
+
+def top7_vs_votes_chart(P, votes, all_candidates, title, subtitle, path, k=7):
+    """Small multiples: our top-k by predicted chance. Blue = also in the real top-k of the voting
+    (labelled with his voting rank), gray = not; ★ = actual winner. Below each panel: real top-k
+    players we missed, with the reason (not eligible / ranked lower by us)."""
+    import matplotlib.pyplot as plt
+    from unicorn.plotting import BLUE, INK, INK2, MUTED, ORANGE
+
+    P = P.copy()
+    P["rank"] = P.groupby("season")["p"].rank(ascending=False, method="min").astype(int)
+    real = votes[votes["vote_rank"] <= k].copy()
+    seasons = sorted(P["season"].unique())
+    ncols, nrows = 5, int(np.ceil(len(seasons) / 5))
+    row_h = 6.2  # inches per row: 7 bars plus up to 7 "missed" lines underneath
+    fig, axes = plt.subplots(nrows, ncols, figsize=(23, row_h * nrows + 1.0))
+    for ax in axes.flat[len(seasons):]:
+        ax.axis("off")
+    overlaps = []
+    for ax, s in zip(axes.flat, seasons):
+        d = P[P["season"] == s].sort_values("p", ascending=False).head(k).iloc[::-1]
+        r = real[real["season"] == s].set_index("player_id")
+        in_real = d["player_id"].isin(r.index)
+        y = np.arange(len(d))
+        ax.barh(y, d["p"], color=np.where(in_real, BLUE, MUTED), height=0.66)
+        for yi, (_, row) in zip(y, d.iterrows()):
+            tag = f"  vote #{int(r.loc[row['player_id'], 'vote_rank'])}" if row["player_id"] in r.index else ""
+            ax.annotate(f"{row['p']:.0%}{tag}", (row["p"], yi), xytext=(4, 0), textcoords="offset points", va="center",
+                        fontsize=8, color=INK if tag else INK2, fontweight="bold" if tag else "normal")
+            if row["mip"]:
+                ax.scatter([-0.03], [yi], marker="*", s=130, color=ORANGE, clip_on=False, zorder=4, transform=ax.get_yaxis_transform())
+        ax.set_yticks(y, d["player_name"], fontsize=8.5)
+        ax.set_xlim(0, max(0.9, d["p"].max() * 1.45)); ax.set_xticks([]); ax.grid(False)
+        ax.spines["bottom"].set_visible(False); ax.tick_params(axis="y", length=0, pad=18)
+        n_match = int(in_real.sum()); overlaps.append(n_match)
+        ax.set_title(f"{s}   {n_match} of our top {k} in the real top {k}", loc="left", fontsize=10, color=INK)
+        missed = r[~r.index.isin(d["player_id"])].sort_values("vote_rank")
+        notes = []
+        for pid, m in missed.iterrows():
+            cand = all_candidates[(all_candidates["season"] == s) & (all_candidates["player_id"] == pid)]
+            if cand.empty or not bool(cand["eligible"].iloc[0]):
+                why = "not eligible: year 1-2" if (not cand.empty and cand["prior_seasons"].iloc[0] < 2) else "not eligible"
+            else:
+                rk = P[(P["season"] == s) & (P["player_id"] == pid)]["rank"]
+                why = f"our #{int(rk.iloc[0])}" if len(rk) else "not ranked"
+            star = "★ " if MIP_WINNER_IDS.get(s) == pid else ""
+            notes.append(f"{star}{m['player']} (vote #{int(m['vote_rank'])}, {why})")
+        if notes:
+            ax.text(-0.02, -0.06, "Real top 7 we missed:\n" + "\n".join(notes), transform=ax.transAxes, fontsize=7.6,
+                    color=INK2, va="top", ha="left", linespacing=1.35)
+    h = fig.get_figheight()
+    fig.suptitle(title, x=0.01, y=1 - 0.2 / h, ha="left", va="top", fontsize=13, fontweight="bold")
+    fig.text(0.01, 1 - 0.55 / h, subtitle.format(avg=np.mean(overlaps)), ha="left", va="top", fontsize=10, color=INK2)
+    # fixed margins (tight_layout can't fit long names here and only emits a warning)
+    fig.subplots_adjust(left=0.085, right=0.99, top=1 - 1.1 / fig.get_figheight(), bottom=0.07, wspace=1.05, hspace=0.8)
     fig.savefig(path, dpi=150, bbox_inches="tight")
     return fig

@@ -118,7 +118,7 @@ def mip_candidates(games, player_season, min_prior_seasons=2, games_rule="half",
     award_games = ((g["min"] >= 20).groupby(key).sum()
                    + np.minimum(2, ((g["min"] >= 15) & (g["min"] < 20)).groupby(key).sum()))
     c = g.groupby(["player_id", "season_start", "season"]).agg(
-        player_name=("player_name", "last"), team=("team_abbreviation", "last"), games=("game_id", "size"),
+        player_name=("player_name", "last"), team=("team_abbreviation", "last"), team_id=("team_id", "last"), games=("game_id", "size"),
         ppg=("pts", "mean"), rpg=("reb", "mean"), apg=("ast", "mean"), spg=("stl", "mean"), bpg=("blk", "mean"), mpg=("min", "mean"),
         game_score=("game_score", "mean"), pts_sum=("pts", "sum"), tsa_sum=("tsa", "sum"),
         base_season_start=("base_season_start", "first"), base_ppg=("base_pts", "first"), base_rpg=("base_reb", "first"),
@@ -146,8 +146,25 @@ def mip_candidates(games, player_season, min_prior_seasons=2, games_rule="half",
     c["usg_delta"] = c["usg_pct"] - c["usg_pct_prev"]
     c["def_rating_delta"] = c["def_rating"] - c["def_rating_prev"]   # negative = better defence
     c["start_rate_delta"] = c["start_rate"] - c["start_rate_prev"]
-    c["ppg_rel"] = np.log((c["ppg"] + 2) / (c["base_ppg"] + 2))
-    c["game_score_rel"] = np.log((c["game_score"].clip(lower=-4) + 5) / (c["base_game_score"].clip(lower=-4) + 5))
+    with np.errstate(divide="ignore", invalid="ignore"):  # zero/negative bases give NaN, not warnings
+        # relative change (%delta) for every stat: log ratio, with small offsets so near-zero baselines stay sane
+        offsets = {"ppg": 2, "rpg": 1, "apg": 1, "spg": 0.3, "bpg": 0.3, "mpg": 2}
+        for stat, k in offsets.items():
+            c[f"{stat}_rel"] = np.log((c[stat] + k) / (c[f"base_{stat}"] + k))
+        c["game_score_rel"] = np.log((c["game_score"].clip(lower=-4) + 5) / (c["base_game_score"].clip(lower=-4) + 5))
+        c["ts_rel"] = np.log(c["ts"] / c["base_ts"])
+        c["usg_rel"] = np.log(c["usg_pct"] / c["usg_pct_prev"])
+        c["def_rating_rel"] = np.log(c["def_rating"] / c["def_rating_prev"])
+
+
+    # team success: change in the win % of his team now vs his team in the baseline season
+    team_games = g.drop_duplicates(["team_id", "game_id"])
+    team_win = team_games.assign(win=team_games["wl"].eq("W")).groupby(["team_id", "season_start"])["win"].mean()
+    last_team = games.groupby(["player_id", "season_start"])["team_id"].last()
+    base_team = [last_team.get((p, b), np.nan) for p, b in zip(c["player_id"], c["base_season_start"])]
+    c["team_win_pct"] = [team_win.get((t, s), np.nan) for t, s in zip(c["team_id"], c["season_start"])]
+    c["base_team_win_pct"] = [team_win.get((t, b), np.nan) for t, b in zip(base_team, c["base_season_start"])]
+    c["team_win_delta"] = c["team_win_pct"] - c["base_team_win_pct"]
     c["became_starter"] = ((c["start_rate"] >= 0.5) & (c["start_rate_prev"] < 0.5)).astype(float)
     c = c.merge(player_season[["player_id", "season_start", "age"]], on=["player_id", "season_start"], how="left")
     if levels is not None:
