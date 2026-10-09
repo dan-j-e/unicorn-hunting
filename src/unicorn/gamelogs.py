@@ -174,3 +174,42 @@ def mip_candidates(games, player_season, min_prior_seasons=2, games_rule="half",
     if not season_stats:
         c[["usg_delta", "start_rate_delta", "became_starter", "def_rating_delta"]] = np.nan
     return c
+
+
+def add_mip_context(c, games, player_season, star_levels):
+    """Extra, 'milestone'-style context for MIP candidates (all known at season's end):
+
+    second_year         in his second NBA season (1 previous season)
+    first_20ppg         first season averaging 20+ ppg (vs all his previous seasons in the data)
+    became_top_option   led his team in total points this season but not in his baseline season
+    first_star_tier     first season in the top 10% of our star score
+    net_rating_delta    change in on-court net rating vs the baseline season
+    `star_levels`: player_id, season_start, star_pctl (from unicorn.labels.add_star_score).
+    """
+    c = c.copy()
+    c["second_year"] = (c["prior_seasons"] == 1).astype(float)
+    season_ppg = games.groupby(["player_id", "season_start"])["pts"].mean()
+    best_before = season_ppg.groupby("player_id").transform(lambda s: s.cummax().shift()).fillna(0)
+    c["first_20ppg"] = ((c["ppg"] >= 20) & (np.array([best_before.get((p, s), 0) for p, s in zip(c["player_id"], c["season_start"])]) < 20)).astype(float)
+
+    tot = games.groupby(["season_start", "team_id", "player_id"])["pts"].sum().reset_index()
+    tot["rank"] = tot.groupby(["season_start", "team_id"])["pts"].rank(ascending=False, method="min")
+    team_rank = tot.set_index(["player_id", "season_start", "team_id"])["rank"]
+    last_team = games.groupby(["player_id", "season_start"])["team_id"].last()
+    c["team_scoring_rank"] = [team_rank.get((p, s, t), np.nan) for p, s, t in zip(c["player_id"], c["season_start"], c["team_id"])]
+    c["base_team_scoring_rank"] = [team_rank.get((p, b, last_team.get((p, b), -1)), np.nan)
+                                   for p, b in zip(c["player_id"], c["base_season_start"])]
+    c["became_top_option"] = ((c["team_scoring_rank"] == 1) & (c["base_team_scoring_rank"] > 1)).astype(float)
+
+    lv = star_levels.sort_values(["player_id", "season_start"]).copy()
+    lv["pctl"] = lv["star_pctl"].fillna(0)
+    lv["best_before"] = lv.groupby("player_id")["pctl"].transform(lambda s: s.cummax().shift()).fillna(0)
+    lv = lv.set_index(["player_id", "season_start"])
+    c["star_pctl"] = [lv["pctl"].get((p, s), 0) for p, s in zip(c["player_id"], c["season_start"])]
+    before = np.array([lv["best_before"].get((p, s), 0) for p, s in zip(c["player_id"], c["season_start"])])
+    c["first_star_tier"] = ((c["star_pctl"] >= 0.9) & (before < 0.9)).astype(float)
+
+    nr = player_season.set_index(["player_id", "season_start"])["net_rating"]
+    c["net_rating_delta"] = [nr.get((p, s), np.nan) - nr.get((p, b), np.nan)
+                             for p, s, b in zip(c["player_id"], c["season_start"], c["base_season_start"])]
+    return c

@@ -22,6 +22,8 @@ ABSOLUTE_ALL = DELTAS + DEFENSE   # every ΔX
 RELATIVE_ALL = ["ppg_rel", "rpg_rel", "apg_rel", "spg_rel", "bpg_rel", "mpg_rel", "game_score_rel", "ts_rel", "usg_rel",
                 "def_rating_rel"]  # every Δ%
 TEAM = ["team_win_delta"]
+MILESTONES = ["first_20ppg", "became_top_option", "first_star_tier"]
+SECOND_YEAR = ["second_year"]
 LEVEL = ["game_score", "ppg", "base_game_score"]          # where he ended up, and where he started
 SEASON_LEVEL = ["star_score", "base_star_score", "became_starter"]
 AGE = ["age"]
