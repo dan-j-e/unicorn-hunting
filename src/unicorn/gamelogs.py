@@ -89,3 +89,33 @@ def build_game_table(g=None):
     base = season_baselines(g)
     keep = ["player_id", "season_start", "seasons_before"] + [c for c in base.columns if c.startswith("base_")]
     return g.merge(base[keep], on=["player_id", "season_start"], how="left"), base, asb.reset_index()
+
+
+def mip_candidates(games, player_season, min_prior_seasons=2):
+    """One row per player-season: improvement vs his most recent previous season, plus MIP eligibility.
+
+    Eligibility: >= `min_prior_seasons` previous NBA seasons (official roster experience), a baseline
+    season, and enough games: the 65-game award rule from 2023-24 (a game counts at 20+ min; up to two
+    15-20 min games also count), and before that, at least half of the season's games as a stand-in.
+    """
+    g = games
+    key = [g["player_id"], g["season_start"]]
+    award_games = ((g["min"] >= 20).groupby(key).sum()
+                   + np.minimum(2, ((g["min"] >= 15) & (g["min"] < 20)).groupby(key).sum()))
+    c = g.groupby(["player_id", "season_start", "season"]).agg(
+        player_name=("player_name", "last"), team=("team_abbreviation", "last"), games=("game_id", "size"),
+        ppg=("pts", "mean"), game_score=("game_score", "mean"), mpg=("min", "mean"),
+        base_season_start=("base_season_start", "first"), base_ppg=("base_pts", "first"),
+        base_game_score=("base_game_score", "first"), base_mpg=("base_min", "first"),
+        seasons_before=("seasons_before", "first")).reset_index()
+    c["award_games"] = c.set_index(["player_id", "season_start"]).index.map(award_games)
+    season_len = g.groupby("season").apply(lambda d: d.groupby("team_id")["game_id"].nunique().max(), include_groups=False)
+    c["season_games"] = c["season"].map(season_len)
+    c = c.merge(player_season[["player_id", "season_start", "exp"]], on=["player_id", "season_start"], how="left")
+    c["prior_seasons"] = c["exp"].fillna(c["seasons_before"])
+    enough_games = np.where(c["season_start"] >= 2023, c["award_games"] >= 65, c["games"] >= c["season_games"] / 2)
+    c["eligible"] = (c["prior_seasons"] >= min_prior_seasons) & c["base_ppg"].notna() & enough_games
+    c["ppg_delta"] = c["ppg"] - c["base_ppg"]
+    c["game_score_delta"] = c["game_score"] - c["base_game_score"]
+    c["mpg_delta"] = c["mpg"] - c["base_mpg"]
+    return c
