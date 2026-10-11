@@ -44,6 +44,43 @@ This project treats player scouting like backtesting an investment strategy. For
 
 All figures are in [`outputs/figures/`](outputs/figures/); every notebook is saved with its outputs.
 
+## Most Improved studies
+
+**Question:** the Most Improved Player (MIP) award goes to the biggest single-season leap. Looking back over 2011-12 → 2025-26, could we have named each winner from the numbers, and what do the votes reveal about what "improved" means? ([notebook 10](notebooks/10_mip_leaps.ipynb))
+
+**Approach**
+- **Game-by-game data:** 404,000 player-games (NBA.com game logs, 2010-11 → 2025-26), with Hollinger game score as a one-number measure of a game's production.
+- **Baseline = the player's own previous season,** skipping injury-shortened seasons (it must cover at least 33% of the games). Without this, a healthy return looks like a leap: Kawhi Leonard's 2018-19 against his 9-game 2017-18.
+- **Every input is a change against that baseline:** points, rebounds, assists, steals, blocks, minutes, game score, efficiency, usage, start rate and defensive rating, as absolute change (ΔX) and relative change (Δ%), plus the change in team win %, age, and whether he is a second-year player.
+- **Model:** a choice model (conditional logit). Each season exactly one eligible player wins; players get a score from their changes and the scores become win chances that add up to 100% within the season. Weights are learned from the 15 actual winners, with a penalty against overfitting chosen by cross-validation.
+- **Honest scoring:** every season is predicted by a model that never saw it. Real vote totals ([Basketball-Reference](https://www.basketball-reference.com/awards/)) are used **only to evaluate** our top 7, never to train.
+
+**What we found**
+
+| | Result |
+|---|---|
+| Winner ranked #1 by the model | **8 of 15 seasons** (median winner rank: 1), from about 300 eligible players a season |
+| Same model, trained on earlier seasons only | winner #1 in 5 of 10 seasons |
+| At the All-Star break (first-half games only) | eventual winner already #1 in 7 of 15 |
+| Our top 7 vs the real top 7 in the voting | 3.1 of 7 in common on average |
+
+- **The size of the jump matters, not the percentage.** Absolute change (ΔX) alone names the winner in 7 seasons; relative change (Δ%) alone in 4.
+- **What voters reward:** a bigger jump in all-round production (odds ×1.57 per extra point of game score per game) and in scoring (×1.39 per extra point per game), a bigger offensive load, and **a team that got better** (×1.28 for winning 10% more games).
+- **What they discount:** **age** (×0.88 per year), gains that come only from **more minutes**, and above all **second-year players**. Sophomores are 19% of the real top 7 in the voting, yet **none has won in 15 seasons**.
+- **Most winning leaps are visible from opening night.** For 11 of 15 winners, the first 10 games already showed 80% or more of the full-season jump, usually alongside a new role. Nickeil Alexander-Walker (2025-26) is the clearest late riser: he played his best after the All-Star break.
+- **One huge night is not a signal.** After 1,109 "eruption" games (20+ game score above baseline), the next seven games looked like the seven before. Malachi Flynn's 50-point game was followed by 3, 3, 12, 12, 10 and 4.
+- **How much recent form tells you:** a single game says little about the rest of the season (correlation 0.3); the last 7 games say more (0.57); the whole season so far says most (0.63–0.68).
+- **The winners the model misses crossed a milestone rather than making the biggest jump.** Goran Dragić (first 20-ppg season), Julius Randle (first star-level season), Tyrese Maxey and Paul George (became their team's leading scorer). Milestones are 11–27× more common among winners than among other players, and they explain who reaches the ballot, but not who wins.
+
+| | |
+|---|---|
+| ![Final MIP probabilities](outputs/figures/10_mip_final_probability_bars.png) | ![What voters reward](outputs/figures/10_mip_final_weights.png) |
+| Predicted chance of winning, each season (blue = our top 3, ★ = actual winner) | Every weight in the final model, with 90% ranges from 500 refits |
+| ![Winners week by week](outputs/figures/10_mip_week_by_week.png) | ![Our top 7 vs the real top 7](outputs/figures/10_mip_top7_vs_real.png) |
+| Each winner's season, week by week, against his baseline | Our top 7 vs the real voting top 7 |
+
+**Limits:** 15 winners is a small sample, so differences of one or two seasons between model variants are within noise. The model sees box-score changes only; awards that turned on narrative (a team's surprise turnaround, a new first option) stay partly unexplained.
+
 ## How it works
 
 | Notebook | What it does |
@@ -58,13 +95,14 @@ All figures are in [`outputs/figures/`](outputs/figures/); every notebook is sav
 | `07_current_players` | 2026-27 breakout outlook; Dëmin profile and historical comps |
 | `08_breakout_board` | Every season's top-10 breakout picks vs what happened: poster (`outputs/figures/08_breakout_board.png`) and interactive page (`outputs/breakout_board.html`) |
 | `09_routes_to_stardom` | Breakout route vs steady route into the star tier (top 10%); which is more predictable; live outlook |
+| `10_mip_leaps` | Most Improved Player: week-by-week leaps from game logs, a choice model for the winner, the mid-season race, our top 7 vs the real voting |
 
 **Anti-leakage rules used throughout:**
 - Features for season *t* use seasons ≤ *t* only.
 - A training example is used only once its outcome was known at prediction time (*s* + horizon ≤ *t*).
 - Preprocessing is fitted inside each fold.
 - The "normal improvement" age curve is frozen on 2011-16.
-- Award data (Most Improved Player) is used for validation only.
+- In notebooks 05–09, award data (Most Improved Player) is used for validation only. In notebook 10 the winners are the outcome being modelled; vote totals are used only to evaluate.
 
 ## Interactive dashboard
 
@@ -92,12 +130,12 @@ pip install -e .                 # makes `import unicorn` (src/unicorn) availabl
 python -m unicorn.download       # ~733 cached NBA.com requests (~40 min first time; resumable)
 ```
 
-Then run the notebooks in order (`00` → `07`). Each one writes the processed table the next one reads (`data/processed/*.parquet`). Raw responses are cached in `data/raw/` as untouched gzipped JSON, so re-runs make no API calls.
+Then run the notebooks in order (`00` → `10`). Notebook 10 also downloads 16 seasons of game logs (16 requests) and 15 Basketball-Reference award pages (cached; a few seconds apart). Each one writes the processed table the next one reads (`data/processed/*.parquet`). Raw responses are cached in `data/raw/` as untouched gzipped JSON, so re-runs make no API calls.
 
 ## Project structure
 
 ```
-notebooks/          numbered research pipeline (00 → 07)
+notebooks/          numbered research pipeline (00 → 10)
 src/unicorn/        reusable code
   raw.py            cached nba_api access (raw JSON, retries)
   download.py       full 2011-12 → 2025-26 download list
@@ -111,8 +149,11 @@ src/unicorn/        reusable code
   backtest.py       walk-forward engine, models, metrics, bootstrap
   comps.py          historical nearest-neighbour comparables
   board.py          breakout board data + interactive HTML page
-dashboard/app.py    Streamlit app: tune weights and thresholds
+  gamelogs.py       game-level table, baselines, MIP candidates and milestones
+  mip.py            Most Improved choice model, evaluation and charts
+  bref.py           Basketball-Reference MIP voting (cached; evaluation only)
   stats.py, plotting.py
+dashboard/app.py    Streamlit app: tune weights and thresholds
 data/raw/, data/processed/   (git-ignored, regenerated from code)
 outputs/figures/, outputs/tables/
 ```
