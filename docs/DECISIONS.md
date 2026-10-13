@@ -1,6 +1,6 @@
 # Methodological decisions
 
-Every significant choice made in the project, with the reason or the evidence behind it. Notebook references: D1–D12 in `02`, D13–D14 in `03`, D15–D16 in `04`, D17 in `05`, D18–D20 in `06`, D21 in `09`, D22–D25 in `10`.
+Every significant choice made in the project, with the reason or the evidence behind it. Notebook references: D1–D12 in `02`, D13–D14 in `03`, D15–D16 in `04`, D17 in `05`, D18–D20 in `06`, D21 in `09`, D22–D25 in `10`, D26–D27 in `10.1`.
 
 | # | Decision | Rationale / caveat |
 |---|---|---|
@@ -29,3 +29,5 @@ Every significant choice made in the project, with the reason or the evidence be
 | D23 | **MIP eligibility**: ≥ 1 previous season, a baseline season, and at least half the season's games; the 65-game award rule is ignored | Second-year players reach the real ballot (19% of the voting top 7), so excluding them capped any comparison with the voting. |
 | D24 | **MIP model**: conditional logit (one winner per season) on ΔX and Δ% of every stat, team win % change, age and a second-year flag; L2 penalty chosen by leave-one-season-out | ΔX beats Δ%; team, age and the second-year flag each improve out-of-sample fit. Level-reached inputs and milestones did not help pick the winner. |
 | D25 | **Voting results** (Basketball-Reference) used only to evaluate and display our top 7, never to train | Keeps the model's inputs to on-court data; the vote is the thing being explained. |
+| D26 | **Preseason form** = per-36 rate minus last season's rate, multiplied by minutes ÷ (minutes + 150), centred within each preseason. Preseason minute increases (decreases ignored) were tested and left out | Preseason minutes are not real: increases hold at 60–75%, decreases at about 20%. Minute increases did not improve the winner's rank once per-36 form was known. |
+| D27 | **Preseason MIP candidates** exclude previous winners and players who averaged 22+ points last season; penalty λ = 3 | No repeat winner, and no winner averaged more than 20.3 the season before. With 14 winners the model cannot learn a ceiling itself (it ranked Luka Dončić first). λ = 0.1 scored better on history but is likely over-fitted. **Open to revision.** |

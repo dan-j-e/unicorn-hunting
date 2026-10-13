@@ -74,6 +74,14 @@ This project treats scouting like backtesting an investment strategy. For each s
 
 **Limits:** 15 winners is a small sample, and the model sees box-score changes only. Awards that turned on narrative stay partly unexplained.
 
+**Preseason prediction for 2026-27** ([notebook 10.1](notebooks/10_1_preseason_mip.ipynb))
+- **Inputs:** last season, plus preseason form per 36 minutes (never totals), shrunk for small samples.
+- **What preseason is worth:** minute increases hold at about 60–75%, decreases mean almost nothing, and shot volume per minute is the most reliable preseason signal.
+- **Track record:** from about 350 candidates, the eventual winner was in our preseason top 7 in 4 of 14 seasons and in our top 20 in 11. It is a shortlist, not a forecast.
+- **Top 7 (preseason through 12 October 2026):** Reed Sheppard, Stephon Castle, Ty Jerome, Rui Hachimura, Amen Thompson, Leonard Miller, Tristan da Silva.
+
+![2026-27 preseason top 7](outputs/figures/10_1_mip_preseason_top7.png)
+
 ## How it works
 
 | Notebook | What it does |
@@ -88,6 +96,7 @@ This project treats scouting like backtesting an investment strategy. For each s
 | `08_breakout_board` | Each season's top-10 breakout picks vs what happened ([poster](outputs/figures/08_breakout_board.png), plus an interactive page in `outputs/breakout_board.html`) |
 | `09_routes_to_stardom` | Breakout route vs steady route into the star tier |
 | `10_mip_leaps` | Most Improved Player: weekly leaps, the choice model, the mid-season race, our top 7 vs the real vote |
+| `10_1_preseason_mip` | What preseason numbers are worth; a preseason top 7 for the 2026-27 Most Improved Player |
 
 **Anti-leakage rules**
 - Features for season *t* use seasons ≤ *t* only; notebook 03 checks this by deleting later seasons and confirming nothing changes.
@@ -96,7 +105,7 @@ This project treats scouting like backtesting an investment strategy. For each s
 
 There is also a local **Streamlit dashboard** for changing the star-score weights and breakout thresholds and seeing who qualifies: `streamlit run dashboard/app.py`.
 
-Every significant choice, with its evidence, is logged in [docs/DECISIONS.md](docs/DECISIONS.md) (25 decisions).
+Every significant choice, with its evidence, is logged in [docs/DECISIONS.md](docs/DECISIONS.md) (27 decisions).
 
 ## Reproduce
 
@@ -121,6 +130,7 @@ src/unicorn/      reusable code
   position, unicorn        position spectrum and unicorn scores
   labels, backtest, comps  breakout/star labels, walk-forward engine, comparables
   gamelogs, mip, bref      game-level data, the Most Improved model, voting results
+  preseason                preseason game logs and the pre-opening-night view of each player
   board, stats, plotting   breakout board, statistics helpers, chart style
 dashboard/app.py  Streamlit app
 docs/DECISIONS.md decision log
