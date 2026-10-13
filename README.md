@@ -78,6 +78,7 @@ This project treats scouting like backtesting an investment strategy. For each s
 - **Inputs:** last season, plus preseason form per 36 minutes (never totals), shrunk for small samples.
 - **What preseason is worth:** minute increases hold at about 60–75%, decreases mean almost nothing, and shot volume per minute is the most reliable preseason signal.
 - **Track record:** from about 350 candidates, the eventual winner was in our preseason top 7 in 4 of 14 seasons and in our top 20 in 11. It is a shortlist, not a forecast.
+- **Backtest of the picks:** 36% of past top-7 picks jumped 3+ points a game (14% of all candidates), and half of the top-3 picks did. A better breakout list than an award list.
 - **Top 7 (preseason through 12 October 2026):** Reed Sheppard, Stephon Castle, Ty Jerome, Rui Hachimura, Amen Thompson, Leonard Miller, Tristan da Silva.
 
 ![2026-27 preseason top 7](outputs/figures/10_1_mip_preseason_top7.png)
