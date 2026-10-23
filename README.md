@@ -98,6 +98,7 @@ This project treats scouting like backtesting an investment strategy. For each s
 | `09_routes_to_stardom` | Breakout route vs steady route into the star tier |
 | `10_mip_leaps` | Most Improved Player: weekly leaps, the choice model, the mid-season race, our top 7 vs the real vote |
 | `10_1_preseason_mip` | What preseason numbers are worth; a preseason top 7 for the 2026-27 Most Improved Player |
+| `10_2_live_mip_race` | The live 2026-27 race, re-run during the season; how many days it takes for the race to mean something |
 
 **Anti-leakage rules**
 - Features for season *t* use seasons ≤ *t* only; notebook 03 checks this by deleting later seasons and confirming nothing changes.
