@@ -4,7 +4,7 @@ Goal for this phase: turn a working pipeline into something **explainable and wo
 
 ## Next up
 
-### 1. Player archetypes (clustering) + "who is similar to who"
+### 1. Player archetypes (clustering) + "who is similar to who"  · *started: notebook 13, step 13A (style measures, no clusters yet)*
 - Cluster player-seasons into recognisable **archetypes** (e.g. creator big, 3-and-D wing, rim-runner, on-ball scorer). Use style features, not quality, so a good and a bad rim-runner share a type.
 - Name the archetypes. **Before clustering, write down the archetypes you expect**, then compare them with what the data finds.
 - **Similarity:** for any current player, find the most similar historical players *at the same career stage* (e.g. Dëmin's rookie year vs past rookie years), within and across archetypes.

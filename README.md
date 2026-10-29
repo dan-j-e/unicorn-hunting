@@ -165,6 +165,7 @@ Rare *combinations* of strengths (Giannis, Jokić, Kevin Durant) versus *extreme
 | `10_mip_leaps` | Most Improved Player: weekly leaps, the choice model, the mid-season race, our top 7 vs the real vote |
 | `11_mip_preseason` | What preseason numbers are worth; a preseason top 7 for 2026-27 |
 | `12_mip_live_race` | The live 2026-27 race, day by day; three snapshots with reasons; backtests |
+| `13_archetypes` | *In progress:* player archetypes by playing style; who is similar to whom |
 
 **Anti-leakage rules**
 - Features for season *t* use seasons ≤ *t* only; notebook 03 checks this by deleting later seasons and confirming nothing changes.
@@ -193,13 +194,13 @@ pip install -e .                 # makes `import unicorn` available
 python -m unicorn.download       # ~733 NBA.com requests, ~40 min first time, resumable
 ```
 
-Then run the notebooks in order (`00` → `12`). Each writes the table the next one reads. Raw responses are cached in `data/raw/`, so re-runs make no API calls. Notebook 10 also fetches 16 seasons of game logs and 15 Basketball-Reference award pages (cached). There is also a local Streamlit dashboard for changing the star-score weights and breakout thresholds: `streamlit run dashboard/app.py`.
+Then run the notebooks in order (`00` → `13`). Each writes the table the next one reads. Raw responses are cached in `data/raw/`, so re-runs make no API calls. Notebook 10 also fetches 16 seasons of game logs and 15 Basketball-Reference award pages (cached). There is also a local Streamlit dashboard for changing the star-score weights and breakout thresholds: `streamlit run dashboard/app.py`.
 
 <details>
 <summary><b>Project structure</b></summary>
 
 ```
-notebooks/        numbered research pipeline (00 → 12), saved with outputs
+notebooks/        numbered research pipeline (00 → 13), saved with outputs
 src/unicorn/      reusable code
   raw, download            cached NBA.com access and the full download list
   player_season, columns   clean tables and the data dictionary
