@@ -83,6 +83,17 @@ This project treats scouting like backtesting an investment strategy. For each s
 
 ![2026-27 preseason top 7](outputs/figures/10_1_mip_preseason_top7.png)
 
+**The live 2026-27 race** ([notebook 10.2](notebooks/10_2_live_mip_race.ipynb)) · *last updated 28 October 2026 (day 9 of the season)*
+- **A leaderboard for every day, with no leakage.** Day *n* uses only games up to day *n*, scored by a model trained on past seasons cut at the same day. Each day is saved once and never recomputed.
+- **Leader:** Ty Jerome, #1 every day since his first game: 29.8 points a game in 31.5 minutes, up from 12.5 in 19.9 (about a 54% chance). He was #3 in our preseason top 7. Behind him: Ja'Kobe Walter, Terrence Shannon Jr, Ajay Mitchell, Sidy Cissoko, Zaccharie Risacher, Alperen Sengun.
+- **How early is too early?** At day 2 the eventual winner was in our top 7 in 4 of 15 past seasons; by day 30, in 11 of 15.
+- **Backtest of 2021-22 → 2025-26 (strict):** the winner was in our end-of-previous-season top 7 once, in our preseason top 7 never, and in our mid-January top 7 **every season** (median rank 2). Pre-season lists find who is set up to improve, not who wins: Lauri Markkanen, Dyson Daniels and Nickeil Alexander-Walker all ranked 15th or lower before their seasons began.
+
+| | |
+|---|---|
+| ![Daily worm chart](outputs/figures/10_2_daily_worm.png) | ![Three snapshots](outputs/figures/10_2_three_snapshots.png) |
+| Our rank for everyone who has been in the top 7, day by day | End of 2025-26 vs end of preseason vs today, with the reasons |
+
 ## How it works
 
 | Notebook | What it does |
