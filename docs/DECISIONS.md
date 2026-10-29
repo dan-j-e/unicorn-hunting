@@ -1,6 +1,6 @@
 # Methodological decisions
 
-Every significant choice made in the project, with the reason or the evidence behind it. Notebook references: D1–D12 in `02`, D13–D14 in `03`, D15–D16 in `04`, D17 in `05`, D18–D20 in `06`, D21 in `09`, D22–D25 in `10`, D26–D27 in `10.1`.
+Every significant choice made in the project, with the reason or the evidence behind it. Notebook references: D1–D12 in `02`, D13–D14 in `03`, D15–D16 in `04`, D17 in `05`, D18–D20 in `06`, D21 in `09`, D22–D25 in `10`, D26–D27 in `11`.
 
 | # | Decision | Rationale / caveat |
 |---|---|---|

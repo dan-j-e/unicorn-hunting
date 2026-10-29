@@ -15,7 +15,7 @@ from unicorn.gamelogs import BASELINE_MIN_SHARE, add_game_metrics
 from unicorn.raw import fetch
 
 PRESEASON_SEASONS = [f"{y}-{str(y + 1)[-2:]}" for y in range(2012, 2027)]  # 2011-12 had a 2-game lockout preseason
-SHRINK_MINUTES = 150  # preseason change is multiplied by minutes / (minutes + SHRINK_MINUTES); see notebook 10.1
+SHRINK_MINUTES = 150  # preseason change is multiplied by minutes / (minutes + SHRINK_MINUTES); see notebook 11
 RATES = ["pts", "game_score", "volume"]
 
 

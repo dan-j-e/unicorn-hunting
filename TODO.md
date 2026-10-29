@@ -29,7 +29,7 @@ Goal for this phase: turn a working pipeline into something **explainable and wo
 - "Becomes a unicorn" outcome label.
 - Basketball-Reference / CraftedNBA metrics (VORP, BPM, WS…).
 - Track the 2026-27 predictions as the season plays out.
-- Re-run notebook 10.1 when preseason ends (`refresh_latest=True`); decide the 22-point rule, the previous-winner rule and the penalty (D27).
+- Re-run notebook 11 when preseason ends (`refresh_latest=True`); decide the 22-point rule, the previous-winner rule and the penalty (D27).
 - Breakout board: add a "route to stardom" view.
 
 ## Parked

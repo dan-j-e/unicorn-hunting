@@ -7,7 +7,7 @@ Scouting treated like backtesting an investment strategy: for every season since
 > [!NOTE]
 > **Live: the 2026-27 Most Improved race.** Ty Jerome has led every day since his first game (about a 54% chance as of 28 October, day 9 of the season). [Jump to the race ↓](#the-live-2026-27-most-improved-race)
 
-![The 2026-27 Most Improved race, day by day](outputs/figures/10_2_daily_worm.png)
+![The 2026-27 Most Improved race, day by day](outputs/figures/12_daily_worm.png)
 
 ## At a glance
 
@@ -110,7 +110,7 @@ Rare *combinations* of strengths (Giannis, Jokić, Kevin Durant) versus *extreme
 </details>
 
 <details>
-<summary><b>Predicting before the season: what preseason is worth</b> (<a href="notebooks/10_1_preseason_mip.ipynb">notebook 10.1</a>)</summary>
+<summary><b>Predicting before the season: what preseason is worth</b> (<a href="notebooks/11_mip_preseason.ipynb">notebook 11</a>)</summary>
 
 - **Inputs:** last season, plus preseason form per 36 minutes (never totals), shrunk for small samples.
 - **What preseason is worth:** minute increases hold at about 60–75%, decreases mean almost nothing, and shot volume per minute is the most reliable preseason signal.
@@ -118,14 +118,14 @@ Rare *combinations* of strengths (Giannis, Jokić, Kevin Durant) versus *extreme
 - **Backtest of the picks:** 36% of past top-7 picks jumped 3+ points a game (14% of all candidates), and half of the top-3 picks did. A better breakout list than an award list.
 - **2026-27 top 7 (preseason through 12 October 2026):** Reed Sheppard, Stephon Castle, Ty Jerome, Rui Hachimura, Amen Thompson, Leonard Miller, Tristan da Silva.
 
-![2026-27 preseason top 7](outputs/figures/10_1_mip_preseason_top7.png)
+![2026-27 preseason top 7](outputs/figures/11_mip_preseason_top7.png)
 
 </details>
 
 ## The live 2026-27 Most Improved race
 
 > [!TIP]
-> **Last updated 28 October 2026 (day 9 of the season).** Re-run [notebook 10.2](notebooks/10_2_live_mip_race.ipynb) to add the newest days.
+> **Last updated 28 October 2026 (day 9 of the season).** Re-run [notebook 12](notebooks/12_mip_live_race.ipynb) to add the newest days.
 
 - **Leader:** Ty Jerome, #1 every day since his first game: 29.8 points a game in 31.5 minutes, up from 12.5 in 19.9 (about a 54% chance). He was #3 in our preseason top 7.
 - **Behind him:** Ja'Kobe Walter, Terrence Shannon Jr, Ajay Mitchell, Sidy Cissoko, Zaccharie Risacher, Alperen Sengun.
@@ -133,7 +133,7 @@ Rare *combinations* of strengths (Giannis, Jokić, Kevin Durant) versus *extreme
 
 | | |
 |---|---|
-| ![Daily worm chart](outputs/figures/10_2_daily_worm.png) | ![Three snapshots](outputs/figures/10_2_three_snapshots.png) |
+| ![Daily worm chart](outputs/figures/12_daily_worm.png) | ![Three snapshots](outputs/figures/12_three_snapshots.png) |
 | Our rank for everyone who has been in the top 7, day by day | End of 2025-26 vs end of preseason vs today, with the reasons |
 
 <details>
@@ -143,7 +143,7 @@ Rare *combinations* of strengths (Giannis, Jokić, Kevin Durant) versus *extreme
 - **Backtest of 2021-22 → 2025-26 (strict, earlier seasons only):** the winner was in our end-of-previous-season top 7 once, in our preseason top 7 never, and in our mid-January top 7 **every season** (median rank 2).
 - **Pre-season lists find who is set up to improve, not who wins:** Lauri Markkanen, Dyson Daniels and Nickeil Alexander-Walker all ranked 15th or lower before their seasons began.
 
-![Five-season backtest](outputs/figures/10_2_backtest_five_seasons.png)
+![Five-season backtest](outputs/figures/12_backtest_five_seasons.png)
 
 </details>
 
@@ -163,8 +163,8 @@ Rare *combinations* of strengths (Giannis, Jokić, Kevin Durant) versus *extreme
 | `08_breakout_board` | Each season's top-10 breakout picks vs what happened (plus an interactive page in `outputs/breakout_board.html`) |
 | `09_routes_to_stardom` | Breakout route vs steady route into the star tier |
 | `10_mip_leaps` | Most Improved Player: weekly leaps, the choice model, the mid-season race, our top 7 vs the real vote |
-| `10_1_preseason_mip` | What preseason numbers are worth; a preseason top 7 for 2026-27 |
-| `10_2_live_mip_race` | The live 2026-27 race, day by day; three snapshots with reasons; backtests |
+| `11_mip_preseason` | What preseason numbers are worth; a preseason top 7 for 2026-27 |
+| `12_mip_live_race` | The live 2026-27 race, day by day; three snapshots with reasons; backtests |
 
 **Anti-leakage rules**
 - Features for season *t* use seasons ≤ *t* only; notebook 03 checks this by deleting later seasons and confirming nothing changes.
@@ -193,13 +193,13 @@ pip install -e .                 # makes `import unicorn` available
 python -m unicorn.download       # ~733 NBA.com requests, ~40 min first time, resumable
 ```
 
-Then run the notebooks in order (`00` → `10.2`). Each writes the table the next one reads. Raw responses are cached in `data/raw/`, so re-runs make no API calls. Notebook 10 also fetches 16 seasons of game logs and 15 Basketball-Reference award pages (cached). There is also a local Streamlit dashboard for changing the star-score weights and breakout thresholds: `streamlit run dashboard/app.py`.
+Then run the notebooks in order (`00` → `12`). Each writes the table the next one reads. Raw responses are cached in `data/raw/`, so re-runs make no API calls. Notebook 10 also fetches 16 seasons of game logs and 15 Basketball-Reference award pages (cached). There is also a local Streamlit dashboard for changing the star-score weights and breakout thresholds: `streamlit run dashboard/app.py`.
 
 <details>
 <summary><b>Project structure</b></summary>
 
 ```
-notebooks/        numbered research pipeline (00 → 10.2), saved with outputs
+notebooks/        numbered research pipeline (00 → 12), saved with outputs
 src/unicorn/      reusable code
   raw, download            cached NBA.com access and the full download list
   player_season, columns   clean tables and the data dictionary
