@@ -182,7 +182,7 @@ Rare *combinations* of strengths (Giannis, Jokić, Kevin Durant) versus *extreme
 - A training example is used only once its outcome was known at prediction time.
 - Preprocessing is fitted inside each fold.
 
-Every significant choice, with its evidence, is logged in [docs/DECISIONS.md](docs/DECISIONS.md) (29 decisions).
+Every significant choice, with its evidence, is logged in [docs/DECISIONS.md](docs/DECISIONS.md) (31 decisions).
 
 <details>
 <summary><b>Data traps found along the way</b></summary>
