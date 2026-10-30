@@ -9,7 +9,8 @@ Goal for this phase: turn a working pipeline into something **explainable and wo
 - Name the archetypes **after** they are found (D31: no expected list beforehand, so the data isn't forced into bands we already believe in).
 - **Similarity:** for any current player, find the most similar historical players *at the same career stage* (e.g. Dëmin's rookie year vs past rookie years), within and across archetypes.
 - **Movement:** how players move between archetypes as they develop, and which moves lead to stardom.
-- Decisions for you: body measures in or out; era adjustment; per-season vs career-stage; how many archetypes; hard clusters vs soft (mixtures).
+- Set-up decided (D34). **13B done:** plots for 2–14 clusters. **Next, you:** pick the number (recommendation 5; 3 is the safe option). **Then 13C:** three most typical players per cluster, so you can name them.
+- **Later option:** compare style against a 3-season average instead of within the season (smooths out one-season quirks).
 
 ### 2. Explain every pick ("scouting cards")
 - For each breakout or star candidate: the 3–4 signals pushing his chances up or down, in basketball language; his archetype; closest historical comps; what he'd need to do next season.

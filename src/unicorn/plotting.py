@@ -9,6 +9,8 @@ SURFACE, INK, INK2, GRID, MUTED = "#fcfcfb", "#0b0b0b", "#52514e", "#e4e3df", "#
 # Categorical slots in fixed order: blue, orange, aqua, yellow
 SERIES = ["#2a78d6", "#eb6834", "#1baf7a", "#eda100"]
 BLUE, ORANGE, RED = SERIES[0], SERIES[1], "#e34948"
+# All eight slots, same fixed order (+ magenta, green, violet, red), for charts with up to 8 groups (e.g. clusters)
+SERIES8 = SERIES + ["#e87ba4", "#008300", "#6250d6", "#e34948"]
 DIVERGING = LinearSegmentedColormap.from_list("div", [BLUE, "#f0efec", RED])
 FIG_DIR = PROJECT_ROOT / "outputs" / "figures"
 
