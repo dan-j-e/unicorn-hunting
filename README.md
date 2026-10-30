@@ -107,6 +107,10 @@ Rare *combinations* of strengths (Giannis, Jokić, Kevin Durant) versus *extreme
 
 **Limits:** 15 winners is a small sample, and the model sees box-score changes only. Awards that turned on narrative stay partly unexplained.
 
+**Back to 2000-01** ([notebook 15](notebooks/15_mip_2000_2026.ipynb)): 21 seasons (2005-06 → 2025-26) predicted strictly from earlier seasons only, with game logs only. The winner's median rank was **51st** at the end of the previous season, **4th** at mid-season (in our top 7 in 16 of 21) and **2nd** at the end of the season (#1 in 7, top 3 in 11).
+
+![Three views of every season](outputs/figures/15_mip_three_views_2005_2026.png)
+
 </details>
 
 <details>
@@ -170,6 +174,7 @@ Rare *combinations* of strengths (Giannis, Jokić, Kevin Durant) versus *extreme
 | `11_mip_preseason` | What preseason numbers are worth; a preseason top 7 for 2026-27 |
 | `12_mip_live_race` | The live 2026-27 race, day by day; three snapshots with reasons; backtests |
 | `14_team_changes` | 21 seasons: does a new team or a new teammate make a Most Improved Player? (No; a star leaving his team does) |
+| `15_mip_2000_2026` | Most Improved 2000-01 → 2025-26: end of previous season, mid-season and end of season, strictly walk-forward |
 | `13_archetypes` | *In progress:* player archetypes by playing style; who is similar to whom |
 
 **Anti-leakage rules**
