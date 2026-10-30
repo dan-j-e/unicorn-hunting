@@ -168,6 +168,7 @@ Rare *combinations* of strengths (Giannis, Jokić, Kevin Durant) versus *extreme
 | `10_mip_leaps` | Most Improved Player: weekly leaps, the choice model, the mid-season race, our top 7 vs the real vote |
 | `11_mip_preseason` | What preseason numbers are worth; a preseason top 7 for 2026-27 |
 | `12_mip_live_race` | The live 2026-27 race, day by day; three snapshots with reasons; backtests |
+| `14_team_changes` | 21 seasons: does a new team or a new teammate make a Most Improved Player? (No; a star leaving his team does) |
 | `13_archetypes` | *In progress:* player archetypes by playing style; who is similar to whom |
 
 **Anti-leakage rules**
