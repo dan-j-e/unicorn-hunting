@@ -1,4 +1,4 @@
-"""Do scoring leaps last? The blip-or-real rule (decision D33), applied to every big leap since 2000-01.
+"""Do scoring leaps last? The blip test (decision D33), applied to every big leap since 2000-01.
 
 A leap: a season (y) at least MIN_LEAP points a game above the season before (y-1).
 Share of the leap kept, at any later point = (points a game then - points in y-1) / (points in y - points in y-1).

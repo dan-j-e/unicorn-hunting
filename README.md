@@ -149,20 +149,20 @@ Rare *combinations* of strengths (Giannis, Jokić, Kevin Durant) versus *extreme
 - **How early is too early?** At day 2 the eventual winner was in our top 7 in 4 of 15 past seasons; by day 60, in 11 of 15.
 - **Backtest of 2021-22 → 2025-26 (strict, earlier seasons only):** the winner was in our end-of-previous-season top 7 once, in our preseason top 7 twice, and in our mid-January top 7 in **4 of 5 seasons** (median rank 2).
 - **Pre-season, a new role is the clue:** Markkanen and Daniels were traded into teams that had just lost their star, and the preseason list caught both. Alexander-Walker's and Maxey's leaps weren't visible before the season.
-- **Do leaps last?** 9 of 14 past winners kept at least 80% of their jump the next season; three fell back about 4 points (Goran Dragić, Victor Oladipo, Julius Randle). Nickeil Alexander-Walker has kept 97% so far; the rule below decides his case at the All-Star break.
+- **Do leaps last?** 9 of 14 past winners kept at least 80% of their jump the next season; three fell back about 4 points (Goran Dragić, Victor Oladipo, Julius Randle). Nickeil Alexander-Walker has kept 97% so far; the blip test (below) decides his case at the All-Star break.
 
 ![Five-season backtest](outputs/figures/12_backtest_five_seasons.png)
 
 </details>
 
-### Blip or real? The Alexander-Walker rule
+### The blip test: did Alexander-Walker's leap last?
 
 Last season's winner, Nickeil Alexander-Walker, went from 9.4 to 20.8 points a game. Will the jump last, or was it a one-year spike?
 
 **Why we looked at him.**
 - **His leap was the one our models didn't see coming.** Before 2025-26 he was 44th on last season's numbers and 26th after preseason. Of the last five winners, his was the jump with the least warning, and those are the leaps people doubt most.
 - **He's back in the race.** We decided previous winners stay in the 2026-27 pool. He sits around 80th, not because he's slipping, but because a second jump on top of the first is rare.
-- **"Is it real?" kept coming up,** so we turned it into a question with an answer. We wrote the rule down on 30 October, before the answer is known, so the verdict can't be bent to fit what happens. The alternative was judging it by eye in February, with hindsight.
+- **"Is it real?" kept coming up,** so we turned it into a question with an answer: **the blip test**. We wrote it down on 30 October, before the answer is known, so the verdict can't be bent to fit what happens. The alternative was judging it by eye in February, with hindsight.
 
 | | |
 |---|---|
@@ -178,15 +178,15 @@ Last season's winner, Nickeil Alexander-Walker, went from 9.4 to 20.8 points a g
 - **Points per 36 minutes is shown alongside, but doesn't decide anything.** It tells "fewer minutes" apart from "scores less when he plays".
 - **So far (6 games):** 20.5 points a game, 97% kept. On track for "real", but 6 games decide nothing.
 
-**Backtest: every big leap since 2000-01** ([notebook 16](notebooks/16_do_leaps_last.ipynb)). The rule isn't specific to him, so we ran it on 609 leaps from 2000-01 to 2024-25: every MIP vote-getter who jumped 3+ points a game, and everyone who jumped 5+, voted for or not.
+**Backtest: every big leap since 2000-01** ([notebook 16](notebooks/16_do_leaps_last.ipynb)). The blip test isn't specific to him, so we ran it on 609 leaps from 2000-01 to 2024-25: every MIP vote-getter who jumped 3+ points a game, and everyone who jumped 5+, voted for or not.
 - **It does what it claims:** the verdict at the break matched the full next season for **86%** of the 541 leaps with enough games. Most misses were within 10 points of a line. "Real" at the break never turned into "blip" by the end of the season.
-- **Its victims are about the long run.** The rule looks one season ahead, and two seasons on:
+- **Its victims are about the long run.** The test looks one season ahead, and two seasons on:
   - **About 1 blip in 5 comes back** (25 leaps). The best-known is **Julius Randle**, the 2020-21 winner: 7% kept at the next break, an All-NBA season the year after. DeMar DeRozan, Isaiah Thomas, Karl-Anthony Towns and Russell Westbrook did the same. Westbrook's leap came with Kevin Durant injured; Durant came back and Westbrook's scoring fell, then rose again when Durant left.
   - **About 1 "real" in 6 collapses later** (48 leaps), mostly through injury: Brandon Roy, Darius Garland, Isaiah Thomas after his hip injury.
-- **Points per 36 is a weak hint, not a rule:** blips who kept their scoring rate came back 44% of the time, against 27% for those whose rate fell. That rests on only 18 players, so the rule stays as written.
+- **Points per 36 is a weak hint, not a rule:** blips who kept their scoring rate came back 44% of the time, against 27% for those whose rate fell. That rests on only 18 players, so the test stays as written.
 - **What a verdict means for Alexander-Walker:** "real" means the leap survived the next season, not that it's permanent. "Blip" could still turn out to be a Randle.
 
-![Leap rule backtest](outputs/figures/16_leap_rule_backtest.png)
+![Blip test backtest](outputs/figures/16_blip_test_backtest.png)
 
 ---
 
@@ -208,7 +208,7 @@ Last season's winner, Nickeil Alexander-Walker, went from 9.4 to 20.8 points a g
 | `12_mip_live_race` | The live 2026-27 race, day by day; three snapshots with reasons; backtests |
 | `14_team_changes` | 21 seasons: does a new team or a new teammate make a Most Improved Player? (No; a star leaving his team does) |
 | `15_mip_2000_2026` | Most Improved 2000-01 → 2025-26: end of previous season, mid-season and end of season, strictly walk-forward |
-| `16_do_leaps_last` | Do scoring leaps last? The blip-or-real rule backtested on 609 leaps since 2000-01, and its victims |
+| `16_do_leaps_last` | Do scoring leaps last? The blip test, backtested on 609 leaps since 2000-01, and its victims |
 | `13_archetypes` | *In progress:* player archetypes by playing style; who is similar to whom |
 
 **Anti-leakage rules**

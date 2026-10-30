@@ -29,7 +29,7 @@ Goal for this phase: turn a working pipeline into something **explainable and wo
 - "Becomes a unicorn" outcome label.
 - Basketball-Reference / CraftedNBA metrics (VORP, BPM, WS…).
 - Track the 2026-27 predictions as the season plays out.
-- **At the All-Star break:** re-run notebook 12. It prints Alexander-Walker's final verdict under the rule set in advance (D33) and freezes the live race's turning point (D32). Then update the README.
+- **At the All-Star break:** re-run notebook 12. It prints Alexander-Walker's blip test verdict, set in advance (D33) and freezes the live race's turning point (D32). Then update the README.
 - Breakout board: add a "route to stardom" view.
 
 ## Parked
