@@ -136,7 +136,9 @@ def add_pool_flags(frame, winners):
 # then established scorers are MVP material, not MIP". 20 fitted best of 14-26 in notebook 11.
 TURNING_POINT = 20
 TURN = ["ppg_over_turn"]
-USED = LEAN + TURN          # the preseason model used from 30 Oct 2026
+STAR_LEFT_PPG = 20
+TEAM_CHANGE = ["star_left"]   # a 20+ point scorer left his team over the summer (notebook 14; decision D29)
+USED = LEAN + TURN + TEAM_CHANGE   # the preseason model used from 30 Oct 2026
 
 
 def add_turning_point(frame, ppg_col="ppg_last", k=TURNING_POINT, name="ppg_over_turn"):
@@ -172,3 +174,23 @@ def preseason_opportunity(pre, regular):
         c["opportunity"] = (c["to"].map(gone).fillna(0) - (c["to"].map(arrived_team).fillna(0) - own)) / tot
         rows.append(c[["player_id", "season_start", "opportunity"]])
     return pd.concat(rows, ignore_index=True)
+
+
+def add_star_left(frame, pre, regular, threshold=STAR_LEFT_PPG):
+    """star_left = 1 if a player who averaged `threshold`+ points for the player's (preseason) team last season
+    has been seen with another team in preseason, AND no `threshold`+ scorer from another team has joined it.
+    Known before opening night; a star who is merely absent from preseason (injury, holdout) is not counted.
+    "Not replaced" fitted slightly better than the plain flag (notebook 11, decision D29), and none of the
+    winners' teams had brought in a 20-point scorer."""
+    end = regular.sort_values("game_date").groupby(["player_id", "season_start"]).agg(team=("team_id", "last"), ppg=("pts", "mean")).reset_index()
+    pre_team = pre.sort_values("game_date").groupby(["player_id", "season_start"])["team_id"].last()
+    end["pre_team_next"] = [pre_team.get((p, s + 1)) for p, s in zip(end["player_id"], end["season_start"])]
+    moved = end[(end["ppg"] >= threshold) & end["pre_team_next"].notna() & (end["pre_team_next"] != end["team"])]
+    lost = set(zip(moved["team"], moved["season_start"] + 1))
+    gained = set(zip(moved["pre_team_next"], moved["season_start"] + 1))
+    f = frame.copy()
+    keys = list(zip(f["team_id"], f["season_start"]))
+    f["star_left_any"] = [float(k in lost) for k in keys]
+    f["star_arrived"] = [float(k in gained) for k in keys]
+    f["star_left"] = f["star_left_any"] * (1 - f["star_arrived"])
+    return f

@@ -15,7 +15,7 @@ Scouting treated like backtesting an investment strategy: for every season since
 - **For future stars, current all-round quality beats every model** (10× random), and stars arrive by two routes: a breakout season, or a steady climb.
 - **"Unicorns" come in two kinds:** rare *combinations* of strengths (Giannis Antetokounmpo, Nikola Jokić) and *extremes* with no comparable players (Victor Wembanyama).
 - **The Most Improved Player can be named from the box score** in 8 of 15 seasons. Voters reward production and scoring jumps and team improvement, and discount age and second-year players.
-- **Before the season, nobody knows:** pre-season lists rarely contain the eventual winner, but by mid-January the winner was in our top 7 in 4 of the last 5 seasons.
+- **Before the season, look for the open role:** a star leaving a player's team is the strongest pre-season clue. By mid-January the winner was in our top 7 in 4 of the last 5 seasons.
 
 ## Contents
 - [Breakouts and stars](#breakouts-and-stars)
@@ -114,10 +114,11 @@ Rare *combinations* of strengths (Giannis, Jokić, Kevin Durant) versus *extreme
 
 - **Inputs:** last season, plus preseason form per 36 minutes (never totals), shrunk for small samples.
 - **What preseason is worth:** minute increases hold at about 60–75%, decreases mean almost nothing, and shot volume per minute is the most reliable preseason signal.
-- **Track record:** from about 350 candidates, the eventual winner was in our preseason top 7 in 4 of 14 seasons and in our top 20 in 11. It is a shortlist, not a forecast.
-- **Backtest of the picks:** 36% of past top-7 picks jumped 3+ points a game (14% of all candidates), and half of the top-3 picks did. A better breakout list than an award list.
+- **Track record:** from about 375 candidates, the eventual winner was in our preseason top 7 in 7 of 14 seasons (4 of 9 in the strict test) and in our top 20 in 11.
+- **Backtest of the picks:** 43% of past top-7 picks jumped 3+ points a game (14% of all candidates).
 - **Established scorers:** instead of excluding them, last season's scoring counts slightly in a player's favour up to a turning point and against him above it (MVP material, not MIP). Backtesting every turning point from 14 to 26 points a game, **20 fits best**.
-- **2026-27 top 7 (complete preseason):** Jalen Duren, Tyrese Haliburton, Tristan da Silva, Leonard Miller, Ty Jerome, Rui Hachimura, Reed Sheppard.
+- **A star leaving matters more than changing teams** ([notebook 14](notebooks/14_team_changes.ipynb), 21 seasons): winners changed teams no more often than anyone else (29% vs 27%), but 7 of 21 had a 20-point scorer leave their team (vs 11%). As a yes/no preseason input (star left, not replaced) it lifts the winner into our preseason top 7 in 7 of 14 seasons, up from 3.
+- **2026-27 top 7 (complete preseason):** Rui Hachimura, Jalen Duren, Tyrese Haliburton, Tristan da Silva, Brandon Miller, Devin Carter, Luka Garza.
 
 ![2026-27 preseason top 7](outputs/figures/11_mip_preseason_top7.png)
 
@@ -128,7 +129,7 @@ Rare *combinations* of strengths (Giannis, Jokić, Kevin Durant) versus *extreme
 > [!TIP]
 > **Last updated 28 October 2026 (day 9 of the season).** Re-run [notebook 12](notebooks/12_mip_live_race.ipynb) to add the newest days.
 
-- **Leader:** Ty Jerome, #1 every day since his first game: 29.8 points a game in 31.5 minutes, up from 12.5 in 19.9 (about a 46% chance). He was #5 in our preseason top 7.
+- **Leader:** Ty Jerome, #1 every day since his first game: 29.8 points a game in 31.5 minutes, up from 12.5 in 19.9 (about a 46% chance). He was 16th in our final preseason list.
 - **Behind him:** Ja'Kobe Walter, Terrence Shannon Jr, Brandon Miller, Ajay Mitchell, Alperen Sengun, RJ Barrett.
 - **A leaderboard for every day, with no leakage.** Day *n* uses only games up to day *n*, scored by a model trained on past seasons cut at the same day. Each day is saved once and never recomputed.
 - **Everyone is a candidate,** including previous winners and established scorers; the scoring turning point at 20 points a game handles the latter.
@@ -142,8 +143,8 @@ Rare *combinations* of strengths (Giannis, Jokić, Kevin Durant) versus *extreme
 <summary><b>How much to trust it: backtests</b></summary>
 
 - **How early is too early?** At day 2 the eventual winner was in our top 7 in 4 of 15 past seasons; by day 60, in 11 of 15.
-- **Backtest of 2021-22 → 2025-26 (strict, earlier seasons only):** the winner was in our end-of-previous-season top 7 once, in our preseason top 7 never, and in our mid-January top 7 in **4 of 5 seasons** (median rank 2).
-- **Pre-season lists find who is set up to improve, not who wins:** Lauri Markkanen, Dyson Daniels and Nickeil Alexander-Walker all ranked 14th or lower before their seasons began.
+- **Backtest of 2021-22 → 2025-26 (strict, earlier seasons only):** the winner was in our end-of-previous-season top 7 once, in our preseason top 7 twice, and in our mid-January top 7 in **4 of 5 seasons** (median rank 2).
+- **Pre-season, a new role is the clue:** Markkanen and Daniels were traded into teams that had just lost their star, and the preseason list caught both. Alexander-Walker's and Maxey's leaps weren't visible before the season.
 - **Do leaps last?** 9 of 14 past winners kept at least 80% of their jump the next season; three fell back about 4 points (Goran Dragić, Victor Oladipo, Julius Randle). Nickeil Alexander-Walker has kept 89% so far; we revisit at the All-Star break.
 
 ![Five-season backtest](outputs/figures/12_backtest_five_seasons.png)
@@ -176,7 +177,7 @@ Rare *combinations* of strengths (Giannis, Jokić, Kevin Durant) versus *extreme
 - A training example is used only once its outcome was known at prediction time.
 - Preprocessing is fitted inside each fold.
 
-Every significant choice, with its evidence, is logged in [docs/DECISIONS.md](docs/DECISIONS.md) (28 decisions).
+Every significant choice, with its evidence, is logged in [docs/DECISIONS.md](docs/DECISIONS.md) (29 decisions).
 
 <details>
 <summary><b>Data traps found along the way</b></summary>
