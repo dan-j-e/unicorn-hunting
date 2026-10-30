@@ -14,12 +14,14 @@ Scouting treated like backtesting an investment strategy: for every season since
 - **Breakouts are partly predictable:** 4–6× better than random one season ahead, in a strict walk-forward backtest.
 - **For future stars, current all-round quality beats every model** (10× random), and stars arrive by two routes: a breakout season, or a steady climb.
 - **"Unicorns" come in two kinds:** rare *combinations* of strengths (Giannis Antetokounmpo, Nikola Jokić) and *extremes* with no comparable players (Victor Wembanyama).
+- **There are eight kinds of NBA player** by playing style, from *Mr. Inside the Key* to *The Effective Operator*. The traditional rim big fell from 23% of players to 5% since 2000; the corner 3-and-D wing rose from 4% to 20%.
 - **The Most Improved Player can be named from the box score** in 8 of 15 seasons. Voters reward production and scoring jumps and team improvement, and discount age and second-year players.
 - **Before the season, look for the open role:** a star leaving a player's team is the strongest pre-season clue. By mid-January the winner was in our top 7 in 4 of the last 5 seasons.
 
 ## Contents
 - [Breakouts and stars](#breakouts-and-stars)
 - [Unicorns](#unicorns)
+- [Eight kinds of player](#eight-kinds-of-player)
 - [Most Improved Player](#most-improved-player)
 - [The live 2026-27 Most Improved race](#the-live-2026-27-most-improved-race)
 - [How it works](#how-it-works) · [Reproduce](#reproduce) · [Limitations](#limitations) · [What's next](#whats-next)
@@ -64,6 +66,41 @@ Rare *combinations* of strengths (Giannis, Jokić, Kevin Durant) versus *extreme
 ![Unicorn map](outputs/figures/04_unicorn_map_2025_26.png)
 
 2025-26: rarity of each player's skill mix (pairs of strengths that seldom occur together) against strangeness (distance to the most similar players).
+
+</details>
+
+## Eight kinds of player
+
+**How do players play, not how well?** We sorted every player-season since 2011-12 (500+ minutes) by 15 style measures: where he shoots, how he creates, rebounding and box-score defence. Each measure is compared with that season's league. No names, size or position went in, and no list of expected types was written beforehand. The data drew the groups; we named them afterwards from the players inside. Full write-up: [docs/EIGHT_CLUSTERS.md](docs/EIGHT_CLUSTERS.md).
+
+| | Name | Best-known | What the data says |
+|---|---|---|---|
+| 1 | **Mr. Inside the Key** | DeAndre Jordan, Rudy Gobert, Dwight Howard | Rim shots, offensive boards, blocks; no threes |
+| 2 | **Windex** | Karl-Anthony Towns ('16-17), Amen Thompson, Domantas Sabonis | Boards at both ends, paint touches; few threes |
+| 3 | **Bruiser** | Al Horford, Michael Porter Jr., Brook Lopez | Defensive boards, blocks, fouls; rarely creates his own shot |
+| 4 | **The Pest** | Mikal Bridges ('21-22), Josh Hart, OG Anunoby | Fast breaks, corner threes, steals; low usage |
+| 5 | **Give Me the Ball and Let Me Work** | James Harden, Kevin Durant, LeBron James | Self-created makes, assists, usage; mid-range |
+| 6 | **Peter Griffin's NBA Jam** | Trevor Ariza, P.J. Tucker, Toumani Camara | The most threes of any group; almost no self-creating, rim shots or free throws |
+| 7 | **Kerr's Cult** | Klay Thompson, Nicolas Batum, Mikal Bridges ('24-25) | Threes and movement; few rim shots or boards |
+| 8 | **The Effective Operator** | Damian Lillard, Stephen Curry, CJ McCollum | Self-created makes, assists, usage; smaller, fewest boards |
+
+![Eight kinds of player: who is in which](outputs/figures/13_eight_clusters_who.png)
+
+- **Players move between kinds as their game changes.** Mikal Bridges went from The Pest to Kerr's Cult. Karl-Anthony Towns started as a Windex before becoming a shooting big.
+- **2025-26 surprises:** Wembanyama is a Windex, not a Bruiser: compared with the league, his rim shots and boards outweigh his threes. Draymond Green is in Kerr's Cult.
+
+<details>
+<summary><b>Back to 2000-01: how the league changed</b></summary>
+
+The same exercise over 26 seasons, on 3-season rolling windows and with **no era adjustment**, so the league's changes show up directly ([notebook 13E](notebooks/13_archetypes.ipynb)):
+
+- **The traditional rim big fell from 23% of players to 5%.** It was the largest group until about 2012, then collapsed by 2018.
+- **The corner 3-and-D wing rose from 4% to 20%.** Bowen, Bell and Battier came first; Ariza and Tucker followed.
+- **Usage-heavy and pick-and-pop bigs held steady at 6–9%,** from Garnett, Duncan and Dirk to Jokić, Giannis and Towns.
+
+![The mix over time](outputs/figures/13_eight_clusters_2000_2026_by_season.png)
+
+**How sure:** playing style is mostly a continuum. Five groups come back reliably when the data is split in half (0.87); eight less so (0.54 for 2011-26, 0.45 for 2000-26). We use eight because each extra split has a clear basketball reading.
 
 </details>
 
@@ -269,4 +306,4 @@ data/             raw and processed data (git-ignored, rebuilt from code)
 - **One rookie season is thin evidence.** Predictions for second-year players are far better informed than for rookies.
 
 ## What's next
-See [TODO.md](TODO.md): player archetypes and "who is similar to who", explained picks, a story-led write-up, and tracking the 2026-27 predictions.
+See [TODO.md](TODO.md): "who is similar to who" and how players move between the eight kinds, explained picks, a story-led write-up, and tracking the 2026-27 predictions.
