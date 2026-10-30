@@ -23,6 +23,7 @@ OLD_SEASONS = [f"{y}-{str(y + 1)[-2:]}" for y in range(1999, 2010)]   # 1999-00 
 DAY_MID = 85
 L2 = 3.0
 TURN_GRID = (16, 18, 20, 22, 24)
+TURN_CHOICES = (None,) + TURN_GRID    # None = no turning point (the live race, notebook 12, may choose none)
 MIN_TRAIN_SEASONS = 5
 
 PREV_FEATURES = ["ppg_last", "mpg_last", "gspg_last", "rpg_last", "apg_last", "team_win_pct_last",
@@ -110,8 +111,9 @@ def _label(f, winners):
     return f.reset_index(drop=True)
 
 
-def _with_turn(df, level_col, k):
-    return df.assign(over_turn=(df[level_col] - k).clip(lower=0))
+def with_turn(df, level_col, k):
+    """Add `over_turn`: points above the turning point k (all zeros when k is None, so the input has no effect)."""
+    return df.assign(over_turn=0.0 if k is None else (df[level_col] - k).clip(lower=0))
 
 
 def choose_turning_point(train, features, level_col, grid=TURN_GRID, folds=5):
@@ -120,7 +122,7 @@ def choose_turning_point(train, features, level_col, grid=TURN_GRID, folds=5):
     groups = np.array_split(np.array(seasons), min(folds, len(seasons)))
     best, best_ll = None, -np.inf
     for k in grid:
-        d = _with_turn(train, level_col, k)
+        d = with_turn(train, level_col, k)
         ll = 0.0
         for test_seasons in groups:
             te = d[d["season"].isin(test_seasons)]
@@ -138,8 +140,8 @@ def walk_forward(frame, features, level_col):
     for s in seasons[MIN_TRAIN_SEASONS:]:
         train, test = frame[frame["season"] < s], frame[frame["season"] == s]
         k = choose_turning_point(train, features, level_col)
-        m = ChoiceModel(features + ["over_turn"], L2).fit(_with_turn(train, level_col, k))
-        p = m.predict_proba(_with_turn(test, level_col, k))
+        m = ChoiceModel(features + ["over_turn"], L2).fit(with_turn(train, level_col, k))
+        p = m.predict_proba(with_turn(test, level_col, k))
         rank = p.rank(ascending=False, method="first")
         w = test["mip"]
         out.append({"season": s, "turning point used": k, "candidates": len(test),

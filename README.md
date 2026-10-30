@@ -5,7 +5,7 @@
 Scouting treated like backtesting an investment strategy: for every season since 2011-12, rebuild what was knowable then, rank players, and score the rankings against what actually happened. Only then apply the method to today's players.
 
 > [!NOTE]
-> **Live: the 2026-27 Most Improved race.** Ty Jerome has led every day since his first game (about a 46% chance as of 28 October, day 9 of the season). [Jump to the race ↓](#the-live-2026-27-most-improved-race)
+> **Live: the 2026-27 Most Improved race.** Ty Jerome has led every day since his first game, but a 2-point night cut his chance to about 9% (29 October, day 10 of the season). The race is open. [Jump to the race ↓](#the-live-2026-27-most-improved-race)
 
 ![The 2026-27 Most Improved race, day by day](outputs/figures/12_daily_worm.png)
 
@@ -131,12 +131,12 @@ Rare *combinations* of strengths (Giannis, Jokić, Kevin Durant) versus *extreme
 ## The live 2026-27 Most Improved race
 
 > [!TIP]
-> **Last updated 28 October 2026 (day 9 of the season).** Re-run [notebook 12](notebooks/12_mip_live_race.ipynb) to add the newest days.
+> **Last updated 29 October 2026 (day 10 of the season).** Re-run [notebook 12](notebooks/12_mip_live_race.ipynb) to add the newest days.
 
-- **Leader:** Ty Jerome, #1 every day since his first game: 29.8 points a game in 31.5 minutes, up from 12.5 in 19.9 (about a 46% chance). He was 16th in our final preseason list.
-- **Behind him:** Ja'Kobe Walter, Terrence Shannon Jr, Brandon Miller, Ajay Mitchell, Alperen Sengun, RJ Barrett.
+- **Leader:** Ty Jerome, #1 every day since his first game: 24.2 points a game in 27.6 minutes, up from 12.5 in 19.9. He was 16th in our final preseason list. After 2 points on 29 October his chance fell from 46% to about 9%.
+- **Right behind him:** Ja'Kobe Walter (7.5%), Terrence Shannon Jr, Brandon Miller, Alperen Sengun, RJ Barrett, Ajay Mitchell.
 - **A leaderboard for every day, with no leakage.** Day *n* uses only games up to day *n*, scored by a model trained on past seasons cut at the same day. Each day is saved once and never recomputed.
-- **Everyone is a candidate,** including previous winners and established scorers; the scoring turning point at 20 points a game handles the latter.
+- **Everyone is a candidate,** including previous winners and established scorers. A scoring turning point handles established scorers, and **the data chooses it** (none, or 16–24 points a game): it is re-chosen every day from past seasons only, then frozen at the All-Star break so the board doesn't jump late on. It has chosen 20 every day so far.
 
 | | |
 |---|---|
@@ -149,11 +149,29 @@ Rare *combinations* of strengths (Giannis, Jokić, Kevin Durant) versus *extreme
 - **How early is too early?** At day 2 the eventual winner was in our top 7 in 4 of 15 past seasons; by day 60, in 11 of 15.
 - **Backtest of 2021-22 → 2025-26 (strict, earlier seasons only):** the winner was in our end-of-previous-season top 7 once, in our preseason top 7 twice, and in our mid-January top 7 in **4 of 5 seasons** (median rank 2).
 - **Pre-season, a new role is the clue:** Markkanen and Daniels were traded into teams that had just lost their star, and the preseason list caught both. Alexander-Walker's and Maxey's leaps weren't visible before the season.
-- **Do leaps last?** 9 of 14 past winners kept at least 80% of their jump the next season; three fell back about 4 points (Goran Dragić, Victor Oladipo, Julius Randle). Nickeil Alexander-Walker has kept 89% so far; we revisit at the All-Star break.
+- **Do leaps last?** 9 of 14 past winners kept at least 80% of their jump the next season; three fell back about 4 points (Goran Dragić, Victor Oladipo, Julius Randle). Nickeil Alexander-Walker has kept 97% so far; the rule below decides his case at the All-Star break.
 
 ![Five-season backtest](outputs/figures/12_backtest_five_seasons.png)
 
 </details>
+
+### Blip or real? The Alexander-Walker rule
+
+Last season's winner, Nickeil Alexander-Walker, went from 9.4 to 20.8 points a game. Will the jump last, or was it a one-year spike? We wrote the rule down on 30 October, before the answer is known, so the verdict can't be bent to fit what happens.
+
+| | |
+|---|---|
+| **When** | After his team's last game before the 2026-27 All-Star break (mid-February) |
+| **Measure** | Share of his leap kept = (points a game this season − 9.4) ÷ (20.8 − 9.4) |
+| **Real** | 80% or more kept, about **18.5+ points a game** |
+| **Partly real** | 50–80% kept, about **15.1–18.5** |
+| **Blip** | under 50% kept, under about **15.1** |
+| **Not enough games** | fewer than 25 games by the break: wait for the end of the season, same cut-offs |
+
+- **Why these lines:** they split the 14 past winners into clear groups: 9 kept 80%+ the season after (Paul George, Giannis and Siakam kept improving), 2 kept most of it (Markkanen, Daniels), and 3 fell back hard (Dragić, Oladipo, Randle).
+- **Why the break is early enough:** for all 14 past winners, the verdict at the break of the season after was the same as over the full season.
+- **Points per 36 minutes is shown alongside, but doesn't decide anything.** It tells "fewer minutes" apart from "scores less when he plays".
+- **So far (6 games):** 20.5 points a game, 97% kept. On track for "real", but 6 games decide nothing.
 
 ---
 
@@ -182,7 +200,7 @@ Rare *combinations* of strengths (Giannis, Jokić, Kevin Durant) versus *extreme
 - A training example is used only once its outcome was known at prediction time.
 - Preprocessing is fitted inside each fold.
 
-Every significant choice, with its evidence, is logged in [docs/DECISIONS.md](docs/DECISIONS.md) (31 decisions).
+Every significant choice, with its evidence, is logged in [docs/DECISIONS.md](docs/DECISIONS.md) (33 decisions).
 
 <details>
 <summary><b>Data traps found along the way</b></summary>
