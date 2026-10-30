@@ -209,14 +209,14 @@ Last season's winner, Nickeil Alexander-Walker, went from 9.4 to 20.8 points a g
 | `14_team_changes` | 21 seasons: does a new team or a new teammate make a Most Improved Player? (No; a star leaving his team does) |
 | `15_mip_2000_2026` | Most Improved 2000-01 → 2025-26: end of previous season, mid-season and end of season, strictly walk-forward |
 | `16_do_leaps_last` | Do scoring leaps last? The blip test, backtested on 609 leaps since 2000-01, and its victims |
-| `13_archetypes` | *In progress:* player archetypes by playing style. 13A style measures; 13B how many clusters (style is a continuum; 3 and 5 are stable); 13C five clusters; 13D eight clusters (chosen), who is in which |
+| `13_archetypes` | *In progress:* player archetypes by playing style. 13A style measures; 13B how many clusters (style is a continuum; 3 and 5 are stable); 13C five clusters; 13D eight clusters (chosen), who is in which ([write-up](docs/EIGHT_CLUSTERS.md)); 13E 2000-01 → 2025-26 on 3-season windows, no era adjustment |
 
 **Anti-leakage rules**
 - Features for season *t* use seasons ≤ *t* only; notebook 03 checks this by deleting later seasons and confirming nothing changes.
 - A training example is used only once its outcome was known at prediction time.
 - Preprocessing is fitted inside each fold.
 
-Every significant choice, with its evidence, is logged in [docs/DECISIONS.md](docs/DECISIONS.md) (35 decisions).
+Every significant choice, with its evidence, is logged in [docs/DECISIONS.md](docs/DECISIONS.md) (36 decisions).
 
 <details>
 <summary><b>Data traps found along the way</b></summary>
