@@ -209,7 +209,7 @@ Last season's winner, Nickeil Alexander-Walker, went from 9.4 to 20.8 points a g
 | `14_team_changes` | 21 seasons: does a new team or a new teammate make a Most Improved Player? (No; a star leaving his team does) |
 | `15_mip_2000_2026` | Most Improved 2000-01 → 2025-26: end of previous season, mid-season and end of season, strictly walk-forward |
 | `16_do_leaps_last` | Do scoring leaps last? The blip test, backtested on 609 leaps since 2000-01, and its victims |
-| `13_archetypes` | *In progress:* player archetypes by playing style. 13A style measures; 13B how many clusters (style is a continuum; 3 and 5 clusters are stable) |
+| `13_archetypes` | *In progress:* player archetypes by playing style. 13A style measures; 13B how many clusters (style is a continuum; 3 and 5 are stable); 13C five clusters with their typical and best-known players, plus 6–8 |
 
 **Anti-leakage rules**
 - Features for season *t* use seasons ≤ *t* only; notebook 03 checks this by deleting later seasons and confirming nothing changes.
