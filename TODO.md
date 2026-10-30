@@ -9,8 +9,8 @@ Goal for this phase: turn a working pipeline into something **explainable and wo
 - Name the archetypes **after** they are found (D31: no expected list beforehand, so the data isn't forced into bands we already believe in).
 - **Similarity:** for any current player, find the most similar historical players *at the same career stage* (e.g. Dëmin's rookie year vs past rookie years), within and across archetypes.
 - **Movement:** how players move between archetypes as they develop, and which moves lead to stardom.
-- Set-up decided (D34). **13B done:** plots for 2–14 clusters. **13C done:** 5 clusters with typical and best-known players, plus 6, 7 and 8 for comparison. **13D:** 8 clusters chosen (D35), with a who-is-in-which chart. **Next, you:** name clusters 1–8.
-- **13E done:** 2000-01 → 2025-26 on 3-season windows, no era adjustment (D36). It shows the drift (rim bigs 23% → 5%; corner 3-and-D 4% → 20%) but is less stable (0.45 at 8). **You:** decide which set to name (13D 2011-26, or 13E 2000-26).
+- Set-up decided (D34). **13B done:** plots for 2–14 clusters. **13C done:** 5 clusters with typical and best-known players, plus 6, 7 and 8 for comparison. **13D:** 8 clusters chosen (D35) and named (D37).
+- **13E done:** 2000-01 → 2025-26 on 3-season windows, no era adjustment (D36). It shows the drift (rim bigs 23% → 5%; corner 3-and-D 4% → 20%) but is less stable (0.45 at 8). The 2011-26 eight are named (D37).
 - **Later option:** 2000-26 windows *with* an era adjustment, to separate 'the role changed' from 'the league changed'.
 
 ### 2. Explain every pick ("scouting cards")

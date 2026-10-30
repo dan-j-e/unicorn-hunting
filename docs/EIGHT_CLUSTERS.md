@@ -2,7 +2,7 @@
 
 *From [notebook 13](../notebooks/13_archetypes.ipynb), section 13D. Decisions D31, D34 and D35 in [DECISIONS.md](DECISIONS.md).*
 
-We sorted every NBA player-season since 2011-12 (500+ minutes, 5,353 seasons) by **how** each player plays, not **how well**. The data drew the groups, not us: no names, size or position went in, and no list of expected types was written beforehand. The clusters are numbered for now, and the names will come from the players inside them.
+We sorted every NBA player-season since 2011-12 (500+ minutes, 5,353 seasons) by **how** each player plays, not **how well**. The data drew the groups, not us: no names, size or position went in, and no list of expected types was written beforehand. The clusters were numbered first and named afterwards, from the players inside them.
 
 ![Eight clusters: who is in which](../outputs/figures/13_eight_clusters_who.png)
 
@@ -20,18 +20,18 @@ We sorted every NBA player-season since 2011-12 (500+ minutes, 5,353 seasons) by
 
 ## The eight
 
-Numbered from most inside (1) to most perimeter. "Best-known" means the most minutes among clear members. "Most typical" means closest to the cluster's centre, which tends to mean role players, because stars are extreme even within their own type.
+Numbered from most inside (1) to most perimeter, then named. "Best-known" means the most minutes among clear members. "Most typical" means closest to the cluster's centre, which tends to mean role players, because stars are extreme even within their own type.
 
 | # | Name | Share | Best-known | Most typical | Does more | Does less | Typical size |
 |---|---|---|---|---|---|---|---|
-| **1** | *(to name)* | 12% | DeAndre Jordan, Rudy Gobert, Dwight Howard, Steven Adams, Andre Drummond, Ivica Zubac | Ed Davis, Ian Mahinmi, Jalen Duren | rim shots, offensive boards, blocks | threes, mid-range | 6'11", 245 lb, C |
-| **2** | *(to name)* | 12% | Karl-Anthony Towns (2016-17), Amen Thompson, Domantas Sabonis, David Lee, Blake Griffin, Giannis Antetokounmpo (2016-17) | Paul Millsap, Amar'e Stoudemire, Derrick Favors | defensive boards, paint (not rim), offensive boards | threes, fast breaks | 6'10", 248 lb, F |
-| **3** | *(to name)* | 8% | Al Horford, Michael Porter Jr., Brook Lopez, Myles Turner, Kevin Love, Chris Bosh | Dario Šarić, Daniel Theis, Naz Reid | defensive boards, blocks, fouls | self-created makes, fast breaks | 6'10", 240 lb, F |
-| **4** | *(to name)* | 16% | Mikal Bridges (2021-22), Thaddeus Young, Josh Hart, OG Anunoby, Christian Braun, Harrison Barnes | Bilal Coulibaly, Kyle Singler, Christian Braun | fast breaks, corner threes, steals | usage, assists | 6'7", 215 lb, F |
-| **5** | *(to name)* | 14% | James Harden, Kevin Durant, Andrew Wiggins, Bradley Beal (2018-19), LeBron James, DeMar DeRozan | Jaylen Brown, Desmond Bane, Jeremy Lamb | self-created makes, assists, usage | fouls, offensive boards | 6'5", 207 lb, G |
-| **6** | *(to name)* | 9% | Trevor Ariza, P.J. Tucker, Toumani Camara, Dorian Finney-Smith, Robert Covington, Kyle Korver | Hollis Thompson, Kyle Singler, Julian Champagnie | threes, corner threes | self-created makes, paint (not rim) | 6'7", 217 lb, F |
-| **7** | *(to name)* | 15% | Mikal Bridges (2024-25), Nicolas Batum, Klay Thompson, Marcus Morris Sr., Jeff Green, Kentavious Caldwell-Pope | Tyler Johnson, Bogdan Bogdanović, Jerryd Bayless | threes | rim shots, offensive boards | 6'5", 205 lb, G |
-| **8** | *(to name)* | 15% | Damian Lillard, Monta Ellis, Stephen Curry, Bradley Beal (2017-18), CJ McCollum, O.J. Mayo | D'Angelo Russell, Deron Williams, Raymond Felton | self-created makes, assists, usage | defensive and offensive boards | 6'3", 194 lb, G |
+| **1** | **Mr. Inside the Key** | 12% | DeAndre Jordan, Rudy Gobert, Dwight Howard, Steven Adams, Andre Drummond, Ivica Zubac | Ed Davis, Ian Mahinmi, Jalen Duren | rim shots, offensive boards, blocks | threes, mid-range | 6'11", 245 lb, C |
+| **2** | **Windex** | 12% | Karl-Anthony Towns (2016-17), Amen Thompson, Domantas Sabonis, David Lee, Blake Griffin, Giannis Antetokounmpo (2016-17) | Paul Millsap, Amar'e Stoudemire, Derrick Favors | defensive boards, paint (not rim), offensive boards | threes, fast breaks | 6'10", 248 lb, F |
+| **3** | **Bruiser** | 8% | Al Horford, Michael Porter Jr., Brook Lopez, Myles Turner, Kevin Love, Chris Bosh | Dario Šarić, Daniel Theis, Naz Reid | defensive boards, blocks, fouls | self-created makes, fast breaks | 6'10", 240 lb, F |
+| **4** | **The Pest** | 16% | Mikal Bridges (2021-22), Thaddeus Young, Josh Hart, OG Anunoby, Christian Braun, Harrison Barnes | Bilal Coulibaly, Kyle Singler, Christian Braun | fast breaks, corner threes, steals | usage, assists | 6'7", 215 lb, F |
+| **5** | **Give Me the Ball and Let Me Work** | 14% | James Harden, Kevin Durant, Andrew Wiggins, Bradley Beal (2018-19), LeBron James, DeMar DeRozan | Jaylen Brown, Desmond Bane, Jeremy Lamb | self-created makes, assists, usage | fouls, offensive boards | 6'5", 207 lb, G |
+| **6** | **Peter Griffin's NBA Jam** | 9% | Trevor Ariza, P.J. Tucker, Toumani Camara, Dorian Finney-Smith, Robert Covington, Kyle Korver | Hollis Thompson, Kyle Singler, Julian Champagnie | threes, corner threes | self-created makes, paint (not rim) | 6'7", 217 lb, F |
+| **7** | **Kerr's Cult** | 15% | Mikal Bridges (2024-25), Nicolas Batum, Klay Thompson, Marcus Morris Sr., Jeff Green, Kentavious Caldwell-Pope | Tyler Johnson, Bogdan Bogdanović, Jerryd Bayless | threes | rim shots, offensive boards | 6'5", 205 lb, G |
+| **8** | **The Effective Operator** | 15% | Damian Lillard, Monta Ellis, Stephen Curry, Bradley Beal (2017-18), CJ McCollum, O.J. Mayo | D'Angelo Russell, Deron Williams, Raymond Felton | self-created makes, assists, usage | defensive and offensive boards | 6'3", 194 lb, G |
 
 The full profile on all 15 measures is in [the heatmap](../outputs/figures/13_eight_clusters.png).
 
@@ -39,20 +39,20 @@ The full profile on all 15 measures is in [the heatmap](../outputs/figures/13_ei
 
 - **The eight fit neatly inside the five.** Cluster 1 stays whole; 2 and 3 split from one inside group; 4 and 6 from the off-ball wings; 5 and 8 from the on-ball group; 7 stays whole. So eight is a finer cut of the same picture, not a different one.
 - **Players move between clusters as their game changes.**
-  - Mikal Bridges was a corner-and-transition wing (4) in 2021-22 and a shooter (7) by 2024-25.
-  - Karl-Anthony Towns in 2016-17 sat with the inside bigs (2), before he became one of the league's great shooting big men.
-  - Bradley Beal moved from the pull-up guards (8) to the bigger creators (5) in a single year.
-- **5 and 8 both create their own shots.** The difference is size and rebounding: 8 is the smaller, pull-up group (6'3" against 6'5", fewer boards).
+  - Mikal Bridges was The Pest (4) in 2021-22 and in Kerr's Cult (7) by 2024-25.
+  - Karl-Anthony Towns in 2016-17 was a Windex (2), before he became one of the league's great shooting big men.
+  - Bradley Beal moved from The Effective Operator (8) to Give Me the Ball and Let Me Work (5) in a single year.
+- **Give Me the Ball (5) and The Effective Operator (8) both create their own shots.** The difference is size and rebounding: the Operators are smaller (6'3" against 6'5") and rebound less.
 - **Surprising 2025-26 placements:**
-  - **Victor Wembanyama is in 2, not 3.** Compared with the league, his rim shots, rebounding and blocks outweigh his threes.
-  - **Draymond Green is in 7, with the shooters.** His three-point rate went up while his rebounding and rim shots fell.
-  - **Dyson Daniels and Amen Thompson are in 2.** Their rebounding, rim shots and lack of threes look like a forward's.
-  - **Shai Gilgeous-Alexander, Luka Dončić and Cooper Flagg are in 5; Stephen Curry and Jalen Brunson in 8.**
+  - **Victor Wembanyama is a Windex (2), not a Bruiser (3).** Compared with the league, his rim shots, rebounding and blocks outweigh his threes.
+  - **Draymond Green is in Kerr's Cult (7).** Fittingly. His three-point rate went up while his rebounding and rim shots fell.
+  - **Dyson Daniels and Amen Thompson are Windex (2).** Their rebounding, rim shots and lack of threes look like a forward's.
+  - **Shai Gilgeous-Alexander, Luka Dončić and Cooper Flagg are Give Me the Ball and Let Me Work (5); Stephen Curry and Jalen Brunson are Effective Operators (8).**
 - **The mix of roles has shifted.** At the five-cluster level, off-ball wings went from 17% to 28% of players since 2011-12, and rim-running bigs from 15% to 10%. Because each measure is compared within its own season, this is a change in what teams ask players to do, not just everyone shooting more threes.
 
 ## Caveats
 
-- **The eight are less stable than the five.** Fitted on two random halves of the data, they agree 54% of the time, against 87% for five. The groups in the middle of the map (2/3, 4/6/7) swap players most often.
+- **The eight are less stable than the five.** Fitted on two random halves of the data, they agree 54% of the time, against 87% for five. The groups in the middle of the map (Windex/Bruiser; The Pest/Peter Griffin's NBA Jam/Kerr's Cult) swap players most often.
 - **Era:** each season is compared with its own league, so a cluster means the same *relative* role in 2012 and 2025, not the same raw numbers.
 - **Next:** the same exercise from 2000-01 to 2025-26 on 3-season rolling averages, to see whether the eight hold over a longer history.
 
