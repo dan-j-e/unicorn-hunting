@@ -129,3 +129,46 @@ def add_pool_flags(frame, winners):
     first_win = pd.Series({pid: int(s[:4]) for s, pid in sorted(winners.items(), reverse=True)})
     f["previous_winner"] = f["player_id"].map(first_win).lt(f["season_start"]).fillna(False).astype(bool)
     return f
+
+
+# Scoring turning point (decision D27, revised 30 Oct 2026): instead of excluding established scorers, the model
+# gets last season's points plus the points above a turning point, so it can learn "more is better up to here,
+# then established scorers are MVP material, not MIP". 20 fitted best of 14-26 in notebook 11.
+TURNING_POINT = 20
+TURN = ["ppg_over_turn"]
+USED = LEAN + TURN          # the preseason model used from 30 Oct 2026
+
+
+def add_turning_point(frame, ppg_col="ppg_last", k=TURNING_POINT, name="ppg_over_turn"):
+    f = frame.copy()
+    f[name] = (f[ppg_col] - k).clip(lower=0)
+    return f
+
+
+def preseason_opportunity(pre, regular):
+    """Share of the player's (preseason) team's previous-season minutes that left over the summer, net of arrivals.
+
+    Known at preseason time only: rosters are read from preseason games, never from the regular season.
+      left    = players on the team at the end of t-1 seen with another team in preseason t (their minutes for that team)
+      arrived = players seen with the team in preseason t who played elsewhere in t-1 (all their t-1 minutes), not the player himself
+    Players not seen in preseason are not counted either way. Divided by the team's total t-1 minutes (240 a game).
+    """
+    end = regular.sort_values("game_date").groupby(["player_id", "season_start"])["team_id"].last().rename("from").reset_index()
+    min_for = regular.groupby(["player_id", "season_start", "team_id"])["min"].sum()
+    end["min_for_team"] = [min_for.get(k, 0) for k in zip(end["player_id"], end["season_start"], end["from"])]
+    total_prev = regular.groupby(["player_id", "season_start"])["min"].sum()
+    team_total = regular.groupby(["team_id", "season_start"])["min"].sum()
+    now = pre.sort_values("game_date").groupby(["player_id", "season_start"])["team_id"].last().rename("to").reset_index()
+    rows = []
+    for t, cur in now.groupby("season_start"):
+        e = end[end["season_start"] == t - 1].merge(cur[["player_id", "to"]], on="player_id", how="left")
+        gone = e[e["to"].notna() & (e["to"] != e["from"])].groupby("from")["min_for_team"].sum()
+        c = cur.merge(e[["player_id", "from"]], on="player_id", how="left")
+        c["min_prev"] = [total_prev.get((p, t - 1), 0) for p in c["player_id"]]
+        newcomer = c["from"].notna() & (c["from"] != c["to"])
+        arrived_team = c[newcomer].groupby("to")["min_prev"].sum()
+        own = np.where(newcomer, c["min_prev"], 0)
+        tot = np.array([team_total.get((tm, t - 1), np.nan) for tm in c["to"]])
+        c["opportunity"] = (c["to"].map(gone).fillna(0) - (c["to"].map(arrived_team).fillna(0) - own)) / tot
+        rows.append(c[["player_id", "season_start", "opportunity"]])
+    return pd.concat(rows, ignore_index=True)
