@@ -9,7 +9,7 @@ Goal for this phase: turn a working pipeline into something **explainable and wo
 - Name the archetypes **after** they are found (D31: no expected list beforehand, so the data isn't forced into bands we already believe in).
 - **Similarity:** for any current player, find the most similar historical players *at the same career stage* (e.g. Dëmin's rookie year vs past rookie years), within and across archetypes.
 - **Movement:** how players move between archetypes as they develop, and which moves lead to stardom.
-- Set-up decided (D34). **13B done:** plots for 2–14 clusters. **13C done:** 5 clusters with typical and best-known players, plus 6, 7 and 8 for comparison. **Next, you:** name the clusters, and decide whether to settle on 5 or keep 6–8 in play.
+- Set-up decided (D34). **13B done:** plots for 2–14 clusters. **13C done:** 5 clusters with typical and best-known players, plus 6, 7 and 8 for comparison. **13D:** 8 clusters chosen (D35), with a who-is-in-which chart. **Next, you:** name clusters 1–8.
 - **Next test: 2000-01 → 2025-26 with a 3-season average.** Does a longer history and smoothing steady the 6–8 cluster splits (stability 0.76 → 0.54 today), and can we see style drift across 26 seasons? First check which of the 15 style measures NBA.com has before 2011-12 (shot zones, unassisted makes and fast-break points may start later), and decide what to do about any gaps.
 
 ### 2. Explain every pick ("scouting cards")

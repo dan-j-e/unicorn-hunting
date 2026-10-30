@@ -109,7 +109,7 @@ Rare *combinations* of strengths (Giannis, Jokić, Kevin Durant) versus *extreme
 
 **Back to 2000-01** ([notebook 15](notebooks/15_mip_2000_2026.ipynb)): 21 seasons (2005-06 → 2025-26) predicted strictly from earlier seasons only, with game logs only. The winner's median rank was **51st** at the end of the previous season, **4th** at mid-season (in our top 7 in 16 of 21) and **2nd** at the end of the season (#1 in 7, top 3 in 11).
 
-![Three views of every season](outputs/figures/15_mip_three_views_2005_2026.png)
+![Three views of every season](outputs/figures/15_mip_2000_2026.png)
 
 </details>
 
@@ -186,7 +186,7 @@ Last season's winner, Nickeil Alexander-Walker, went from 9.4 to 20.8 points a g
 - **Points per 36 is a weak hint, not a rule:** blips who kept their scoring rate came back 44% of the time, against 27% for those whose rate fell. That rests on only 18 players, so the test stays as written.
 - **What a verdict means for Alexander-Walker:** "real" means the leap survived the next season, not that it's permanent. "Blip" could still turn out to be a Randle.
 
-![Blip test backtest](outputs/figures/16_blip_test_backtest.png)
+![Blip test backtest](outputs/figures/16_do_leaps_last.png)
 
 ---
 
@@ -209,14 +209,14 @@ Last season's winner, Nickeil Alexander-Walker, went from 9.4 to 20.8 points a g
 | `14_team_changes` | 21 seasons: does a new team or a new teammate make a Most Improved Player? (No; a star leaving his team does) |
 | `15_mip_2000_2026` | Most Improved 2000-01 → 2025-26: end of previous season, mid-season and end of season, strictly walk-forward |
 | `16_do_leaps_last` | Do scoring leaps last? The blip test, backtested on 609 leaps since 2000-01, and its victims |
-| `13_archetypes` | *In progress:* player archetypes by playing style. 13A style measures; 13B how many clusters (style is a continuum; 3 and 5 are stable); 13C five clusters with their typical and best-known players, plus 6–8 |
+| `13_archetypes` | *In progress:* player archetypes by playing style. 13A style measures; 13B how many clusters (style is a continuum; 3 and 5 are stable); 13C five clusters; 13D eight clusters (chosen), who is in which |
 
 **Anti-leakage rules**
 - Features for season *t* use seasons ≤ *t* only; notebook 03 checks this by deleting later seasons and confirming nothing changes.
 - A training example is used only once its outcome was known at prediction time.
 - Preprocessing is fitted inside each fold.
 
-Every significant choice, with its evidence, is logged in [docs/DECISIONS.md](docs/DECISIONS.md) (34 decisions).
+Every significant choice, with its evidence, is logged in [docs/DECISIONS.md](docs/DECISIONS.md) (35 decisions).
 
 <details>
 <summary><b>Data traps found along the way</b></summary>
