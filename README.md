@@ -5,7 +5,7 @@
 Scouting treated like backtesting an investment strategy: for every season since 2011-12, rebuild what was knowable then, rank players, and score the rankings against what actually happened. Only then apply the method to today's players.
 
 > [!NOTE]
-> **Live: the 2026-27 Most Improved race.** Ty Jerome has led every day since his first game (about a 54% chance as of 28 October, day 9 of the season). [Jump to the race ↓](#the-live-2026-27-most-improved-race)
+> **Live: the 2026-27 Most Improved race.** Ty Jerome has led every day since his first game (about a 46% chance as of 28 October, day 9 of the season). [Jump to the race ↓](#the-live-2026-27-most-improved-race)
 
 ![The 2026-27 Most Improved race, day by day](outputs/figures/12_daily_worm.png)
 
@@ -15,7 +15,7 @@ Scouting treated like backtesting an investment strategy: for every season since
 - **For future stars, current all-round quality beats every model** (10× random), and stars arrive by two routes: a breakout season, or a steady climb.
 - **"Unicorns" come in two kinds:** rare *combinations* of strengths (Giannis Antetokounmpo, Nikola Jokić) and *extremes* with no comparable players (Victor Wembanyama).
 - **The Most Improved Player can be named from the box score** in 8 of 15 seasons. Voters reward production and scoring jumps and team improvement, and discount age and second-year players.
-- **Before the season, nobody knows:** pre-season lists rarely contain the eventual winner, but by mid-January the winner was in our top 7 in each of the last five seasons.
+- **Before the season, nobody knows:** pre-season lists rarely contain the eventual winner, but by mid-January the winner was in our top 7 in 4 of the last 5 seasons.
 
 ## Contents
 - [Breakouts and stars](#breakouts-and-stars)
@@ -116,7 +116,8 @@ Rare *combinations* of strengths (Giannis, Jokić, Kevin Durant) versus *extreme
 - **What preseason is worth:** minute increases hold at about 60–75%, decreases mean almost nothing, and shot volume per minute is the most reliable preseason signal.
 - **Track record:** from about 350 candidates, the eventual winner was in our preseason top 7 in 4 of 14 seasons and in our top 20 in 11. It is a shortlist, not a forecast.
 - **Backtest of the picks:** 36% of past top-7 picks jumped 3+ points a game (14% of all candidates), and half of the top-3 picks did. A better breakout list than an award list.
-- **2026-27 top 7 (preseason through 12 October 2026):** Reed Sheppard, Stephon Castle, Ty Jerome, Rui Hachimura, Amen Thompson, Leonard Miller, Tristan da Silva.
+- **Established scorers:** instead of excluding them, last season's scoring counts slightly in a player's favour up to a turning point and against him above it (MVP material, not MIP). Backtesting every turning point from 14 to 26 points a game, **20 fits best**.
+- **2026-27 top 7 (complete preseason):** Jalen Duren, Tyrese Haliburton, Tristan da Silva, Leonard Miller, Ty Jerome, Rui Hachimura, Reed Sheppard.
 
 ![2026-27 preseason top 7](outputs/figures/11_mip_preseason_top7.png)
 
@@ -127,9 +128,10 @@ Rare *combinations* of strengths (Giannis, Jokić, Kevin Durant) versus *extreme
 > [!TIP]
 > **Last updated 28 October 2026 (day 9 of the season).** Re-run [notebook 12](notebooks/12_mip_live_race.ipynb) to add the newest days.
 
-- **Leader:** Ty Jerome, #1 every day since his first game: 29.8 points a game in 31.5 minutes, up from 12.5 in 19.9 (about a 54% chance). He was #3 in our preseason top 7.
-- **Behind him:** Ja'Kobe Walter, Terrence Shannon Jr, Ajay Mitchell, Sidy Cissoko, Zaccharie Risacher, Alperen Sengun.
+- **Leader:** Ty Jerome, #1 every day since his first game: 29.8 points a game in 31.5 minutes, up from 12.5 in 19.9 (about a 46% chance). He was #5 in our preseason top 7.
+- **Behind him:** Ja'Kobe Walter, Terrence Shannon Jr, Brandon Miller, Ajay Mitchell, Alperen Sengun, RJ Barrett.
 - **A leaderboard for every day, with no leakage.** Day *n* uses only games up to day *n*, scored by a model trained on past seasons cut at the same day. Each day is saved once and never recomputed.
+- **Everyone is a candidate,** including previous winners and established scorers; the scoring turning point at 20 points a game handles the latter.
 
 | | |
 |---|---|
@@ -139,9 +141,10 @@ Rare *combinations* of strengths (Giannis, Jokić, Kevin Durant) versus *extreme
 <details>
 <summary><b>How much to trust it: backtests</b></summary>
 
-- **How early is too early?** At day 2 the eventual winner was in our top 7 in 4 of 15 past seasons; by day 30, in 11 of 15.
-- **Backtest of 2021-22 → 2025-26 (strict, earlier seasons only):** the winner was in our end-of-previous-season top 7 once, in our preseason top 7 never, and in our mid-January top 7 **every season** (median rank 2).
-- **Pre-season lists find who is set up to improve, not who wins:** Lauri Markkanen, Dyson Daniels and Nickeil Alexander-Walker all ranked 15th or lower before their seasons began.
+- **How early is too early?** At day 2 the eventual winner was in our top 7 in 4 of 15 past seasons; by day 60, in 11 of 15.
+- **Backtest of 2021-22 → 2025-26 (strict, earlier seasons only):** the winner was in our end-of-previous-season top 7 once, in our preseason top 7 never, and in our mid-January top 7 in **4 of 5 seasons** (median rank 2).
+- **Pre-season lists find who is set up to improve, not who wins:** Lauri Markkanen, Dyson Daniels and Nickeil Alexander-Walker all ranked 14th or lower before their seasons began.
+- **Do leaps last?** 9 of 14 past winners kept at least 80% of their jump the next season; three fell back about 4 points (Goran Dragić, Victor Oladipo, Julius Randle). Nickeil Alexander-Walker has kept 89% so far; we revisit at the All-Star break.
 
 ![Five-season backtest](outputs/figures/12_backtest_five_seasons.png)
 
@@ -172,7 +175,7 @@ Rare *combinations* of strengths (Giannis, Jokić, Kevin Durant) versus *extreme
 - A training example is used only once its outcome was known at prediction time.
 - Preprocessing is fitted inside each fold.
 
-Every significant choice, with its evidence, is logged in [docs/DECISIONS.md](docs/DECISIONS.md) (27 decisions).
+Every significant choice, with its evidence, is logged in [docs/DECISIONS.md](docs/DECISIONS.md) (28 decisions).
 
 <details>
 <summary><b>Data traps found along the way</b></summary>
