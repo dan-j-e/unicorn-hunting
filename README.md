@@ -5,7 +5,7 @@
 Scouting treated like backtesting an investment strategy: for every season since 2011-12, rebuild what was knowable then, rank players, and score the rankings against what actually happened. Only then apply the method to today's players.
 
 > [!NOTE]
-> **Live: the 2026-27 Most Improved race.** Ty Jerome has led every day since his first game, but a 2-point night cut his chance to about 9% (29 October, day 10 of the season). The race is open. [Jump to the race ↓](#the-live-2026-27-most-improved-race)
+> **Live: the 2026-27 Most Improved race.** Ty Jerome has led every day since his first game, with about a 22% chance; Cooper Flagg is second (31 October, day 12 of the season). [Jump to the race ↓](#the-live-2026-27-most-improved-race)
 
 ![The 2026-27 Most Improved race, day by day](outputs/figures/12_daily_worm.png)
 
@@ -168,10 +168,10 @@ The same exercise over 26 seasons, on 3-season rolling windows and with **no era
 ## The live 2026-27 Most Improved race
 
 > [!TIP]
-> **Last updated 29 October 2026 (day 10 of the season).** Re-run [notebook 12](notebooks/12_mip_live_race.ipynb) to add the newest days.
+> **Last updated 31 October 2026 (day 12 of the season).** Run `./scripts/update_mip_race.sh` (or re-run [notebook 12](notebooks/12_mip_live_race.ipynb)) to add the newest days.
 
-- **Leader:** Ty Jerome, #1 every day since his first game: 24.2 points a game in 27.6 minutes, up from 12.5 in 19.9. He was 16th in our final preseason list. After 2 points on 29 October his chance fell from 46% to about 9%.
-- **Right behind him:** Ja'Kobe Walter (7.5%), Terrence Shannon Jr, Brandon Miller, Alperen Sengun, RJ Barrett, Ajay Mitchell.
+- **Leader:** Ty Jerome, #1 every day since his first game: 25.8 points a game, up from 12.5 (about a 22% chance). He was 16th in our final preseason list.
+- **Behind him:** Cooper Flagg (5.9%), Ja'Kobe Walter, Jabari Smith Jr., Terrence Shannon Jr, Alperen Sengun, Brandin Podziemski.
 - **A leaderboard for every day, with no leakage.** Day *n* uses only games up to day *n*, scored by a model trained on past seasons cut at the same day. Each day is saved once and never recomputed.
 - **Everyone is a candidate,** including previous winners and established scorers. A scoring turning point handles established scorers, and **the data chooses it** (none, or 16–24 points a game): it is re-chosen every day from past seasons only, then frozen at the All-Star break so the board doesn't jump late on. It has chosen 20 every day so far.
 
@@ -275,7 +275,7 @@ pip install -e .                 # makes `import unicorn` available
 python -m unicorn.download       # ~733 NBA.com requests, ~40 min first time, resumable
 ```
 
-Then run the notebooks in order (`00` → `13`). Each writes the table the next one reads. Raw responses are cached in `data/raw/`, so re-runs make no API calls. Notebook 10 also fetches 16 seasons of game logs and 15 Basketball-Reference award pages (cached). There is also a local Streamlit dashboard for changing the star-score weights and breakout thresholds: `streamlit run dashboard/app.py`.
+Then run the notebooks in order (`00` → `16`). Each writes the table the next one reads. Raw responses are cached in `data/raw/`, so re-runs make no API calls. Notebook 10 also fetches 16 seasons of game logs and 15 Basketball-Reference award pages (cached). **To update the live Most Improved race:** `./scripts/update_mip_race.sh` re-runs notebook 12 with the newest games and prints today's top 7. There is also a local Streamlit dashboard for changing the star-score weights and breakout thresholds: `streamlit run dashboard/app.py`.
 
 <details>
 <summary><b>Project structure</b></summary>
