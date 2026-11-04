@@ -306,4 +306,4 @@ data/             raw and processed data (git-ignored, rebuilt from code)
 - **One rookie season is thin evidence.** Predictions for second-year players are far better informed than for rookies.
 
 ## What's next
-See [TODO.md](TODO.md): "who is similar to who" and how players move between the eight kinds, explained picks, a story-led write-up, and tracking the 2026-27 predictions.
+See [TODO.md](TODO.md): making the Most Improved model fit how voters behave (already-established players, hot starts, honest early-season chances, a sentiment trial), then "who is similar to who", how players move between the eight kinds, and explained picks.
