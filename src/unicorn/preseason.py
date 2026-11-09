@@ -140,7 +140,9 @@ STAR_LEFT_PPG = 20
 TEAM_CHANGE = ["star_left"]   # a 20+ point scorer left his team over the summer (notebook 14; decision D29)
 USED_D29 = LEAN + TURN + TEAM_CHANGE   # the preseason model from 30 Oct 2026 (D29)
 ESTABLISHED = ["prior_allstar"]   # already an All-Star before this season (notebook 17; decision D38)
-USED = USED_D29 + ESTABLISHED   # the preseason model used from 9 Nov 2026
+USED_D38 = USED_D29 + ESTABLISHED   # the preseason model from 9 Nov 2026 (D38)
+RETURNING = ["stale"]   # back from a lost or injury-shortened season (notebook 18C; decision D39)
+USED = USED_D38 + RETURNING   # the preseason model used from 11 Nov 2026
 
 
 def add_turning_point(frame, ppg_col="ppg_last", k=TURNING_POINT, name="ppg_over_turn"):

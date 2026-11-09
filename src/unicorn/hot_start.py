@@ -31,3 +31,9 @@ def add_hot_start_inputs(frame, games, day=None):
     team_games = g.drop_duplicates(["team_id", "game_id"]).groupby(["team_id", "season_start"])["game_id"].nunique()
     f["games_share"] = f["games"] / pd.Series(list(zip(f["team_id"], f["season_start"]))).map(team_games).to_numpy()
     return f
+
+
+def add_stale(frame):
+    """stale = 1 if the baseline season is older than last season (last season was lost or injury-shortened; D39).
+    Works on any frame with season_start and base_season_start (live race, preseason, history)."""
+    return frame.assign(stale=(frame["base_season_start"] < frame["season_start"] - 1).astype(float))
