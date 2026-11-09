@@ -5,7 +5,7 @@
 Scouting treated like backtesting an investment strategy: for every season since 2011-12 (since 2000-01 for the Most Improved and playing-style work), rebuild what was knowable then, rank players, and score the rankings against what actually happened. Only then apply the method to today's players.
 
 > [!NOTE]
-> **Live: the 2026-27 Most Improved race.** Ty Jerome has led every day since his first game (about a 25% chance, 8 November, day 20 of the season). Nobody else is above about 3%. [Jump to the race ↓](#the-live-2026-27-most-improved-race)
+> **Live: the 2026-27 Most Improved race.** Ty Jerome has led every day since his first game (about a 26% chance, 8 November, day 20 of the season). Nobody else is above about 3.5%. [Jump to the race ↓](#the-live-2026-27-most-improved-race)
 
 ![The 2026-27 Most Improved race, day by day](outputs/figures/12_daily_worm.png)
 
@@ -131,7 +131,7 @@ The same exercise over 26 seasons, on 3-season rolling windows and with **no era
 - **Size beats percentage.** ΔX alone names the winner in 7 seasons; Δ% alone in 4.
 - **Voters reward** a jump in all-round production (odds ×1.57 per extra point of game score), in scoring (×1.39 per extra point per game), a bigger offensive load, and a team that got better (×1.28 for winning 10% more games).
 - **Voters discount** age (×0.88 per year), gains that come only from more minutes, and above all second-year players: 19% of the voting top 7, but no winner in 15 seasons (the last was Monta Ellis in 2006-07).
-- **Voters skip players who are already stars.** No winner from 2000-01 to 2025-26 had been an All-Star before his winning season, and only 5 of the 105 who finished 2nd–5th had. Not yet in the model; it's the top item in the [TODO](TODO.md).
+- **Voters skip players who are already stars.** No winner from 2000-01 to 2025-26 had been an All-Star before his winning season, and only 5 of the 105 who finished 2nd–5th had. Since 9 November this counts against a player in our models; [see why below](#why-already-an-all-star-counts-against-a-player).
 - **Most winning leaps show from opening night.** For 11 of 15 winners, the first 10 games already held 80% or more of the season's jump.
 - **One huge night is not a signal.** After 1,109 "eruption" games, the next seven looked like the seven before.
 - **The winners the model misses crossed a milestone** rather than making the biggest jump: a first 20-ppg season (Goran Dragić), a first star-level season (Julius Randle), becoming the team's leading scorer (Tyrese Maxey, Paul George).
@@ -156,25 +156,48 @@ The same exercise over 26 seasons, on 3-season rolling windows and with **no era
 
 - **Inputs:** last season, plus preseason form per 36 minutes (never totals), shrunk for small samples.
 - **What preseason is worth:** minute increases hold at about 60–75%, decreases mean almost nothing, and shot volume per minute is the most reliable preseason signal.
-- **Track record:** from about 375 candidates, the eventual winner was in our preseason top 7 in 7 of 14 seasons (4 of 9 in the strict test) and in our top 20 in 11.
-- **Backtest of the picks:** 43% of past top-7 picks jumped 3+ points a game (14% of all candidates).
+- **Track record:** from about 375 candidates, the eventual winner was in our preseason top 7 in 8 of 14 seasons (5 of 9 in the strict test, median rank 7) and in our top 20 in 11.
+- **Backtest of the picks:** 42% of past top-7 picks jumped 3+ points a game (14% of all candidates).
 - **Established scorers:** instead of excluding them, last season's scoring counts slightly in a player's favour up to a turning point and against him above it (MVP material, not MIP). Backtesting every turning point from 14 to 26 points a game, **20 fits best**.
 - **A star leaving matters more than changing teams** ([notebook 14](notebooks/14_team_changes.ipynb), 21 seasons): winners changed teams no more often than anyone else (29% vs 27%), but 7 of 21 had a 20-point scorer leave their team (vs 11%). As a yes/no preseason input (star left, not replaced) it lifts the winner into our preseason top 7 in 7 of 14 seasons, up from 3.
 
 ![Team changes vs winners](outputs/figures/14_team_changes.png)
-- **2026-27 top 7 (complete preseason):** Rui Hachimura, Jalen Duren, Tyrese Haliburton, Tristan da Silva, Brandon Miller, Devin Carter, Luka Garza.
+
+- **2026-27 top 7 (complete preseason, model as of 9 November):** Rui Hachimura, Brandon Miller, Cooper Flagg, Payton Pritchard, Tristan da Silva, Luka Garza, Derrick White. Six of the seven play for a team that lost a 20-point scorer and didn't replace him.
 
 ![2026-27 preseason top 7](outputs/figures/11_mip_preseason_top7.png)
 
 </details>
+
+### Why "already an All-Star" counts against a player
+
+**The problem.** In early November our live leaderboard had Alperen Sengun at #2, with Victor Wembanyama and Scottie Barnes in the top 7. All three had already been All-Stars. Our existing guard against established players, the scoring turning point, only bites above 20 points a game last season, and these players sat around or below that line.
+
+**The evidence** ([notebook 17](notebooks/17_already_a_star.ipynb)):
+- **About 1 candidate in 6 had already been an All-Star.** None of the 26 winners since 2000-01 had, and only 5 prior All-Stars finished in the top 5.
+- **Without this input, our model expected them to win about 2 of those 26 awards.** If that were right, zero wins would happen about 1 time in 10: suggestive, not proof.
+- **Adding it improved every test, modestly:**
+  - **Preseason, strict:** the winner's median rank fell from 15 to 7, and the winner was in our top 7 in 5 of 9 seasons instead of 4.
+  - **Live race at day 85:** the winner was in our top 7 in 12 of 15 seasons instead of 11.
+- **Mostly, it cleans up the top 7s.** It removes stars voters were never going to pick, such as Jokić and Embiid in 2020-21, Westbrook in 2016-17 and Towns in 2024-25.
+
+**The choice** ([decision D38](docs/DECISIONS.md)):
+- **A yes/no input, not a ban.** A prior All-Star gets about **a quarter of the odds** of an otherwise identical player, so a big enough jump can still rank high. That's the same "no exclusions" stance as the scoring turning point.
+- **Only selections from before the season count.** Many winners are first picked in the year they win (Paul George, Jimmy Butler, Giannis), so using that season's selection would leak the answer.
+- **The data:** Basketball-Reference's All-Star pages give a list of names to check. NBA.com's own awards record, looked up by player ID, is what counts, which keeps same-name pairs like Tim Hardaway and Tim Hardaway Jr. apart.
+- **Kept simple on purpose.** A count of selections, or a wider "established" measure with All-NBA and awards, adds little: no winner had been All-NBA either. More variations would mostly fit noise in 26 awards.
+
+**What it doesn't explain:** James Harden finishing only 7th in 2012-13, and the discount on Cooper Flagg. Neither had a prior selection, so that's reputation from elsewhere, and the job of the planned sentiment trial.
+
+![Already a star](outputs/figures/17_already_a_star.png)
 
 ## The live 2026-27 Most Improved race
 
 > [!TIP]
 > **Last updated 8 November 2026 (day 20 of the season).** Run `./scripts/update_mip_race.sh` (or re-run [notebook 12](notebooks/12_mip_live_race.ipynb)) to add the newest days.
 
-- **Leader:** Ty Jerome, #1 every day since his first game: 26.6 points a game in 30.5 minutes, up from 12.5 in 19.9 (about a 25% chance). He was 16th in our final preseason list. That chance is probably too high this early: past day-14 leaders averaged 19% but only 3 of 26 won, and hot starts by players aged 27+ have kept about half their jump (see [TODO](TODO.md), items 2–3).
-- **Behind him:** Kyshawn George (3.1%), Ajay Mitchell, Terrence Shannon Jr, Victor Wembanyama, Scottie Barnes, Anthony Black.
+- **Leader:** Ty Jerome, #1 every day since his first game: 26.6 points a game in 30.5 minutes, up from 12.5 in 19.9 (about a 26% chance). He was 14th in our final preseason list. That chance is probably too high this early: past day-14 leaders averaged 19% but only 3 of 26 won, and hot starts by players aged 27+ have kept about half their jump (see [TODO](TODO.md), items 2–3).
+- **Behind him:** Kyshawn George (3.4%), Ajay Mitchell, Terrence Shannon Jr, Anthony Black, Davion Mitchell, Ayo Dosunmu. Prior All-Stars Victor Wembanyama and Scottie Barnes dropped out of the top 7 when the All-Star input was added.
 - **A leaderboard for every day, with no leakage.** Day *n* uses only games up to day *n*, scored by a model trained on past seasons cut at the same day. Each day is saved once and never recomputed.
 - **Everyone is a candidate,** including previous winners and established scorers. A scoring turning point handles established scorers, and **the data chooses it** (none, or 16–24 points a game): it is re-chosen every day from past seasons only, then frozen at the All-Star break so the board doesn't jump late on. It has chosen 20 every day so far.
 
@@ -187,7 +210,7 @@ The same exercise over 26 seasons, on 3-season rolling windows and with **no era
 <summary><b>How much to trust it: backtests</b></summary>
 
 - **How early is too early?** At day 2 the eventual winner was in our top 7 in 4 of 15 past seasons; by day 60, in 11 of 15.
-- **Backtest of 2021-22 → 2025-26 (strict, earlier seasons only):** the winner was in our end-of-previous-season top 7 once, in our preseason top 7 twice, and in our mid-January top 7 in **4 of 5 seasons** (median rank 2).
+- **Backtest of 2021-22 → 2025-26 (strict, earlier seasons only):** the winner was in our end-of-previous-season top 7 once, in our preseason top 7 three times, and in our mid-January top 7 in **4 of 5 seasons** (median rank 2).
 - **Pre-season, a new role is the clue:** Markkanen and Daniels were traded into teams that had just lost their star, and the preseason list caught both. Alexander-Walker's and Maxey's leaps weren't visible before the season.
 - **Do leaps last?** 9 of 14 past winners kept at least 80% of their jump the next season; three fell back about 4 points (Goran Dragić, Victor Oladipo, Julius Randle). Nickeil Alexander-Walker has kept all of it so far (111%, 11 games); the blip test (below) decides his case at the All-Star break.
 
@@ -201,7 +224,7 @@ Last season's winner, Nickeil Alexander-Walker, went from 9.4 to 20.8 points a g
 
 **Why we looked at him.**
 - **His leap was the one our models didn't see coming.** Before 2025-26 he was 44th on last season's numbers and 26th after preseason. Of the last five winners, his was the jump with the least warning, and those are the leaps people doubt most.
-- **He's back in the race.** We decided previous winners stay in the 2026-27 pool. He sits around 50th, not because he's slipping, but because a second jump on top of the first is rare.
+- **He's back in the race.** We decided previous winners stay in the 2026-27 pool. He sits around 35th, not because he's slipping, but because a second jump on top of the first is rare.
 - **"Is it real?" kept coming up,** so we turned it into a question with an answer: **the blip test**. We wrote it down on 30 October, before the answer is known, so the verdict can't be bent to fit what happens. The alternative was judging it by eye in February, with hindsight.
 
 | | |
@@ -250,6 +273,7 @@ Last season's winner, Nickeil Alexander-Walker, went from 9.4 to 20.8 points a g
 | `14_team_changes` | 21 seasons: does a new team or a new teammate make a Most Improved Player? (No; a star leaving his team does) |
 | `15_mip_2000_2026` | Most Improved 2000-01 → 2025-26: end of previous season, mid-season and end of season, strictly walk-forward |
 | `16_do_leaps_last` | Do scoring leaps last? The blip test, backtested on 609 leaps since 2000-01, and its victims |
+| `17_already_a_star` | Do voters pass over players who are already stars? Prior All-Stars and the Most Improved award, 2000-26 |
 
 **Anti-leakage rules**
 - Features for season *t* use seasons ≤ *t* only; notebook 03 checks this by deleting later seasons and confirming nothing changes.
@@ -258,7 +282,7 @@ Last season's winner, Nickeil Alexander-Walker, went from 9.4 to 20.8 points a g
 - Award votes are used only to score predictions, never to train.
 - Live-race leaderboards are saved the day they are made and never recomputed; rules like the blip test are written down before the answer is known.
 
-Every significant choice, with its evidence, is logged in [docs/DECISIONS.md](docs/DECISIONS.md) (37 decisions).
+Every significant choice, with its evidence, is logged in [docs/DECISIONS.md](docs/DECISIONS.md) (38 decisions).
 
 <details>
 <summary><b>Data traps found along the way</b></summary>
@@ -316,4 +340,4 @@ data/             raw and processed data (git-ignored, rebuilt from code)
 - **One rookie season is thin evidence.** Predictions for second-year players are far better informed than for rookies.
 
 ## What's next
-See [TODO.md](TODO.md): making the Most Improved model fit how voters behave (already-established players, hot starts, honest early-season chances, a sentiment trial), then "who is similar to who", how players move between the eight kinds, and explained picks.
+See [TODO.md](TODO.md): making the Most Improved model fit how voters behave (hot starts, honest early-season chances, a sentiment trial), then "who is similar to who", how players move between the eight kinds, and explained picks.
