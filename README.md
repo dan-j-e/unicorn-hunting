@@ -5,7 +5,7 @@
 Scouting treated like backtesting an investment strategy: for every season since 2011-12, rebuild what was knowable then, rank players, and score the rankings against what actually happened. Only then apply the method to today's players.
 
 > [!NOTE]
-> **Live: the 2026-27 Most Improved race.** Ty Jerome has led every day since his first game, with about a 22% chance; Cooper Flagg is second (31 October, day 12 of the season). [Jump to the race ↓](#the-live-2026-27-most-improved-race)
+> **Live: the 2026-27 Most Improved race.** Ty Jerome has led every day since his first game (about a 25% chance, 8 November, day 20 of the season). Nobody else is above 3%. [Jump to the race ↓](#the-live-2026-27-most-improved-race)
 
 ![The 2026-27 Most Improved race, day by day](outputs/figures/12_daily_worm.png)
 
@@ -168,10 +168,10 @@ The same exercise over 26 seasons, on 3-season rolling windows and with **no era
 ## The live 2026-27 Most Improved race
 
 > [!TIP]
-> **Last updated 31 October 2026 (day 12 of the season).** Run `./scripts/update_mip_race.sh` (or re-run [notebook 12](notebooks/12_mip_live_race.ipynb)) to add the newest days.
+> **Last updated 8 November 2026 (day 20 of the season).** Run `./scripts/update_mip_race.sh` (or re-run [notebook 12](notebooks/12_mip_live_race.ipynb)) to add the newest days.
 
-- **Leader:** Ty Jerome, #1 every day since his first game: 25.8 points a game, up from 12.5 (about a 22% chance). He was 16th in our final preseason list.
-- **Behind him:** Cooper Flagg (5.9%), Ja'Kobe Walter, Jabari Smith Jr., Terrence Shannon Jr, Alperen Sengun, Brandin Podziemski.
+- **Leader:** Ty Jerome, #1 every day since his first game: 26.6 points a game in 30.5 minutes, up from 12.5 in 19.9 (about a 25% chance). He was 16th in our final preseason list. That chance is probably too high this early: past day-14 leaders averaged 19% but only 3 of 26 won, and hot starts by players aged 27+ have kept about half their jump (see [TODO](TODO.md), items 2–3).
+- **Behind him:** Kyshawn George (3.1%), Ajay Mitchell, Terrence Shannon Jr, Victor Wembanyama, Scottie Barnes, Anthony Black.
 - **A leaderboard for every day, with no leakage.** Day *n* uses only games up to day *n*, scored by a model trained on past seasons cut at the same day. Each day is saved once and never recomputed.
 - **Everyone is a candidate,** including previous winners and established scorers. A scoring turning point handles established scorers, and **the data chooses it** (none, or 16–24 points a game): it is re-chosen every day from past seasons only, then frozen at the All-Star break so the board doesn't jump late on. It has chosen 20 every day so far.
 
@@ -281,7 +281,7 @@ Then run the notebooks in order (`00` → `16`). Each writes the table the next 
 <summary><b>Project structure</b></summary>
 
 ```
-notebooks/        numbered research pipeline (00 → 13), saved with outputs
+notebooks/        numbered research pipeline (00 → 16), saved with outputs
 src/unicorn/      reusable code
   raw, download            cached NBA.com access and the full download list
   player_season, columns   clean tables and the data dictionary
@@ -290,9 +290,13 @@ src/unicorn/      reusable code
   labels, backtest, comps  breakout/star labels, walk-forward engine, comparables
   gamelogs, mip, bref      game-level data, the Most Improved model, voting results
   preseason                preseason game logs and the pre-opening-night view of each player
+  mip_history, leaps       Most Improved 2000-26 backtest; the blip test
+  archetypes, style_history  playing-style clusters; 3-season style windows 2000-26
   board, stats, plotting   breakout board, statistics helpers, chart style
-dashboard/app.py  Streamlit app
+scripts/          update_mip_race.sh: refresh the live race in one command
+dashboard/app.py  Streamlit app (parked)
 docs/DECISIONS.md decision log
+docs/EIGHT_CLUSTERS.md the eight kinds of player, written up
 outputs/          figures and tables
 data/             raw and processed data (git-ignored, rebuilt from code)
 ```
