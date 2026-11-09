@@ -3,7 +3,7 @@
 ![Python 3.12](https://img.shields.io/badge/python-3.12-2a78d6)
 ![Data: NBA.com and Basketball-Reference](https://img.shields.io/badge/data-NBA.com%20%7C%20Basketball--Reference-1baf7a)
 ![Method: walk-forward backtesting](https://img.shields.io/badge/method-walk--forward%20backtesting-eb6834)
-![Decisions logged: 39](https://img.shields.io/badge/decisions%20logged-39-eda100)
+![Decisions logged: 40](https://img.shields.io/badge/decisions%20logged-40-eda100)
 
 **Could we have identified future NBA breakouts, stars and "unicorns" before they became obvious, using only what was known at the time?**
 
@@ -32,7 +32,7 @@ This project treats scouting like backtesting an investment strategy. For every 
 - [The project in one picture](#the-project-in-one-picture)
 - [Breakouts and stars](#breakouts-and-stars) · [Unicorns](#unicorns) · [Eight kinds of player](#eight-kinds-of-player)
 - [Most Improved Player](#most-improved-player): [what voters reward](#what-voters-reward) · [before the season](#before-the-season) · [already an All-Star](#why-already-an-all-star-counts-against-a-player) · [how the predictor evolved](#how-the-predictor-evolved)
-- [The live 2026-27 race](#the-live-2026-27-most-improved-race): [is Jerome's lead believable?](#is-ty-jeromes-lead-believable) · [the blip test](#the-blip-test-did-alexander-walkers-leap-last)
+- [The live 2026-27 race](#the-live-2026-27-most-improved-race): [is Jerome's lead believable?](#is-ty-jeromes-lead-believable) · [are the chances honest?](#are-the-chances-honest) · [the blip test](#the-blip-test-did-alexander-walkers-leap-last)
 - [How it works](#how-it-works) · [Key decisions](#key-decisions) · [Reproduce](#reproduce) · [Limitations](#limitations) · [What's next](#whats-next)
 
 ---
@@ -314,7 +314,7 @@ The current model was not designed in one step. It was built through a series of
 ### Is Ty Jerome's lead believable?
 
 > [!WARNING]
-> **Not at the 26% the model first gave him.** Day-19 leaders have averaged a 19% chance, and only 4 of 26 went on to win; players with Jerome's profile have done worse still. Since 11 November the model counts his lost 2025-26 season against him ([D39](docs/DECISIONS.md)), which brought his chance down to 8.3%.
+> **Not at the 26% the model first gave him.** Players with Jerome's profile have rarely won, and big early favourites in general have won only about 1 time in 6 ([see below](#are-the-chances-honest)). Since 11 November the model counts his lost 2025-26 season against him ([D39](docs/DECISIONS.md)), which brought his chance down to 8.3%.
 
 **Have there been Ty Jeromes before?** Every player since 2000-01 who looked like him at the same point of the season (day 19), and how his season ended ([notebook 18](notebooks/18_ty_jerome_effect.ipynb)):
 
@@ -349,6 +349,17 @@ The current model was not designed in one step. It was built through a series of
 | Share of the team's games played | 2 | Rejected |
 
 So the "Ty Jerome effect" is less about age than about **returning from a lost season**, which voters appear to treat as a return rather than an improvement. None of the 26 winners was in that position, against about 1.2 expected. That count alone is weak evidence (a 30% chance by luck), so the input was adopted because it improved the fit at every point of the season, in both tests.
+
+### Are the chances honest?
+
+When the race gives a player a 20% chance, do such players win about one time in five? [Notebook 20](notebooks/20_calibration.ipynb) checks every out-of-sample chance from 2000-01 to 2025-26, at ten points of each season.
+
+![Are the chances honest?](outputs/figures/20_calibration.png)
+
+- **On the whole, yes.** Players given 1–3% won about 2% of the time; 3–10%, about 6–8%; 10–25%, about 15–19%.
+- **A general correction would make things worse.** The standard fix, *temperature scaling* (dividing every score by $T$ before the softmax, so that $T > 1$ spreads the chances out), asks for $T$ between 0.86 and 1.02, close to no change. Applied honestly, learned without the season it is tested on, it lowers the fit at every point of the season.
+- **The one real exception is the big early favourite.** Nineteen players have been given 25% or more between days 7 and 30. The model expected about 7.6 of them to win, and only 3 did (Zach Randolph, Ja Morant, Tyrese Maxey); luck alone would give this few about 1 time in 50. Most were young, high-usage scorers whose early jump faded, such as Cam Thomas and Eric Bledsoe.
+- **The decision ([D40](docs/DECISIONS.md)): flag it, do not correct it.** A correction fitted to 19 cases would be close to fitting noise. Instead, the live race prints a note whenever an early chance exceeds 25%. No player is above that line today.
 
 ### The blip test: did Alexander-Walker's leap last?
 
@@ -416,6 +427,7 @@ The test is not specific to Alexander-Walker, so it was run on 609 leaps from 20
 | `17_already_a_star` | Do voters pass over players who are already stars? |
 | `18_ty_jerome_effect` | Past players who started like Ty Jerome, how their seasons ended, and the inputs tested as a result |
 | `19_predictor_evolution` | The Most Improved predictor rebuilt one decision at a time, from the first baseline to today |
+| `20_calibration` | Are the Most Improved chances honest? Reliability, temperature scaling and big early favourites |
 
 > [!IMPORTANT]
 > **Anti-leakage rules.** Every result above follows these.
@@ -438,7 +450,7 @@ The test is not specific to Alexander-Walker, so it was run on 609 leaps from 20
 
 ## Key decisions
 
-All 39 decisions, each with its evidence, are logged in [docs/DECISIONS.md](docs/DECISIONS.md). The ones that most shape the results:
+All 40 decisions, each with its evidence, are logged in [docs/DECISIONS.md](docs/DECISIONS.md). The ones that most shape the results:
 
 | # | Decision | Why |
 |---|---|---|
@@ -452,6 +464,7 @@ All 39 decisions, each with its evidence, are logged in [docs/DECISIONS.md](docs
 | D35 | Eight playing-style clusters | Less stable than five, but every split has a basketball meaning |
 | D38 | "Already an All-Star" counts against a candidate | 0 of 26 winners; improved every backtest |
 | D39 | "Back from a lost season" counts against a candidate | 0 of 26 winners; the only hot-start input that improved every test |
+| D40 | No recalibration of chances; big early favourites flagged instead | Chances are honest on the whole; the one exception rests on 19 cases |
 
 ## Reproduce
 
@@ -463,7 +476,7 @@ pip install -e .                 # makes `import unicorn` available
 python -m unicorn.download       # about 733 NBA.com requests; 40 minutes the first time; resumable
 ```
 
-Then run the notebooks in order (`00` → `19`). Each writes the table that the next one reads. Raw responses are cached in `data/raw/`, so re-runs make no API calls. Notebook 10 also fetches game logs and the Basketball-Reference award pages; notebooks 13E and 15–19 go back to 1998-99 and fetch the All-Star pages (all cached).
+Then run the notebooks in order (`00` → `20`). Each writes the table that the next one reads. Raw responses are cached in `data/raw/`, so re-runs make no API calls. Notebook 10 also fetches game logs and the Basketball-Reference award pages; notebooks 13E and 15–20 go back to 1998-99 and fetch the All-Star pages (all cached).
 
 **To update the live Most Improved race:** `./scripts/update_mip_race.sh` re-runs notebook 12 with the newest games and prints today's top 7.
 
@@ -471,7 +484,7 @@ Then run the notebooks in order (`00` → `19`). Each writes the table that the 
 <summary><b>Project structure</b></summary>
 
 ```
-notebooks/        numbered research pipeline (00 → 19), saved with outputs
+notebooks/        numbered research pipeline (00 → 20), saved with outputs
 src/unicorn/      reusable code
   raw, download              cached NBA.com access and the full download list
   player_season, columns     clean tables and the data dictionary
@@ -483,6 +496,7 @@ src/unicorn/      reusable code
   mip_history, leaps         Most Improved 2000-26 backtest; the blip test
   allstars                   prior All-Star selections, matched by player ID
   hot_start                  hot-start inputs, including 'back from a lost season'
+  calibration                temperature scaling and out-of-sample scores
   archetypes, style_history  playing-style clusters; 3-season style windows 2000-26
   board, stats, plotting     breakout board, statistics helpers, chart style
 scripts/          update_mip_race.sh: refresh the live race in one command
@@ -500,7 +514,7 @@ data/             raw and processed data (not in git; rebuilt from code)
 > - **Box-score data only.** There is no play-by-play, lineup, injury, contract or scouting data, and on-court net rating mixes player and team quality.
 > - **Few positive cases.** About 26 future stars, 28 production breakouts and 15–26 Most Improved winners (depending on the period) mean wide uncertainty around every result.
 > - **Voters are not only box-score readers.** Prior All-Star selections are now in the model, but wider reputation and narrative (the reason Harden finished 7th in 2012-13) are not.
-> - **Early-season chances are overconfident.** Ranks are more reliable than percentages until about mid-season.
+> - **Big early favourites are over-rated.** Chances are honest on the whole, but players given 25%+ before about day 45 have won only about 1 time in 6; the live race flags them.
 > - **"Star" is our own definition** (six equally weighted pillars), so one-dimensional scorers rarely qualify, by design.
 > - **One rookie season is thin evidence.** Predictions for second-year players are far better informed than for rookies.
 
@@ -512,7 +526,7 @@ The full list, with options and priorities, is in [TODO.md](TODO.md).
 - [x] Investigate the Ty Jerome effect ([notebook 18](notebooks/18_ty_jerome_effect.ipynb))
 - [x] Test hot-start inputs: only "back from a lost season" helped ([D39](docs/DECISIONS.md))
 - [x] Show how the predictor evolved, one decision at a time ([notebook 19](notebooks/19_predictor_evolution.ipynb))
-- [ ] Make early-season chances honest (calibration by day of season)
+- [x] Check whether the chances are honest: they are, except for big early favourites, which are now flagged ([D40](docs/DECISIONS.md))
 - [ ] Trial public sentiment as an input (Google Trends first)
 - [ ] Find similar players at the same career stage, and track how players move between the eight kinds
 - [ ] Explain every pick with its three or four main reasons ("scouting cards")

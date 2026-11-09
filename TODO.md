@@ -10,7 +10,7 @@ Goal for this phase: make the Most Improved model fit how voters really behave, 
 |---|---|---|---|
 | ~~[Already-established flag](#1-already-established-flag)~~ **done (D38)** | 1 | 1 | Small |
 | ~~[Hot-start and age test](#2-hot-start-and-age-test-the-ty-jerome-effect)~~ **done (D39)** | 2 | 3 | Small |
-| [Early-season calibration](#3-early-season-calibration) | 3 | 2 | Small |
+| ~~[Early-season calibration](#3-early-season-calibration)~~ **done (D40)** | 3 | 2 | Small |
 | [Sentiment trial](#4-sentiment-trial) | 4 | 4 (uncertain) | Medium |
 | [Similar players](#5-similar-players-at-the-same-career-stage) | 5 | 5 | Medium |
 | [Movement between the eight kinds](#6-movement-between-the-eight-kinds) | 6 | 6 | Medium |
@@ -47,7 +47,7 @@ Goal for this phase: make the Most Improved model fit how voters really behave, 
 - C. Stale-baseline flag. Jerome's baseline is 2024-25, two seasons old.
 - D. Availability: games missed so far. Also confirm whether the 65-game rule covers MIP.
 
-### 3. Early-season calibration
+### 3. Early-season calibration · *done 11 November: notebook 20, decision D40. Chances are honest on the whole; no correction applied. Big early favourites (25%+ before day 45) are flagged instead: they have won about 1 time in 6*
 **What:** make the displayed chances honest. This changes the percentages, not the order.
 **Why:** day-14 leaders averaged a 19% chance, but only 3 of 26 won (12%). The two at 25% or more (Eric Bledsoe, Cam Thomas) both lost. Jerome's 39% is too high.
 **When:** after items 1 and 2, because it has to be fitted to the final model.
