@@ -9,7 +9,7 @@ Goal for this phase: make the Most Improved model fit how voters really behave, 
 | Item | Priority | Usefulness | Effort |
 |---|---|---|---|
 | ~~[Already-established flag](#1-already-established-flag)~~ **done (D38)** | 1 | 1 | Small |
-| [Hot-start and age test](#2-hot-start-and-age-test-the-ty-jerome-effect) | 2 | 3 | Small |
+| ~~[Hot-start and age test](#2-hot-start-and-age-test-the-ty-jerome-effect)~~ **done (D39)** | 2 | 3 | Small |
 | [Early-season calibration](#3-early-season-calibration) | 3 | 2 | Small |
 | [Sentiment trial](#4-sentiment-trial) | 4 | 4 (uncertain) | Medium |
 | [Similar players](#5-similar-players-at-the-same-career-stage) | 5 | 5 | Medium |
@@ -37,7 +37,7 @@ Goal for this phase: make the Most Improved model fit how voters really behave, 
 
 **Rule:** only selections from before that season count. Many winners first make the team in the year they win, so using that season's selection would leak the answer.
 
-### 2. Hot-start and age test (the Ty Jerome effect) · *in progress on branch `feature/ty-jerome-effect`: investigation done (notebook 18); next, test options A–C as model inputs*
+### 2. Hot-start and age test (the Ty Jerome effect) · *done 11 November: notebooks 18 and 19, decision D39. Only 'back from a lost season' helped; age × jump, head start and games share were rejected*
 **What:** test whether the model should believe a hot start less, especially from an older player.
 **Why:** of 51 players up 10+ points at this stage, the typical one kept 65% of the jump by season's end, and 2 won. Of the 18 aged 27+, the typical one kept 52%; only 2 got any votes and none finished in the top 3. Ty Jerome is 29.
 
