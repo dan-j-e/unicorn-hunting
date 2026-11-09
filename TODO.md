@@ -37,7 +37,7 @@ Goal for this phase: make the Most Improved model fit how voters really behave, 
 
 **Rule:** only selections from before that season count. Many winners first make the team in the year they win, so using that season's selection would leak the answer.
 
-### 2. Hot-start and age test (the Ty Jerome effect)
+### 2. Hot-start and age test (the Ty Jerome effect) · *in progress on branch `feature/ty-jerome-effect`: investigation done (notebook 18); next, test options A–C as model inputs*
 **What:** test whether the model should believe a hot start less, especially from an older player.
 **Why:** of 51 players up 10+ points at this stage, the typical one kept 65% of the jump by season's end, and 2 won. Of the 18 aged 27+, the typical one kept 52%; only 2 got any votes and none finished in the top 3. Ty Jerome is 29.
 
