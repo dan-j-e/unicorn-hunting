@@ -17,7 +17,7 @@ from bs4 import BeautifulSoup
 from nba_api.stats.endpoints import playerawards
 
 from unicorn.bref import BREF_DIR, HEADERS, PAUSE_SECONDS, normalize_name
-from unicorn.raw import fetch
+from unicorn.raw import PROJECT_ROOT, fetch
 
 URL = "https://www.basketball-reference.com/allstar/NBA_{year}.html"
 FIRST_YEAR = 1980                     # covers the careers of everyone in the 2000-01 pool
@@ -66,3 +66,17 @@ def add_prior_allstar(frame, selections, season_col="season"):
     sel = selections.groupby("player_id")["season"].apply(sorted).to_dict()
     n = [sum(s < season for s in sel.get(int(p), [])) for p, season in zip(frame["player_id"], frame[season_col])]
     return frame.assign(prior_allstar_n=n, prior_allstar=[float(k > 0) for k in n])
+
+
+SELECTIONS_PATH = PROJECT_ROOT / "data" / "processed" / "allstar_selections.parquet"
+
+
+def load_selections():
+    """All-Star selections for everyone who played since 1999-00 (built once, then read from data/processed)."""
+    if SELECTIONS_PATH.exists():
+        return pd.read_parquet(SELECTIONS_PATH)
+    from unicorn.mip_history import load_games          # 1999-00 onward, so 2000s careers are covered
+    players = load_games()[["player_id", "player_name"]].drop_duplicates("player_id")
+    sel, _ = allstar_selections(players)
+    sel.to_parquet(SELECTIONS_PATH, index=False)
+    return sel
