@@ -8,7 +8,7 @@ Goal for this phase: make the Most Improved model fit how voters really behave, 
 
 | Item | Priority | Usefulness | Effort |
 |---|---|---|---|
-| [Already-established flag](#1-already-established-flag) | 1 | 1 | Small |
+| ~~[Already-established flag](#1-already-established-flag)~~ **done (D38)** | 1 | 1 | Small |
 | [Hot-start and age test](#2-hot-start-and-age-test-the-ty-jerome-effect) | 2 | 3 | Small |
 | [Early-season calibration](#3-early-season-calibration) | 3 | 2 | Small |
 | [Sentiment trial](#4-sentiment-trial) | 4 | 4 (uncertain) | Medium |
@@ -24,7 +24,7 @@ Goal for this phase: make the Most Improved model fit how voters really behave, 
 
 ## The 2026-27 Most Improved model
 
-### 1. Already-established flag
+### 1. Already-established flag · *done 9 November: notebook 17, decision D38*
 **What:** count having already been recognised as a star against a player.
 **Why:** 0 of 26 winners had been an All-Star before their winning season, and only 5 of the 105 who finished 2nd–5th. The scoring turning point misses this: Alperen Sengun (20.4 last season, two All-Star selections) is #2 on the 2 November board. Still needed: the share of all candidates who were prior All-Stars.
 **Won't catch:** Cooper Flagg or James Harden in 2012-13 (7th in the vote), who had no prior selection.
