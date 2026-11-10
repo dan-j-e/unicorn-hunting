@@ -4,7 +4,7 @@
 
 ## Current plan
 
-Work through the three phases in order. Tick each box when it is done, and record any decision in [docs/DECISIONS.md](docs/DECISIONS.md).
+Work through the phases in order. Tick each box when it is done, and record any decision in [docs/DECISIONS.md](docs/DECISIONS.md).
 
 ### Phase A — Audit what we have
 
@@ -55,6 +55,16 @@ The aim: every notebook, chart and section is **relevant**, **easy to understand
 - [ ] **C5. Outcomes.** For each group of lookalikes: how the rest of that season went (jump kept, Most Improved votes) and how the career went (next one to three seasons, star and breakout labels, peak, moves between the eight kinds).
 - [ ] **C6. Apply it** to the 2026-27 candidates, and show it in the live race.
 - [ ] **C7. Record** the decisions and update the README.
+
+### Phase D — Has the breakout prophecy come true so far? (later)
+
+**The question:** standing at the end of 2025-26, the breakout model (notebook 07, D19) named its top candidates for 2026-27. For the top 10 for any kind of breakout: what did we predict they would become, and how are they tracking now?
+
+- [ ] **D1. Freeze the predictions.** The top 10 by breakout chance from notebook 07, exactly as written on 2 October 2026 (notebook 07 is dated and not updated, so the list cannot drift). Alongside each: star chance, route to stardom (09) and playing-style cluster (13).
+- [ ] **D2. "What we think they will become".** Which kind of breakout each is most likely to make (production, role or scoring). Options: the existing "any breakout" model plus the player's strongest signals; or separate models for each kind (the backtest in 06 supports scoring best, role least).
+- [ ] **D3. How they are tracking.** Each label's tests, applied to the season so far from game logs: points, minutes, usage, efficiency and all-round production against the player's own past (all metrics, not points alone; see Phase B). A partial season needs care: the labels assume 1,200+ minutes, so show "on pace" alongside the raw numbers.
+- [ ] **D4. Is early tracking a good guide?** For past seasons' top 10s (the breakout board, 08), compare how each player looked at the same point of the season with whether he finally broke out. This says how much to read into November.
+- [ ] **D5. Show it and re-check it.** A chart of the 10 against their thresholds; update at the All-Star break and score it at season's end, when the 2026-27 board (08) can be marked.
 
 ## Scheduled
 - **All-Star break (February):** re-run notebook 12. It prints Alexander-Walker's blip test verdict (set in advance, D33) and freezes the live race's turning point (D32). Then update the README.
