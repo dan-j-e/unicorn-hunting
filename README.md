@@ -222,7 +222,7 @@ where $x_i$ holds the player's inputs (changes in his box-score numbers, his tea
 - **Voters reward** a jump in all-round production (odds ×1.57 per extra point of game score), in scoring (×1.39 per extra point a game), a larger offensive load, and a team that improved (×1.28 for winning 10% more games).
 - **Voters discount** age (×0.88 per year), gains that come only from extra minutes, and above all second-year players: 19% of the voting top 7, but no winner in the last 15 seasons (the last was Monta Ellis in 2006-07).
 - **Voters pass over players who are already stars.** No winner from 2000-01 to 2025-26 had been an All-Star before his winning season ([see below](#why-already-an-all-star-counts-against-a-player)).
-- **Most winning leaps are visible from opening night.** For 11 of 15 winners, the first 10 games already held 80% or more of the season's jump. One huge night is not a signal: after 1,109 "eruption" games, the next seven looked like the seven before.
+- **Most winning leaps are visible from opening night.** For 11 of 15 winners, the first 10 games already held 80% or more of the season's jump. One huge night is not a signal: after 1,089 "eruption" games, the next seven looked like the seven before.
 - **The winners the model misses crossed a milestone** rather than making the largest jump: a first 20-point season (Goran Dragić), a first star-level season (Julius Randle), or becoming the team's leading scorer (Tyrese Maxey, Paul George).
 
 <details>
@@ -354,7 +354,7 @@ The current model was not designed in one step. It was built through a series of
 ### Is Ty Jerome's lead believable?
 
 > [!WARNING]
-> **Not at the 26% the model first gave him.** Players with Jerome's profile have rarely won, and big early favourites in general have won only about 1 time in 6 ([see below](#are-the-chances-honest)). Since 11 November the model counts his lost 2025-26 season against him ([D39](docs/DECISIONS.md)), which brought his chance down to 8.3%.
+> **Not at the 26% the model first gave him.** Players with Jerome's profile have rarely won, and big early favourites in general have won only about 1 time in 6 ([see below](#are-the-chances-honest)). Since 10 November the model counts his lost 2025-26 season against him ([D39](docs/DECISIONS.md)), which brought his chance down to 8.3%.
 
 **Have there been Ty Jeromes before?** Every player since 2000-01 who looked like him at the same point of the season (day 19), and how his season ended ([notebook 18](notebooks/18_ty_jerome_effect.ipynb)):
 

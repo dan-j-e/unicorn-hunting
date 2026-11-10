@@ -1,6 +1,6 @@
 # Project audit
 
-A record of the audit begun on 11 November 2026 (TODO, Phase A). Each step lists what was checked, what was found and what was done.
+A record of the audit begun on 10 November 2026 (TODO, Phase A). Each step lists what was checked, what was found and what was done.
 
 ## A1. Relevance
 
@@ -59,7 +59,7 @@ Every section is relevant. Two gaps carry into later steps:
 - There is no reading path for a newcomer (A3).
 - There is no glossary for the recurring terms (A2).
 
-### Actions completed (11 November)
+### Actions completed (10 November)
 - Status notes added at the top of notebooks 10 and 15, pointing to notebooks 12 and 19; both marked as historical in the README's notebook table.
 - Notebook 07 dated: its outlook stands at the end of 2025-26.
 - The README links the interactive breakout board again.
@@ -95,3 +95,22 @@ Every section is relevant. Two gaps carry into later steps:
 **Done:**
 - An *In plain words* note at each of the five places, saying what the method does, why it suits the problem, and which decision it belongs to (D10, D11, D15, D19).
 - The README gains **How to read this project**: a ten-minute tour, then three routes (Most Improved, breakouts and stars, unicorns and playing styles) with the order to read the notebooks and why, plus where to check the data.
+
+## A4. Accuracy
+
+**Checked:**
+- Every number in every notebook's findings against that notebook's own outputs, by script: decimals, percentages and × values matched at the same precision, and whole numbers of 100 or more matched exactly. Anything not found was checked by hand.
+- Every number in the README against the notebooks and the decision log.
+- Every date written in the project against the git history.
+
+**Found:**
+- **Most findings match their outputs.** The exceptions are values read off charts (notebooks 03 and 13) and values quoted from other notebooks (19, 20), all of which check out at their source.
+- **Two stale results:**
+  - Notebook 10C (and the README) gave 1,109 "eruption" games and +3.5 for the next seven; the current output is 1,089 and +3.4. The conclusion is unchanged.
+  - Notebook 02B gave the tables as 113 and 98 columns; they are now 123 and 107.
+- **A wrong date:** the work on D39, D40, the archiving and this audit was dated 11 November in the notebooks, TODO, this file and a code comment. The git history shows 10 November.
+- **Findings were undated** in all but three notebooks (07, 12 and the status notes in 10 and 15).
+
+**Done:**
+- The two stale results and the date are corrected everywhere.
+- Every notebook's In brief now has a **Dated** line: when its findings were written (taken from the git history, ignoring the audit commits) and that the numbers were checked against the outputs on 10 November 2026. For notebook 12 it says the live findings are updated by hand after each run, the latest being 8 November (day 20).
