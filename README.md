@@ -527,9 +527,10 @@ The full list, with options and priorities, is in [TODO.md](TODO.md).
 - [x] Test hot-start inputs: only "back from a lost season" helped ([D39](docs/DECISIONS.md))
 - [x] Show how the predictor evolved, one decision at a time ([notebook 19](notebooks/19_predictor_evolution.ipynb))
 - [x] Check whether the chances are honest: they are, except for big early favourites, which are now flagged ([D40](docs/DECISIONS.md))
-- [ ] Trial public sentiment as an input (Google Trends first)
-- [ ] Find similar players at the same career stage, and track how players move between the eight kinds
-- [ ] Explain every pick with its three or four main reasons ("scouting cards")
+- [ ] Audit the project: relevant, easy to understand and educational throughout
+- [ ] Make points per game the illustration, not the model: test all-round versions of every PPG-defined rule, and more metrics in the models
+- [ ] Find similar players at the same career stage, with era adjustment, and follow how their seasons and careers turned out
+- [ ] Later: a sentiment trial, scouting cards, and tests with automatic checks
 
 [^strict]: **Strict** or **walk-forward**: each season is predicted by a model trained only on earlier seasons, exactly as it could have been at the time. **Leave-one-season-out**, used where noted, predicts each season from all the others, including later ones; it uses more data but is less faithful to what was knowable.
 [^gamescore]: **Game score** (John Hollinger) combines a player's points, shooting, rebounds, assists, steals, blocks, fouls and turnovers into a single number for one game. About 10 is an average game; 40 is an exceptional one.
