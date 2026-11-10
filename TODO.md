@@ -66,6 +66,20 @@ The aim: every notebook, chart and section is **relevant**, **easy to understand
 - [ ] **D4. Is early tracking a good guide?** For past seasons' top 10s (the breakout board, 08), compare how each player looked at the same point of the season with whether he finally broke out. This says how much to read into November.
 - [ ] **D5. Show it and re-check it.** A chart of the 10 against their thresholds; update at the All-Star break and score it at season's end, when the 2026-27 board (08) can be marked.
 
+### Phase E — Does changing your game pay off?
+
+**The question:** Mikal Bridges moved from The Pest to Kerr's Cult. How did his career change afterwards? More generally, do moves between the eight kinds help a player break out, win Most Improved, or simply last longer in the league?
+
+- [ ] **E1. Define a move.** A player's kind in each season (notebook 13D, 2011-26). Clusters overlap, so a one-season flicker near a boundary is not a move. Options: the new kind must hold for two seasons; or the membership share must cross a clear margin (soft membership already gives a share in every kind). The 2000-26 windows (13E) are less stable (0.45), so use them only as a check.
+- [ ] **E2. Mikal Bridges first,** as the worked example: his seasons, kinds and membership shares; what changed in his game (style measures, role, usage, team); and what followed (production, efficiency, minutes, contract, awards).
+- [ ] **E3. Map every move.** Which moves happen, how often, at what age and career stage, and whether they come with a trade, a new coach or a bigger role.
+- [ ] **E4. Outcomes.** For each kind of move, compared with similar players who did not move (same kind, age and level, from Phase C's comparisons):
+  - breakouts in the following seasons (05 labels);
+  - Most Improved votes and wins;
+  - career length: seasons still played and minutes kept. Active players' careers are not finished, so this needs survival analysis (careers still running count as "at least this long"), not simple averages.
+- [ ] **E5. Cause or sign?** A move can cause improvement, or simply be what improvement looks like (a player given the ball creates more). The comparison group in E4, and checking whether the move *precedes* the gain, separate the two as far as the data allows. Say plainly where it cannot.
+- [ ] **E6. Record** the decisions and update the README.
+
 ## Scheduled
 - **All-Star break (February):** re-run notebook 12. It prints Alexander-Walker's blip test verdict (set in advance, D33) and freezes the live race's turning point (D32). Then update the README.
 - **Whenever you like:** `./scripts/update_mip_race.sh` updates the live race. Its README lines and notebook findings are updated by hand.
@@ -73,7 +87,6 @@ The aim: every notebook, chart and section is **relevant**, **easy to understand
 ## Later
 - **Sentiment trial** (moved here 10 November). Does public attention explain voters beyond the box score, such as Harden's 7th in 2012-13? Options: Google Trends first (history back to 2004, free, but unofficial and measures fans rather than voters); news headlines (GDELT); writers' Most Improved ladders; Reddit or X going forward only. Each source must show what people said at that date, or it leaks the result.
 - **Tests and automatic checks:** leakage tests and GitHub Actions, so every pull request shows a green tick.
-- **Movement between the eight kinds:** how players move between clusters as they develop, and which moves lead to stardom. Partly covered by C5.
 - **Scouting cards:** the three or four reasons behind each pick, with the closest comparisons from Phase C.
 - **Basketball-Reference / CraftedNBA metrics** (VORP, BPM, WS): as extra breakout inputs, or as a check on star labels.
 - **Early playoff experience** as a predictor of development, unicorns or breakouts.
