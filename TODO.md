@@ -1,127 +1,87 @@
 # To do
 
-Goal for this phase: make the Most Improved model fit how voters really behave, then finish the player archetypes. The analytical decisions are made deliberately, one step at a time.
+**Goal for this phase:** make the project clear, educational and honest about its metrics, then build "similar players at the same stage of their career". The analytical decisions are made deliberately, one step at a time.
 
-**How to read the ranks** (1 = first or best):
-- **Priority:** the order to do it in, allowing for what depends on what and what's time-sensitive while the 2026-27 race is live.
-- **Usefulness:** how much it should improve the project if it works, ignoring effort.
+## Current plan
 
-| Item | Priority | Usefulness | Effort |
-|---|---|---|---|
-| ~~[Already-established flag](#1-already-established-flag)~~ **done (D38)** | 1 | 1 | Small |
-| ~~[Hot-start and age test](#2-hot-start-and-age-test-the-ty-jerome-effect)~~ **done (D39)** | 2 | 3 | Small |
-| ~~[Early-season calibration](#3-early-season-calibration)~~ **done (D40)** | 3 | 2 | Small |
-| [Sentiment trial](#4-sentiment-trial) | 4 | 4 (uncertain) | Medium |
-| [Similar players](#5-similar-players-at-the-same-career-stage) | 5 | 5 | Medium |
-| [Movement between the eight kinds](#6-movement-between-the-eight-kinds) | 6 | 6 | Medium |
-| [Scouting cards](#7-scouting-cards) | 7 | 7 | Medium |
-| [Basketball-Reference / CraftedNBA metrics](#8-basketball-reference--craftednba-metrics) | 8 | 8 | Medium |
-| [Early playoff experience](#9-early-playoff-experience) | 9 | 9 | Medium |
-| [2000-26 clusters with an era adjustment](#10-2000-26-clusters-with-an-era-adjustment) | 10 | 10 | Small |
-| [Route to stardom on the breakout board](#11-route-to-stardom-on-the-breakout-board) | 11 | 11 | Small |
-| ["Becomes a unicorn" label](#12-becomes-a-unicorn-label) | 12 | 12 | Medium |
-| [Do Pests take more charges?](#13-do-pests-take-more-charges) | 13 | 13 | Small |
+Work through the three phases in order. Tick each box when it is done, and record any decision in [docs/DECISIONS.md](docs/DECISIONS.md).
 
-## The 2026-27 Most Improved model
+### Phase A — Audit what we have
 
-### 1. Already-established flag · *done 9 November: notebook 17, decision D38*
-**What:** count having already been recognised as a star against a player.
-**Why:** 0 of 26 winners had been an All-Star before their winning season, and only 5 of the 105 who finished 2nd–5th. The scoring turning point misses this: Alperen Sengun (20.4 last season, two All-Star selections) is #2 on the 2 November board. Still needed: the share of all candidates who were prior All-Stars.
-**Won't catch:** Cooper Flagg or James Harden in 2012-13 (7th in the vote), who had no prior selection.
+The aim: every notebook, chart and section is **relevant**, **easy to understand** and **educational** for a reader who did not build it.
 
-**Options:**
-- **A. Any prior All-Star selection, yes/no.** *Recommended start:* simple, with the clearest evidence.
-- B. Number or recency of selections. It might separate long-ago All-Stars from recent ones, but there are few cases.
-- C. Broader "established" measure: adds All-NBA and major awards. Adds little so far (All-NBA: 0 winners, 2 of 105).
-- D. Hard exclusion. Not recommended: the same approach was replaced by the turning point (D27).
+- [x] **A1. Relevance** (done 10 November; see [docs/AUDIT.md](docs/AUDIT.md)). List every notebook (00–20), figure and README section. For each, decide: keep as is, update, merge, or move to `archive/`. Flag anything superseded by a later decision (for example, notebook 10's model before D27, D38 and D39).
+- [x] **A2. Easy to understand** (done 10 November; see [docs/AUDIT.md](docs/AUDIT.md)). Every notebook opens with the question, a plain summary of the answer, and its decisions; and closes with findings. Use the same terms everywhere ("strict", "leave-one-out", "× a blind guess", "baseline season"), with a glossary in the README.
+- [x] **A3. Educational** (done 10 November; see [docs/AUDIT.md](docs/AUDIT.md)). Every method choice is explained in words, with a link to its decision; a "how to read this project" path in the README (which notebooks to read, in what order, and why).
+- [x] **A4. Accuracy** (done 10 November; see [docs/AUDIT.md](docs/AUDIT.md)). Every number in the README and in each notebook's findings matches that notebook's latest output. Findings carry the date they were written.
+- [x] **A5. Code** (done 10 November; see [docs/AUDIT.md](docs/AUDIT.md)). Shared logic lives in `src/unicorn/`, not copied between notebooks (for example, the live-race candidate builder appears in notebooks 12, 17, 18 and 19). Consistent names.
+- [x] **A6. Record** (done 10 November; see [docs/AUDIT.md](docs/AUDIT.md)). Write the audit results down (what changed and why), and update the README.
 
-**Rule:** only selections from before that season count. Many winners first make the team in the year they win, so using that season's selection would leak the answer.
+### Phase B — Points per game is the illustration, not the model
 
-### 2. Hot-start and age test (the Ty Jerome effect) · *done 11 November: notebooks 18 and 19, decision D39. Only 'back from a lost season' helped; age × jump, head start and games share were rejected*
-**What:** test whether the model should believe a hot start less, especially from an older player.
-**Why:** of 51 players up 10+ points at this stage, the typical one kept 65% of the jump by season's end, and 2 won. Of the 18 aged 27+, the typical one kept 52%; only 2 got any votes and none finished in the top 3. Ty Jerome is 29.
+**The principle:** charts use points per game (PPG) because it is the most familiar statistic for a casual reader. The models should use **every relevant metric we have**, as the playing-style clusters in notebook 13 do with 15 measures.
 
-**Options (test separately; they can be combined):**
-- **A. Age × early jump interaction.** *Recommended start.*
-- B. Shrink early jumps towards the baseline, depending on games played.
-- C. Stale-baseline flag. Jerome's baseline is 2024-25, two seasons old.
-- D. Availability: games missed so far. Also confirm whether the 65-game rule covers MIP.
+**Where we stand (checked 10 November):**
 
-### 3. Early-season calibration · *done 11 November: notebook 20, decision D40. Chances are honest on the whole; no correction applied. Big early favourites (25%+ before day 45) are flagged instead: they have won about 1 time in 6*
-**What:** make the displayed chances honest. This changes the percentages, not the order.
-**Why:** day-14 leaders averaged a 19% chance, but only 3 of 26 won (12%). The two at 25% or more (Eric Bledsoe, Cam Thomas) both lost. Jerome's 39% is too high.
-**When:** after items 1 and 2, because it has to be fitted to the final model.
+| Part of the project | What it uses now | PPG's role |
+|---|---|---|
+| In-season Most Improved model (live race) | 17 inputs: changes in points, rebounds, assists, steals, blocks, minutes, game score and shooting efficiency; relative changes; team, age, second year; flags | One input among several, but the largest weight |
+| Preseason Most Improved model | 16 inputs: minutes, points, usage, team wins, age, second year, new team, last season's trend, preseason production, shot volume and shooting; flags | One input among several |
+| Breakout models (notebook 06) | 197 features | One of many |
+| Playing-style clusters (notebook 13) | 15 style measures | Not used, by design |
+| **Scoring turning point** (D27) | Last season's PPG above 20 | **The definition** |
+| **"A 20-point scorer left"** (D29) | The departed player's PPG | **The definition** |
+| **The blip test and leaps** (D33, notebook 16) | Share of the PPG jump kept | **The definition** |
+| **Ty Jerome lookalikes** (notebook 18) | Up 8+ PPG at day 19 | **The definition** |
 
-**Options:**
-- **A. A scaling factor for each day of the season, learned from past seasons.** *Recommended:* simple, with little to overfit.
-- B. A stronger penalty (λ) early in the season. Note this would revisit D30, which confirmed λ = 3.
-- C. Show ranks only until a set date, such as day 30. Simplest, but hides the size of a lead.
+- [ ] **B1. Inventory.** Confirm and extend the table above for every model and rule, and add it to the README.
+- [ ] **B2. Test all-round versions of the PPG-defined rules.** For each rule above, test the same idea on an all-round measure (game score, or a combination of production measures) and keep whichever does better in the strict test:
+  - the turning point on last season's game score;
+  - "a star left", measured by usage or game score rather than points;
+  - the blip test and leaps on game score;
+  - lookalikes on an all-round jump.
+- [ ] **B3. Test more metrics in the Most Improved models.** Usage, shot profile and the other style measures from notebook 13, and box-score defence. Note: some only exist from 2011-12, which shortens the test.
+- [ ] **B4. Say it plainly.** A README section and a line in chart captions: "PPG is shown for readability; the model uses these inputs: …". Each model lists its inputs in plain words.
+- [ ] **B5. Record** the results as decisions.
 
-### 4. Sentiment trial
-**What:** test whether public attention explains voters beyond the box score, such as Harden's 7th in 2012-13.
-**Test:** does a jump in attention improve the model once the box-score numbers are in? If not, drop it.
-**Rule:** each source must show what people were saying at that date, or it leaks the result.
+### Phase C — Similar players at the same career stage
 
-**Options:**
-- **A. Google Trends.** *Recommended first:* history back to 2004, free. But access is unofficial, and it measures fans rather than voters.
-- B. News headlines (GDELT): about a decade of history. Noisy, and tone is hard to read.
-- C. Writers' MIP ladders: closest to voters, but patchy and hard to collect.
-- D. Reddit or X: poor access to old posts, so usable going forward only.
+**The question:** for each 2026-27 candidate at a given point in time, which past players looked most like him at the same stage of their careers? How did *their* season finish, and how did their careers turn out?
 
-## Player archetypes
-
-Done so far in notebook 13: eight clusters chosen and named (13D, D35, D37), plus the 2000-26 history (13E, D36). Write-up: [docs/EIGHT_CLUSTERS.md](docs/EIGHT_CLUSTERS.md).
-
-### 5. Similar players at the same career stage
-**What:** for any current player, find the most similar historical players at the same stage (e.g. Egor Dëmin's rookie year against past rookie years).
-
-**Options:**
-- **A. Nearest neighbours on the 15 style measures, same career year.** *Recommended start.*
-- B. Style plus quality (points, efficiency), so comparisons are also about how good a player is.
-- C. Three-season windows (13E) instead of single seasons: steadier, but unavailable for young players.
-
-### 6. Movement between the eight kinds
-**What:** how players move between clusters as they develop, and which moves lead to stardom.
-
-**Options:**
-- **A. Table of moves from one cluster to another, by age.** *Recommended start.*
-- B. Link moves to the star and breakout labels.
-- C. Feed moves into the breakout and MIP models as inputs, if B finds a signal.
-
-### 7. Scouting cards
-**What:** for each candidate, the 3–4 reasons pushing his chances up or down, his cluster, closest comparisons, and what he'd need to do next. Needs item 5.
-
-**Options:**
-- **A. Coefficient × value** for the logistic and MIP models. *Recommended:* direct and easy to explain.
-- B. SHAP-style contributions, for the tree models.
-
-## Later
-
-### 8. Basketball-Reference / CraftedNBA metrics
-Add VORP, BPM, WS and similar. **Options:** a few all-in-one metrics as extra breakout inputs, or as a check on star labels only.
-
-### 9. Early playoff experience
-Does it predict development, unicorns or breakouts? **Options:** a simple yes/no for playoff minutes by a given age, or the size of the player's playoff role.
-
-### 10. 2000-26 clusters with an era adjustment
-Separates "the role changed" from "the league changed". **Options:** compare within each window's seasons, or against a rolling multi-season average.
-
-### 11. Route to stardom on the breakout board
-**Options:** a label on each pick (breakout or steady climb), or a separate view for each route.
-
-### 12. "Becomes a unicorn" label
-**Options:** define it from future rarity scores, or from a hand-checked list of players.
-
-### 13. Do Pests take more charges?
-A check on The Pest's description, using NBA.com hustle stats from 2015-16. **Options:** The Pest against all other clusters, or against other wings only. Not a clustering input.
+- [ ] **C1. Define the stage and the point in time.** Options: same NBA season number (second season, third…), same age, or both; at a given day of the season (as in the live race) or at season's end.
+- [ ] **C2. Choose the measures.** All metrics, not PPG alone: production (box-score rates), style (notebook 13's 15 measures), role (minutes, usage, starts) and efficiency.
+- [ ] **C3. Adjust for era.** Use notebook 13's findings (confirmed 10 November: notebook 13 only): compare each measure with its own season's league (13D), and use the 2000-26 history (13E) to see how roles shifted.
+- [ ] **C4. Method.** Nearest neighbours for each candidate, and clusters of similar players at each stage.
+- [ ] **C5. Outcomes.** For each group of lookalikes: how the rest of that season went (jump kept, Most Improved votes) and how the career went (next one to three seasons, star and breakout labels, peak, moves between the eight kinds).
+- [ ] **C6. Apply it** to the 2026-27 candidates, and show it in the live race.
+- [ ] **C7. Record** the decisions and update the README.
 
 ## Scheduled
 - **All-Star break (February):** re-run notebook 12. It prints Alexander-Walker's blip test verdict (set in advance, D33) and freezes the live race's turning point (D32). Then update the README.
 - **Whenever you like:** `./scripts/update_mip_race.sh` updates the live race. Its README lines and notebook findings are updated by hand.
 
+## Later
+- **Sentiment trial** (moved here 10 November). Does public attention explain voters beyond the box score, such as Harden's 7th in 2012-13? Options: Google Trends first (history back to 2004, free, but unofficial and measures fans rather than voters); news headlines (GDELT); writers' Most Improved ladders; Reddit or X going forward only. Each source must show what people said at that date, or it leaks the result.
+- **Tests and automatic checks:** leakage tests and GitHub Actions, so every pull request shows a green tick.
+- **Movement between the eight kinds:** how players move between clusters as they develop, and which moves lead to stardom. Partly covered by C5.
+- **Scouting cards:** the three or four reasons behind each pick, with the closest comparisons from Phase C.
+- **Basketball-Reference / CraftedNBA metrics** (VORP, BPM, WS): as extra breakout inputs, or as a check on star labels.
+- **Early playoff experience** as a predictor of development, unicorns or breakouts.
+- **2000-26 clusters with an era adjustment**, to separate "the role changed" from "the league changed". Partly covered by C3.
+- **Route to stardom on the breakout board:** a label on each pick, or a separate view per route.
+- **"Becomes a unicorn" label:** from future rarity scores, or a hand-checked list.
+- **Do Pests take more charges?** A check on The Pest's description using hustle stats from 2015-16.
+
+## Done
+- **Audit (Phase A):** every notebook relevant, opening with In brief and closing with dated findings; glossary and reading path in the README; numbers checked against outputs; shared scoring and live-race code (10 November; [docs/AUDIT.md](docs/AUDIT.md)).
+- **Already an All-Star counts against a Most Improved candidate** (9 November; notebook 17, D38; pull request #1).
+- **The Ty Jerome effect:** lookalikes since 2000-01, and "back from a lost season" added to both models (10 November; notebooks 18–19, D39; pull requests #2–#3). Age × early jump, "head start" and games share were tested and rejected.
+- **Calibration:** the chances are honest on the whole; big early favourites are flagged rather than corrected (10 November; notebook 20, D40; pull request #4).
+- **Eight kinds of player** found and named (notebook 13, D34–D37), with the 2000-26 history.
+
 ## Parked
-- **Blogging and story-led write-ups:** not for now. This includes the "Could we have seen Shai coming?" piece.
-- **Streamlit dashboard** (`dashboard/app.py`): works, but not a focus.
+- **Blogging and story-led write-ups:** not for now.
+- **Streamlit dashboard:** archived on 10 November (kept locally in `archive/dashboard/`, not in the repository). To revisit some time.
 
 ## Decided against
 - **Betting markets as a factor:** not used in the model.

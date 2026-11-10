@@ -151,7 +151,7 @@ def probability_bars(P, title, subtitle, path, top_n=5):
         ax.set_yticks(y, show["player_name"], fontsize=8.5)
         ax.set_xlim(0, max(0.85, show["p"].max() * 1.3)); ax.set_xticks([]); ax.grid(False)
         ax.spines["bottom"].set_visible(False); ax.tick_params(axis="y", length=0, pad=18)
-        hit = "★ in our top 3" if (not winner.empty and winner["rank"].iloc[0] <= 3) else f"winner ranked #{winner['rank'].iloc[0]}"
+        hit = "winner in our top 3" if (not winner.empty and winner["rank"].iloc[0] <= 3) else f"winner ranked #{winner['rank'].iloc[0]}"
         ax.set_title(f"{s}   {hit}", loc="left", fontsize=10, color=INK)
     fig.suptitle(title, x=0.01, ha="left", fontsize=13, fontweight="bold")
     fig.text(0.01, 1 - 0.55 / fig.get_figheight(), subtitle, ha="left", fontsize=10, color=INK2)
@@ -174,7 +174,7 @@ def top_k_overlap(df, proba, votes, k=7):
 
 def top7_vs_votes_chart(P, votes, all_candidates, title, subtitle, path, k=7):
     """Small multiples: our top-k by predicted chance. Blue = also in the real top-k of the voting
-    (labelled with his voting rank), gray = not; ★ = actual winner. Below each panel: real top-k
+    (labelled with his voting rank), gray = not; orange star = actual winner. Below each panel: real top-k
     players we missed, with the reason (not eligible / ranked lower by us)."""
     import matplotlib.pyplot as plt
     from unicorn.plotting import BLUE, INK, INK2, MUTED, ORANGE
@@ -215,7 +215,7 @@ def top7_vs_votes_chart(P, votes, all_candidates, title, subtitle, path, k=7):
             else:
                 rk = P[(P["season"] == s) & (P["player_id"] == pid)]["rank"]
                 why = f"our #{int(rk.iloc[0])}" if len(rk) else "not ranked"
-            star = "★ " if MIP_WINNER_IDS.get(s) == pid else ""
+            star = "(winner) " if MIP_WINNER_IDS.get(s) == pid else ""
             notes.append(f"{star}{m['player']} (vote #{int(m['vote_rank'])}, {why})")
         if notes:
             ax.text(-0.02, -0.06, "Real top 7 we missed:\n" + "\n".join(notes), transform=ax.transAxes, fontsize=7.6,

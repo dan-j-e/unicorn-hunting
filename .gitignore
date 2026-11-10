@@ -8,7 +8,6 @@ __pycache__/
 # Data & artefacts are regenerated from code, not versioned
 data/raw/*
 data/processed/*
-models/*
 !**/.gitkeep
 *.egg-info/
 archive/

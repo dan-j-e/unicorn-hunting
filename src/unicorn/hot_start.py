@@ -1,4 +1,4 @@
-"""Inputs for the 'Ty Jerome effect' (TODO item 2; notebook 18): should the model trust a hot start less?
+"""Inputs for the 'Ty Jerome effect' (notebook 18, D39): should the model trust a hot start less?
 
   older_jump   : the early points jump, counted only for players aged 27 or older (A)
   age_x_jump   : the same idea on a smooth scale: (age - 26) x points jump, floored at 0 (A, variant)
