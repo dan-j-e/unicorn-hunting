@@ -191,7 +191,7 @@ where $x_i$ holds the player's inputs (changes in his box-score numbers, his tea
 | | |
 |---|---|
 | ![Most Improved probabilities](outputs/figures/10_mip_final_probability_bars.png) | ![What voters reward](outputs/figures/10_mip_final_weights.png) |
-| Predicted chance of winning (blue = our top 3, ★ = winner) | Every model weight, with 90% ranges from 500 refits |
+| Predicted chance of winning (blue = our top 3; orange star = the actual winner) | Every model weight, with 90% ranges from 500 refits |
 | ![Winners week by week](outputs/figures/10_mip_week_by_week.png) | ![Top 7 against the real vote](outputs/figures/10_mip_top7_vs_real.png) |
 | Each winner's season, week by week, against his baseline | Our top 7 against the real voting top 7 |
 
@@ -335,7 +335,7 @@ The current model was not designed in one step. It was built through a series of
 
 ![The Ty Jerome effect](outputs/figures/18_ty_jerome_effect.png)
 
-*Every player up 8+ points a game at day 19, 2000-01 → 2025-26. Colour shows age, a ★ marks a player who already scored 20+ points the season before, and a ring marks a winner.*
+*Every player up 8+ points a game at day 19, 2000-01 → 2025-26. Colour shows age, a star-shaped marker shows a player who already scored 20+ points the season before, and a ring marks a winner.*
 
 **Conclusion:** Jerome is a genuine candidate but an unlikely winner. If he keeps the typical 58% of his jump, he will finish near 20.7 points a game: still a large leap, but one that voters have rewarded only once for a player of his age.
 
@@ -500,7 +500,6 @@ src/unicorn/      reusable code
   archetypes, style_history  playing-style clusters; 3-season style windows 2000-26
   board, stats, plotting     breakout board, statistics helpers, chart style
 scripts/          update_mip_race.sh: refresh the live race in one command
-dashboard/app.py  Streamlit app (parked)
 docs/             DECISIONS.md (decision log), EIGHT_CLUSTERS.md (the eight kinds of player)
 outputs/          figures and tables
 data/             raw and processed data (not in git; rebuilt from code)

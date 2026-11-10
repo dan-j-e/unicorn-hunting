@@ -12,10 +12,10 @@ A record of the audit begun on 11 November 2026 (TODO, Phase A). Each step lists
 
 | Notebook | Question it answers | Status | Action |
 |---|---|---|---|
-| 00 Setup | Which NBA.com endpoints can be trusted, and are they time-correct? | Foundation | Keep. Remove emojis (A6) |
-| 01 Data exploration | What does the raw data look like? | Foundation | Keep. Run its one unrun cell (imports only). Remove emojis (A6) |
+| 00 Setup | Which NBA.com endpoints can be trusted, and are they time-correct? | Foundation | Keep |
+| 01 Data exploration | What does the raw data look like? | Foundation | Keep. Run its one unrun cell (imports only) |
 | 02 Player seasons | The clean player-season table; shrinkage; season-relative scaling | Foundation | Keep |
-| 03 Player trajectories | Level, trend and change for every feature, without leakage | Foundation | Keep. Remove emojis (A6) |
+| 03 Player trajectories | Level, trend and change for every feature, without leakage | Foundation | Keep |
 | 04 Unicorn hunting | What is a unicorn: rare combinations or extremes? | Current | Keep |
 | 05 Breakout hunting | What counts as a breakout and a star? | Current | Keep |
 | 06 Breakout backtest | Can breakouts and stars be predicted a season ahead? | Current | Keep |
@@ -30,7 +30,7 @@ A record of the audit begun on 11 November 2026 (TODO, Phase A). Each step lists
 | 15 Most Improved 2000-26 | Three views of every season since 2000-01 | **Historical:** uses the model before D38 and D39; notebook 19 reruns the same test with every decision | Keep. Add a status note pointing to notebook 19 |
 | 16 Do leaps last? | The blip test on 609 leaps | Current | Keep. Its leap definition is points per game only (Phase B) |
 | 17 Already a star | Do voters pass over established stars? | Current (fed D38) | Keep |
-| 18 Ty Jerome effect | Do hot starts like Jerome's last? | Current (fed D39) | Keep. Remove emojis (A6) |
+| 18 Ty Jerome effect | Do hot starts like Jerome's last? | Current (fed D39) | Keep |
 | 19 Predictor evolution | How the model was built, one decision at a time | Current | Keep |
 | 20 Calibration | Are the chances honest? | Current (fed D40) | Keep |
 
@@ -46,9 +46,9 @@ A record of the audit begun on 11 November 2026 (TODO, Phase A). Each step lists
 
 | Item | Finding | Recommended action |
 |---|---|---|
-| `models/` | An empty folder kept only by a placeholder file; no model is ever saved there | Remove |
+| `models/` | An empty folder kept only by a placeholder file; no model is ever saved there | **Removed** |
 | `archive/` | Ignored by git (an early scratch notebook); not part of the repository | No change |
-| `dashboard/app.py` | Parked; still works; contains emojis | **Your decision:** remove it from the repository, or keep it with emojis removed |
+| `dashboard/app.py` | Parked; still works | **Archived:** moved to `archive/dashboard/` (kept locally, not in the repository) to revisit later; Streamlit removed from the requirements |
 | `outputs/tables/` | Three CSV tables from notebooks 07 and 08 | Keep |
 | `scripts/update_mip_race.sh` | Used for every live update | Keep |
 | `outputs/breakout_board.html` | Interactive breakout board from notebook 08; no longer linked from the README | Keep and link it again |

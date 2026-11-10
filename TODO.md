@@ -15,8 +15,7 @@ The aim: every notebook, chart and section is **relevant**, **easy to understand
 - [ ] **A3. Educational.** Every method choice is explained in words, with a link to its decision; a "how to read this project" path in the README (which notebooks to read, in what order, and why).
 - [ ] **A4. Accuracy.** Every number in the README and in each notebook's findings matches that notebook's latest output. Findings carry the date they were written.
 - [ ] **A5. Code.** Shared logic lives in `src/unicorn/`, not copied between notebooks (for example, the live-race candidate builder appears in notebooks 12, 17, 18 and 19). Consistent names.
-- [ ] **A6. No emojis anywhere:** README, docs, notebooks (text and outputs), chart titles and labels, code comments and commit-facing text. Use words instead.
-- [ ] **A7. Record.** Write the audit results down (what changed and why), and update the README.
+- [ ] **A6. Record.** Write the audit results down (what changed and why), and update the README.
 
 ### Phase B — Points per game is the illustration, not the model
 
@@ -81,7 +80,7 @@ The aim: every notebook, chart and section is **relevant**, **easy to understand
 
 ## Parked
 - **Blogging and story-led write-ups:** not for now.
-- **Streamlit dashboard** (`dashboard/app.py`): works, but not a focus.
+- **Streamlit dashboard:** archived on 11 November (kept locally in `archive/dashboard/`, not in the repository). To revisit some time.
 
 ## Decided against
 - **Betting markets as a factor:** not used in the model.
