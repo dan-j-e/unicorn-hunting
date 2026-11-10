@@ -584,7 +584,7 @@ src/unicorn/      reusable code
   archetypes, style_history  playing-style clusters; 3-season style windows 2000-26
   board, stats, plotting     breakout board, statistics helpers, chart style
 scripts/          update_mip_race.sh: refresh the live race in one command
-docs/             DECISIONS.md (decision log), EIGHT_CLUSTERS.md (the eight kinds of player), AUDIT.md (the audit)
+docs/             DECISIONS.md (decision log), EIGHT_CLUSTERS.md (the eight kinds of player), AUDIT.md (the project audit)
 outputs/          figures and tables
 data/             raw and processed data (not in git; rebuilt from code)
 ```
@@ -610,7 +610,7 @@ The full list, with options and priorities, is in [TODO.md](TODO.md).
 - [x] Test hot-start inputs: only "back from a lost season" helped ([D39](docs/DECISIONS.md))
 - [x] Show how the predictor evolved, one decision at a time ([notebook 19](notebooks/19_predictor_evolution.ipynb))
 - [x] Check whether the chances are honest: they are, except for big early favourites, which are now flagged ([D40](docs/DECISIONS.md))
-- [ ] Audit the project: relevant, easy to understand and educational throughout
+- [x] Audit the project: relevant, easy to understand and educational throughout ([what changed](docs/AUDIT.md))
 - [ ] Make points per game the illustration, not the model: test all-round versions of every PPG-defined rule, and more metrics in the models
 - [ ] Find similar players at the same career stage, with era adjustment, and follow how their seasons and careers turned out
 - [ ] Later: a sentiment trial, scouting cards, and tests with automatic checks

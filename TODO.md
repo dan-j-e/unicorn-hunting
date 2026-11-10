@@ -15,7 +15,7 @@ The aim: every notebook, chart and section is **relevant**, **easy to understand
 - [x] **A3. Educational** (done 10 November; see [docs/AUDIT.md](docs/AUDIT.md)). Every method choice is explained in words, with a link to its decision; a "how to read this project" path in the README (which notebooks to read, in what order, and why).
 - [x] **A4. Accuracy** (done 10 November; see [docs/AUDIT.md](docs/AUDIT.md)). Every number in the README and in each notebook's findings matches that notebook's latest output. Findings carry the date they were written.
 - [x] **A5. Code** (done 10 November; see [docs/AUDIT.md](docs/AUDIT.md)). Shared logic lives in `src/unicorn/`, not copied between notebooks (for example, the live-race candidate builder appears in notebooks 12, 17, 18 and 19). Consistent names.
-- [ ] **A6. Record.** Write the audit results down (what changed and why), and update the README.
+- [x] **A6. Record** (done 10 November; see [docs/AUDIT.md](docs/AUDIT.md)). Write the audit results down (what changed and why), and update the README.
 
 ### Phase B — Points per game is the illustration, not the model
 
@@ -73,6 +73,7 @@ The aim: every notebook, chart and section is **relevant**, **easy to understand
 - **Do Pests take more charges?** A check on The Pest's description using hustle stats from 2015-16.
 
 ## Done
+- **Audit (Phase A):** every notebook relevant, opening with In brief and closing with dated findings; glossary and reading path in the README; numbers checked against outputs; shared scoring and live-race code (10 November; [docs/AUDIT.md](docs/AUDIT.md)).
 - **Already an All-Star counts against a Most Improved candidate** (9 November; notebook 17, D38; pull request #1).
 - **The Ty Jerome effect:** lookalikes since 2000-01, and "back from a lost season" added to both models (10 November; notebooks 18–19, D39; pull requests #2–#3). Age × early jump, "head start" and games share were tested and rejected.
 - **Calibration:** the chances are honest on the whole; big early favourites are flagged rather than corrected (10 November; notebook 20, D40; pull request #4).

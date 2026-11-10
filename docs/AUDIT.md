@@ -2,6 +2,22 @@
 
 A record of the audit begun on 10 November 2026 (TODO, Phase A). Each step lists what was checked, what was found and what was done.
 
+## Summary
+
+**Why:** the project grew one question at a time over six weeks. Before building anything new, every part was checked for three things: that it is still **relevant**, **easy to understand** for a reader who did not build it, and **educational**. Accuracy and shared code were checked along the way.
+
+| Step | What changed | Why it matters |
+|---|---|---|
+| A1. Relevance | Every notebook kept; 10 and 15 marked historical; 07 dated; the interactive breakout board linked again; an unused folder removed and a parked dashboard archived | A reader can no longer mistake an old model's numbers for the current ones |
+| A2. Easy to understand | Every notebook opens with **In brief** (question, answer, decisions, where it fits) and closes with findings; a glossary in the README; stale lines corrected | The answer is at the top, and every term means one thing |
+| A3. Educational | Plain-words notes for five methods that were named but not explained; a reading path in the README | A newcomer knows where to start and why each method was chosen |
+| A4. Accuracy | Every findings number checked against its notebook's output by script; two stale results and a wrong date corrected; every notebook's findings dated | Every number can be traced to an output, and every finding says when it was written |
+| A5. Code | Model scoring and the live-race builder moved into `src/unicorn/` (`mip_eval`, `live_race`); five notebooks re-run with identical outputs | One definition of each test, with the same names everywhere |
+
+**What it did not change:** no model, decision or result. Every correction was to wording, a stale number or a date, and the refactor was verified to leave every output unchanged.
+
+**Next:** Phase B (points per game as the illustration, not the model), then Phase C (similar players at the same career stage). See [TODO.md](../TODO.md).
+
 ## A1. Relevance
 
 **Checked:** all 21 notebooks, all 69 figures, the README sections, and the other folders (`archive/`, `models/`, `dashboard/`, `outputs/tables/`, `scripts/`).
