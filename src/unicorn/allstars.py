@@ -1,4 +1,4 @@
-"""Prior All-Star selections, for the 'already established' Most Improved input (TODO item 1).
+"""Prior All-Star selections, for the 'already established' Most Improved input (notebook 17, D38).
 
 Two steps, so that father/son and same-name pairs (Tim Hardaway / Tim Hardaway Jr., Gary Payton / Gary Payton II)
 are never confused:

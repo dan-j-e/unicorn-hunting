@@ -65,3 +65,20 @@ Every section is relevant. Two gaps carry into later steps:
 - The README links the interactive breakout board again.
 - `models/` removed; the parked dashboard archived locally (`archive/dashboard/`) to revisit later.
 - Notebook 01's cache check corrected: NBA.com has since added two columns and respelled two names, while every statistic still matches, so the check now compares statistics and reports such changes instead of failing.
+
+## A2. Easy to understand
+
+**Checked:** how every notebook opens and closes; whether each names the decisions it rests on; whether the recurring terms are used consistently.
+
+**Found:**
+- No notebook opened with a short answer. A reader had to reach the findings, often 20–50 cells down, to learn the result. The openings followed three or four different styles.
+- Notebooks 00 and 01 had no findings.
+- Several notebooks did not name their decisions (for example, 05 defines D17 and 14 led to D29, but neither said so).
+- Terms were consistent once read closely, but undefined: "leave-one-out" is the short form of "leave-one-season-out"; "× random" (breakouts) and "× a blind guess" (Most Improved) are different measures.
+- Stale lines: notebook 18 still gave Ty Jerome's chance before D39; notebook 19 called calibration "the next step" after notebook 20 had done it; notebooks 17, 18 and 20 cited TODO item numbers that no longer exist; notebook 02 said 703 cached requests where its own output shows 733.
+
+**Done:**
+- Every notebook (00–20) now opens with **In brief**: the question, the answer, the decisions it rests on (linked to the decision log), and where it fits. Status and as-of notes stay directly under the title. Where the original opening also began with "Question", it is now labelled "In detail".
+- Notebooks 00 and 01 close with findings.
+- The stale lines above are corrected.
+- The README gains **Terms used throughout**: a glossary of testing, Most Improved and measurement terms, linked from the contents. Both "× random" and "× a blind guess" are kept, because they measure different things.

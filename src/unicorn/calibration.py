@@ -1,4 +1,4 @@
-"""Honest early-season chances (TODO item 3; notebook 20): temperature scaling of the choice model.
+"""Honest early-season chances (notebook 20, D40): temperature scaling of the choice model.
 
 The model's chance for player i in a season is softmax(s_i), with s_i its score. Early in a season it is
 too sure of its leaders. Temperature scaling replaces s_i with s_i / T: T > 1 spreads the chances out,

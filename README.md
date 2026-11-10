@@ -33,7 +33,7 @@ This project treats scouting like backtesting an investment strategy. For every 
 - [Breakouts and stars](#breakouts-and-stars) · [Unicorns](#unicorns) · [Eight kinds of player](#eight-kinds-of-player)
 - [Most Improved Player](#most-improved-player): [what voters reward](#what-voters-reward) · [before the season](#before-the-season) · [already an All-Star](#why-already-an-all-star-counts-against-a-player) · [how the predictor evolved](#how-the-predictor-evolved)
 - [The live 2026-27 race](#the-live-2026-27-most-improved-race): [is Jerome's lead believable?](#is-ty-jeromes-lead-believable) · [are the chances honest?](#are-the-chances-honest) · [the blip test](#the-blip-test-did-alexander-walkers-leap-last)
-- [How it works](#how-it-works) · [Key decisions](#key-decisions) · [Reproduce](#reproduce) · [Limitations](#limitations) · [What's next](#whats-next)
+- [How it works](#how-it-works) ([terms used throughout](#terms-used-throughout)) · [Key decisions](#key-decisions) · [Reproduce](#reproduce) · [Limitations](#limitations) · [What's next](#whats-next)
 
 ---
 
@@ -428,6 +428,48 @@ The test is not specific to Alexander-Walker, so it was run on 609 leaps from 20
 | `18_ty_jerome_effect` | Past players who started like Ty Jerome, how their seasons ended, and the inputs tested as a result |
 | `19_predictor_evolution` | The Most Improved predictor rebuilt one decision at a time, from the first baseline to today |
 | `20_calibration` | Are the Most Improved chances honest? Reliability, temperature scaling and big early favourites |
+
+### Terms used throughout
+
+Each notebook opens with **In brief** (the question, the answer, the decisions it rests on, and where it fits) and closes with its **findings**. These terms mean the same thing everywhere.
+
+**Testing**
+
+| Term | Meaning |
+|---|---|
+| **Strict test** (walk-forward) | Each season is predicted by a model trained only on *earlier* seasons, exactly as it could have been used at the time. The test we trust most. |
+| **Leave-one-out** (leave-one-season-out) | Each season is predicted by a model trained on every *other* season, later ones included. It uses more data, so it is steadier, but kinder than the strict test. We report both. |
+| **× random** (breakouts) | How many times more often our top picks break out than players picked at random. Also called *lift*. |
+| **× a blind guess** (Most Improved) | How much more chance the model gave the real winner than an even split across every candidate, averaged over seasons (geometric mean). 1× means no better than guessing. |
+| **Calibration** | Whether the chances are honest: players given 10% should win about one time in ten (notebook 20). |
+| **Day *N*** | Days after opening night. Day 19 is about three weeks in; day 85 is about mid-January. |
+
+**Most Improved**
+
+| Term | Meaning |
+|---|---|
+| **Baseline season** | The season a player's improvement is measured from: their most recent earlier season covering at least a third of the games ([D22](docs/DECISIONS.md)). Injury-shortened seasons are skipped. |
+| **Choice model** (conditional logit) | Every candidate in a season competes for one award, so the chances add up to 100%. Each input gets a weight learned from past winners ([D24](docs/DECISIONS.md)). |
+| **Penalty λ** | How strongly the choice model's weights are held back towards zero, so it does not chase a handful of winners. λ = 3 ([D30](docs/DECISIONS.md)). |
+| **Scoring turning point** | Last season's scoring counts for a candidate up to 20 points a game and against them above it: established scorers are MVP material, not Most Improved ([D27](docs/DECISIONS.md)). |
+| **Already an All-Star** | Picked for an All-Star game in any *earlier* season. Counts against a candidate ([D38](docs/DECISIONS.md)). |
+| **Back from a lost season** | The baseline season is older than last season, because last season was lost to injury. Counts against a candidate ([D39](docs/DECISIONS.md)). |
+| **The blip test** | The share of a scoring leap kept at the next All-Star break: 80% or more is real, 50–80% partly real, under 50% a blip ([D33](docs/DECISIONS.md)). |
+
+**Measures**
+
+| Term | Meaning |
+|---|---|
+| **Game score** | A one-number summary of a box-score line: points, rebounds, assists, steals and blocks, less missed shots, turnovers and fouls. |
+| **Usage** | The share of the team's possessions a player finishes while on the court. |
+| **True shooting** | Points per shooting attempt, counting threes and free throws. |
+| **Per 36** | A rate scaled to 36 minutes, so that bench and starting minutes compare fairly. |
+| **Season-relative** (z-score) | A measure compared with that season's rotation players (500+ minutes), in standard deviations. It removes the league's drift, such as the rise of the three. |
+| **Shrinkage** | Pulling a percentage from a small sample towards the average, by an amount that depends on the number of attempts ([D11](docs/DECISIONS.md)). |
+| **Breakout** | A season well above the player's own previous three, in all-round production (beyond normal growth for their age), role or scoring ([D17](docs/DECISIONS.md)). |
+| **Star score, star tier** | Our own six-part all-round measure, half-adjusted for body size; the star tier is each season's top 10% ([D17](docs/DECISIONS.md), [D21](docs/DECISIONS.md)). |
+| **Unicorn** | Either a rare *combination* of strengths, or an *extreme* with no comparable players ([D16](docs/DECISIONS.md)). |
+| **Cluster stability** | How closely two random halves of the data agree on the clusters (adjusted Rand index: 1 is identical, 0 is chance). |
 
 > [!IMPORTANT]
 > **Anti-leakage rules.** Every result above follows these.
