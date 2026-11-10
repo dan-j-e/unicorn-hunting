@@ -82,3 +82,16 @@ Every section is relevant. Two gaps carry into later steps:
 - Notebooks 00 and 01 close with findings.
 - The stale lines above are corrected.
 - The README gains **Terms used throughout**: a glossary of testing, Most Improved and measurement terms, linked from the contents. Both "× random" and "× a blind guess" are kept, because they measure different things.
+
+## A3. Educational
+
+**Checked:** where each method is first named in the notebooks (23 methods and measures, from shrinkage to temperature scaling), and whether it is explained in plain words at that point; whether a newcomer can tell where to start.
+
+**Found:**
+- Most methods are explained well where they first appear: the choice model (10), clustering and its three checks (13), the backtest metrics (06) and temperature scaling (20).
+- Five were named but not explained: shrinkage (02, described only in technical terms), Spearman correlation and the player-level bootstrap (02), ridge regression (04), and logistic regression and the Brier score (06).
+- There was no reading path. The numbering follows the order of the work, so archetypes (13) sit among the Most Improved notebooks, and the first Most Improved notebook (10) is historical.
+
+**Done:**
+- An *In plain words* note at each of the five places, saying what the method does, why it suits the problem, and which decision it belongs to (D10, D11, D15, D19).
+- The README gains **How to read this project**: a ten-minute tour, then three routes (Most Improved, breakouts and stars, unicorns and playing styles) with the order to read the notebooks and why, plus where to check the data.

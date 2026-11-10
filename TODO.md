@@ -12,7 +12,7 @@ The aim: every notebook, chart and section is **relevant**, **easy to understand
 
 - [x] **A1. Relevance** (done 11 November; see [docs/AUDIT.md](docs/AUDIT.md)). List every notebook (00–20), figure and README section. For each, decide: keep as is, update, merge, or move to `archive/`. Flag anything superseded by a later decision (for example, notebook 10's model before D27, D38 and D39).
 - [x] **A2. Easy to understand** (done 11 November; see [docs/AUDIT.md](docs/AUDIT.md)). Every notebook opens with the question, a plain summary of the answer, and its decisions; and closes with findings. Use the same terms everywhere ("strict", "leave-one-out", "× a blind guess", "baseline season"), with a glossary in the README.
-- [ ] **A3. Educational.** Every method choice is explained in words, with a link to its decision; a "how to read this project" path in the README (which notebooks to read, in what order, and why).
+- [x] **A3. Educational** (done 11 November; see [docs/AUDIT.md](docs/AUDIT.md)). Every method choice is explained in words, with a link to its decision; a "how to read this project" path in the README (which notebooks to read, in what order, and why).
 - [ ] **A4. Accuracy.** Every number in the README and in each notebook's findings matches that notebook's latest output. Findings carry the date they were written.
 - [ ] **A5. Code.** Shared logic lives in `src/unicorn/`, not copied between notebooks (for example, the live-race candidate builder appears in notebooks 12, 17, 18 and 19). Consistent names.
 - [ ] **A6. Record.** Write the audit results down (what changed and why), and update the README.

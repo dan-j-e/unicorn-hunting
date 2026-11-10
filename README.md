@@ -29,7 +29,7 @@ This project treats scouting like backtesting an investment strategy. For every 
 
 ## Contents
 
-- [The project in one picture](#the-project-in-one-picture)
+- [The project in one picture](#the-project-in-one-picture) · [How to read this project](#how-to-read-this-project)
 - [Breakouts and stars](#breakouts-and-stars) · [Unicorns](#unicorns) · [Eight kinds of player](#eight-kinds-of-player)
 - [Most Improved Player](#most-improved-player): [what voters reward](#what-voters-reward) · [before the season](#before-the-season) · [already an All-Star](#why-already-an-all-star-counts-against-a-player) · [how the predictor evolved](#how-the-predictor-evolved)
 - [The live 2026-27 race](#the-live-2026-27-most-improved-race): [is Jerome's lead believable?](#is-ty-jeromes-lead-believable) · [are the chances honest?](#are-the-chances-honest) · [the blip test](#the-blip-test-did-alexander-walkers-leap-last)
@@ -52,6 +52,46 @@ flowchart LR
 ```
 
 Every arrow runs forward in time. A prediction for a season uses only seasons, games and selections that came before it. Award votes are used only to mark predictions, never to train a model.
+
+---
+
+## How to read this project
+
+The notebooks are numbered in the order the work was done, not the order a reader needs. Choose a route below. Every notebook opens with **In brief** (question, answer, decisions, where it fits), so reading just those blocks along a route gives the whole story; the [terms](#terms-used-throughout) are defined once, below.
+
+**In ten minutes**
+1. This page: [at a glance](#at-a-glance), then [the live race](#the-live-2026-27-most-improved-race).
+2. [Notebook 19](notebooks/19_predictor_evolution.ipynb): the Most Improved model rebuilt one decision at a time. The best single notebook for seeing how the project reasons.
+3. [The eight kinds of player](docs/EIGHT_CLUSTERS.md).
+
+**Route 1: Most Improved Player** (the main thread)
+
+| Step | Notebook | Why read it |
+|---|---|---|
+| 1 | [10](notebooks/10_mip_leaps.ipynb) | How winners' seasons unfolded, and the first model of what voters reward. Historical, but it is where the reasoning starts |
+| 2 | [14](notebooks/14_team_changes.ipynb) | Where the best preseason clue came from: a 20-point scorer leaving |
+| 3 | [11](notebooks/11_mip_preseason.ipynb) | Predicting before a game is played |
+| 4 | [17](notebooks/17_already_a_star.ipynb), [18](notebooks/18_ty_jerome_effect.ipynb) | Two questions the live race raised, each tested and turned into an input |
+| 5 | [19](notebooks/19_predictor_evolution.ipynb) | What every decision added, on one test bed |
+| 6 | [20](notebooks/20_calibration.ipynb) | Whether the chances can be taken at face value |
+| 7 | [12](notebooks/12_mip_live_race.ipynb) | The live race, using everything above |
+| 8 | [16](notebooks/16_do_leaps_last.ipynb) | Does a leap last? The blip test on 609 past leaps |
+
+[15](notebooks/15_mip_2000_2026.ipynb) is optional: notebook 19 reruns its test with every later decision.
+
+**Route 2: Breakouts and stars**
+
+| Step | Notebook | Why read it |
+|---|---|---|
+| 1 | [02](notebooks/02_player_seasons.ipynb), [03](notebooks/03_player_trajectories.ipynb) | The data: shrinkage, season-relative measures, and how each player has been changing |
+| 2 | [05](notebooks/05_breakout_hunting.ipynb) | What counts as a breakout and a star |
+| 3 | [06](notebooks/06_breakout_backtest.ipynb) | The backtest: which models work, honestly tested |
+| 4 | [09](notebooks/09_routes_to_stardom.ipynb) | Two routes to stardom |
+| 5 | [08](notebooks/08_breakout_board.ipynb), [07](notebooks/07_current_players.ipynb) | Every past season's picks, then the 2026-27 outlook |
+
+**Route 3: Unicorns and playing styles:** [04](notebooks/04_unicorn_hunting.ipynb) (rare combinations and extremes), then [13](notebooks/13_archetypes.ipynb) (the eight kinds of player).
+
+**For checking the data:** [00](notebooks/00_setup.ipynb) and [01](notebooks/01_data_exploration.ipynb) show which NBA.com sources can be trusted, and why some cannot.
 
 ---
 
