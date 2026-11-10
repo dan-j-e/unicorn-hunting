@@ -10,12 +10,13 @@ Work through the three phases in order. Tick each box when it is done, and recor
 
 The aim: every notebook, chart and section is **relevant**, **easy to understand** and **educational** for a reader who did not build it.
 
-- [ ] **A1. Relevance.** List every notebook (00–20), figure and README section. For each, decide: keep as is, update, merge, or move to `archive/`. Flag anything superseded by a later decision (for example, notebook 10's model before D27, D38 and D39).
+- [x] **A1. Relevance** (done 11 November; see [docs/AUDIT.md](docs/AUDIT.md)). List every notebook (00–20), figure and README section. For each, decide: keep as is, update, merge, or move to `archive/`. Flag anything superseded by a later decision (for example, notebook 10's model before D27, D38 and D39).
 - [ ] **A2. Easy to understand.** Every notebook opens with the question, a plain summary of the answer, and its decisions; and closes with findings. Use the same terms everywhere ("strict", "leave-one-out", "× a blind guess", "baseline season"), with a glossary in the README.
 - [ ] **A3. Educational.** Every method choice is explained in words, with a link to its decision; a "how to read this project" path in the README (which notebooks to read, in what order, and why).
 - [ ] **A4. Accuracy.** Every number in the README and in each notebook's findings matches that notebook's latest output. Findings carry the date they were written.
 - [ ] **A5. Code.** Shared logic lives in `src/unicorn/`, not copied between notebooks (for example, the live-race candidate builder appears in notebooks 12, 17, 18 and 19). Consistent names.
-- [ ] **A6. Record.** Write the audit results down (what changed and why), and update the README.
+- [ ] **A6. No emojis anywhere:** README, docs, notebooks (text and outputs), chart titles and labels, code comments and commit-facing text. Use words instead.
+- [ ] **A7. Record.** Write the audit results down (what changed and why), and update the README.
 
 ### Phase B — Points per game is the illustration, not the model
 
@@ -50,7 +51,7 @@ The aim: every notebook, chart and section is **relevant**, **easy to understand
 
 - [ ] **C1. Define the stage and the point in time.** Options: same NBA season number (second season, third…), same age, or both; at a given day of the season (as in the live race) or at season's end.
 - [ ] **C2. Choose the measures.** All metrics, not PPG alone: production (box-score rates), style (notebook 13's 15 measures), role (minutes, usage, starts) and efficiency.
-- [ ] **C3. Adjust for era.** Use notebook 13's findings: compare each measure with its own season's league (13D), and use the 2000-26 history (13E) to see how roles shifted. *Question for you: notebook 14 covered team changes; did you mean 13D and 13E, or is there something from 14 you want used?*
+- [ ] **C3. Adjust for era.** Use notebook 13's findings (confirmed 11 November: notebook 13 only): compare each measure with its own season's league (13D), and use the 2000-26 history (13E) to see how roles shifted.
 - [ ] **C4. Method.** Nearest neighbours for each candidate, and clusters of similar players at each stage.
 - [ ] **C5. Outcomes.** For each group of lookalikes: how the rest of that season went (jump kept, Most Improved votes) and how the career went (next one to three seasons, star and breakout labels, peak, moves between the eight kinds).
 - [ ] **C6. Apply it** to the 2026-27 candidates, and show it in the live race.
