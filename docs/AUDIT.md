@@ -58,3 +58,10 @@ A record of the audit begun on 11 November 2026 (TODO, Phase A). Each step lists
 Every section is relevant. Two gaps carry into later steps:
 - There is no reading path for a newcomer (A3).
 - There is no glossary for the recurring terms (A2).
+
+### Actions completed (11 November)
+- Status notes added at the top of notebooks 10 and 15, pointing to notebooks 12 and 19; both marked as historical in the README's notebook table.
+- Notebook 07 dated: its outlook stands at the end of 2025-26.
+- The README links the interactive breakout board again.
+- `models/` removed; the parked dashboard archived locally (`archive/dashboard/`) to revisit later.
+- Notebook 01's cache check corrected: NBA.com has since added two columns and respelled two names, while every statistic still matches, so the check now compares statistics and reports such changes instead of failing.

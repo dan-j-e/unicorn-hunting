@@ -415,14 +415,14 @@ The test is not specific to Alexander-Walker, so it was run on 609 leaps from 20
 | `05_breakout_hunting` | Breakout labels relative to each player's own past; a six-pillar star measure |
 | `06_breakout_backtest` | Walk-forward backtest: rules, logistic regression, boosted trees, comparables; intervals, calibration, sensitivity |
 | `07_current_players` | 2026-27 outlook; Dëmin's profile and historical comparisons |
-| `08_breakout_board` | Each season's top-10 breakout picks against what happened |
+| `08_breakout_board` | Each season's top-10 breakout picks against what happened (also as an [interactive page](outputs/breakout_board.html)) |
 | `09_routes_to_stardom` | The breakout route against the steady route into the star tier |
-| `10_mip_leaps` | Most Improved: weekly leaps, the choice model, the mid-season race, our top 7 against the real vote |
+| `10_mip_leaps` | Most Improved: weekly leaps, the choice model, the mid-season race, our top 7 against the real vote *(historical: the first model)* |
 | `11_mip_preseason` | What preseason numbers are worth; the 2026-27 preseason top 7 |
 | `12_mip_live_race` | The live 2026-27 race, day by day; three snapshots with reasons; backtests; the blip test |
 | `13_archetypes` | Playing-style clusters: how many, five and then eight named groups ([write-up](docs/EIGHT_CLUSTERS.md)); 2000-01 → 2025-26 on 3-season windows |
 | `14_team_changes` | Does a new team or new teammates make a Most Improved Player? (No; a star leaving does) |
-| `15_mip_2000_2026` | Most Improved 2000-01 → 2025-26 at three points of each season, strictly walk-forward |
+| `15_mip_2000_2026` | Most Improved 2000-01 → 2025-26 at three points of each season, strictly walk-forward *(historical: before D38 and D39; see notebook 19)* |
 | `16_do_leaps_last` | The blip test on 609 leaps since 2000-01, and its victims |
 | `17_already_a_star` | Do voters pass over players who are already stars? |
 | `18_ty_jerome_effect` | Past players who started like Ty Jerome, how their seasons ended, and the inputs tested as a result |
