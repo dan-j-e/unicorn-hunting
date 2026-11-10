@@ -114,3 +114,22 @@ Every section is relevant. Two gaps carry into later steps:
 **Done:**
 - The two stale results and the date are corrected everywhere.
 - Every notebook's In brief now has a **Dated** line: when its findings were written (taken from the git history, ignoring the audit commits) and that the numbers were checked against the outputs on 10 November 2026. For notebook 12 it says the live findings are updated by hand after each run, the latest being 8 November (day 20).
+
+## A5. Code
+
+**Checked:** every function defined inside a notebook, and which of them were copied between notebooks.
+
+**Found:** two pieces of logic had been copied, with small differences between copies:
+- **Scoring a Most Improved model** (fit on the strict or leave-one-out seasons, find the winner's rank, compute × a blind guess) was written out separately in notebooks 11, 17 (twice), 18 and 19, with different names for the same results ("top 7", "in top 7"; "× blind guess", "times better than a blind guess").
+- **The live race's candidate builder** (the 2026-27 player table and the candidates on a given day) was copied between notebooks 12 and 17; notebooks 19 and 20 each built the live race's inputs for past seasons by hand.
+
+**Done:**
+- `src/unicorn/mip_eval.py`: `winner_ranks` and `scorecard` (one way to score a model, with the glossary's names: winner #1, in top 3, in top 7, in top 20, median rank, × a blind guess), `current_frame` (the live race's inputs on any past day) and `LIVE_INPUTS`. Used by notebooks 11, 17, 18, 19 and 20.
+- `src/unicorn/live_race.py`: `live_games`, `player_table_with_live_season` and `race`. Used by notebooks 12 and 17.
+- **Verified unchanged:** notebooks 11, 17, 18, 19 and 20 were re-run; every number in every output and every chart is identical to before. Notebook 12 downloads the newest games whenever it runs, so it was not re-run here (that would also update the live race); instead the shared builder was checked against notebook 12's old code on the same cached data, on days 2, 13, 19, 29 and 84, and gave identical results. Its next update run will use the shared code.
+
+**Left as they are, deliberately:**
+- Notebook 12's own `winner_ranks` re-chooses the turning point inside every fold (D32), which the shared version does not do.
+- Notebook 15's `score` summarises the 2000-26 walk-forward backtest (`mip_history.walk_forward`); the notebook is historical.
+- Notebook 10 uses the earlier `out_of_sample_probabilities` and `summarize` in `mip.py`, which choose λ inside each fold (before D30); the notebook is historical.
+- Two names shared by unrelated helpers (`frame` in 16 is a chart helper; `short` in 08 and 10 shortens player names) are not duplicated logic.

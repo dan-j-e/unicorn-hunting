@@ -576,13 +576,15 @@ src/unicorn/      reusable code
   gamelogs, mip, bref        game-level data, the Most Improved model, voting results
   preseason                  preseason game logs and the pre-opening-night view of each player
   mip_history, leaps         Most Improved 2000-26 backtest; the blip test
+  mip_eval                   how every Most Improved model is scored (strict and leave-one-out)
+  live_race                  the live race's game table and candidates on any day
   allstars                   prior All-Star selections, matched by player ID
   hot_start                  hot-start inputs, including 'back from a lost season'
   calibration                temperature scaling and out-of-sample scores
   archetypes, style_history  playing-style clusters; 3-season style windows 2000-26
   board, stats, plotting     breakout board, statistics helpers, chart style
 scripts/          update_mip_race.sh: refresh the live race in one command
-docs/             DECISIONS.md (decision log), EIGHT_CLUSTERS.md (the eight kinds of player)
+docs/             DECISIONS.md (decision log), EIGHT_CLUSTERS.md (the eight kinds of player), AUDIT.md (the audit)
 outputs/          figures and tables
 data/             raw and processed data (not in git; rebuilt from code)
 ```
