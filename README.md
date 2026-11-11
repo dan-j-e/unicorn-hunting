@@ -10,7 +10,7 @@
 This project treats scouting like backtesting an investment strategy. For every past season, it rebuilds what was knowable at that moment, ranks the players, and then scores those rankings against what actually happened. Only after a method has passed that test is it applied to current players. The Most Improved Player and playing-style work goes back to 2000-01; the breakout and star work starts in 2011-12.
 
 > [!NOTE]
-> **Live: the 2026-27 Most Improved race.** Ty Jerome leads with about an 8% chance on 8 November (day 20 of the season), ahead of a close field. His chance was 26% until the model learned that players returning from a lost season have never won: [is his lead believable?](#is-ty-jeromes-lead-believable)
+> **Live: the 2026-27 Most Improved race.** Ty Jerome leads with about an 8% chance on 10 November (day 22 of the season), ahead of a close field led by Anthony Black and Cooper Flagg. His chance was 26% until the model learned that players returning from a lost season have never won: [is his lead believable?](#is-ty-jeromes-lead-believable)
 
 ![The 2026-27 Most Improved race, day by day](outputs/figures/12_daily_worm.png)
 
@@ -319,17 +319,19 @@ The current model was not designed in one step. It was built through a series of
 ## The live 2026-27 Most Improved race
 
 > [!TIP]
-> **Last updated 8 November 2026 (day 20 of the season).** Run `./scripts/update_mip_race.sh`, or re-run [notebook 12](notebooks/12_mip_live_race.ipynb), to add the newest days.
+> **Last updated 10 November 2026 (day 22 of the season).** Run `./scripts/update_mip_race.sh`, or re-run [notebook 12](notebooks/12_mip_live_race.ipynb), to add the newest days.
 
 | Rank | Player | Chance | Points a game (baseline season) |
 |---|---|---|---|
-| 1 | **Ty Jerome** | 8.3% | 26.6 (12.5) |
-| 2 | Kyshawn George | 4.5% | 18.5 (14.8) |
-| 3 | Ajay Mitchell | 4.0% | 18.9 (13.6) |
-| 4 | Terrence Shannon Jr | 3.1% | 11.1 (5.6) |
-| 5 | Anthony Black | 3.0% | 15.7 (15.0) |
-| 6 | Davion Mitchell | 2.7% | 16.2 (9.3) |
-| 7 | Ayo Dosunmu | 2.5% | 18.1 (14.8) |
+| 1 | **Ty Jerome** | 7.8% | 26.7 (12.5) |
+| 2 | Anthony Black | 4.9% | 17.1 (15.0) |
+| 3 | Cooper Flagg | 4.7% | 25.9 (21.0) |
+| 4 | Franz Wagner | 3.9% | 22.0 (20.6) |
+| 5 | Davion Mitchell | 3.5% | 16.5 (9.3) |
+| 6 | Victor Wembanyama | 3.4% | 30.1 (25.0) |
+| 7 | Kyshawn George | 2.8% | 17.9 (14.8) |
+
+Wembanyama is in the top 7 despite counting as an established All-Star (D38): a jump from 25.0 to 30.1 points is big enough to outweigh it. Of the preseason top 7 (notebook 11), only Cooper Flagg is near the top so far.
 
 - **A leaderboard for every day, with no leakage.** Day *n* uses only games up to day *n*, scored by a model trained on past seasons cut at the same day. Each day is saved once and never recomputed.
 - **Everyone is a candidate,** including previous winners, established scorers, prior All-Stars and players returning from a lost season, each handled by an input rather than by exclusion.
@@ -354,7 +356,7 @@ The current model was not designed in one step. It was built through a series of
 ### Is Ty Jerome's lead believable?
 
 > [!WARNING]
-> **Not at the 26% the model first gave him.** Players with Jerome's profile have rarely won, and big early favourites in general have won only about 1 time in 6 ([see below](#are-the-chances-honest)). Since 10 November the model counts his lost 2025-26 season against him ([D39](docs/DECISIONS.md)), which brought his chance down to 8.3%.
+> **Not at the 26% the model first gave him.** Players with Jerome's profile have rarely won, and big early favourites in general have won only about 1 time in 6 ([see below](#are-the-chances-honest)). Since 10 November the model counts his lost 2025-26 season against him ([D39](docs/DECISIONS.md)), which brought his chance down to about 8% (7.8% on 10 November).
 
 **Have there been Ty Jeromes before?** Every player since 2000-01 who looked like him at the same point of the season (day 19), and how his season ended ([notebook 18](notebooks/18_ty_jerome_effect.ipynb)):
 
@@ -425,7 +427,7 @@ $$
 
 - **Why these lines:** they separate the 14 past winners into clear groups. Nine kept 80%+ the following season, two kept most of it (Markkanen, Daniels) and three fell back sharply (Dragić, Oladipo, Randle).
 - **Why the All-Star break is early enough:** for all 14 past winners, the verdict at the break matched the verdict over the full season.
-- **So far (11 games, to 8 November):** 22.1 points a game, 111% kept. On track for "real", but it is early.
+- **So far (12 games, to 10 November):** 21.9 points a game, 110% kept. On track for "real", but it is early.
 
 <details>
 <summary><b>Backtest: the blip test on 609 leaps since 2000-01, and its victims</b></summary>
