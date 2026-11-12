@@ -1,10 +1,12 @@
 # To do
 
-**Goal for this phase:** make the project clear, educational and honest about its metrics, then build "similar players at the same stage of their career". The analytical decisions are made deliberately, one step at a time.
+**Goal:** make the project honest about its metrics (points as the illustration, not the measure), test it automatically, then build the comparisons (similar players, value against reputation, how players develop) and a live site. The analytical decisions are made deliberately, one step at a time.
 
 ## Current plan
 
 Work through the phases in order. Tick each box when it is done, and record any decision in [docs/DECISIONS.md](docs/DECISIONS.md).
+
+**Order (agreed 12 November, from the ideas review):** B → tests (below) → F → C → D (from January, when there are enough games) → E → G. A is done.
 
 ### Phase A — Audit what we have
 
@@ -44,6 +46,12 @@ The aim: every notebook, chart and section is **relevant**, **easy to understand
 - [ ] **B4. Say it plainly.** A README section and a line in chart captions: "PPG is shown for readability; the model uses these inputs: …". Each model lists its inputs in plain words.
 - [ ] **B5. Record** the results as decisions.
 
+### Between phases — Tests and automatic checks
+Moved up from Later: the strongest sign that the work is engineered, not just explored, and it guards the shared code from the audit.
+- [ ] **T1. Leakage tests:** for example, deleting later seasons changes nothing (as notebook 03 checks by hand), and a live-race day uses no later game.
+- [ ] **T2. Code tests** for the shared modules (`mip_eval`, `live_race`, `leaps`, `allstars`, `hot_start`).
+- [ ] **T3. GitHub Actions** runs them on every pull request, so each shows a green tick (on a small cached sample, not a full download).
+
 ### Phase C — Similar players at the same career stage
 
 **The question:** for each 2026-27 candidate at a given point in time, which past players looked most like him at the same stage of their careers? How did *their* season finish, and how did their careers turn out?
@@ -78,7 +86,24 @@ The aim: every notebook, chart and section is **relevant**, **easy to understand
   - Most Improved votes and wins;
   - career length: seasons still played and minutes kept. Active players' careers are not finished, so this needs survival analysis (careers still running count as "at least this long"), not simple averages.
 - [ ] **E5. Cause or sign?** A move can cause improvement, or simply be what improvement looks like (a player given the ball creates more). The comparison group in E4, and checking whether the move *precedes* the gain, separate the two as far as the data allows. Say plainly where it cannot.
-- [ ] **E6. Record** the decisions and update the README.
+- [ ] **E6. Rookie profiles and growth paths ("the Jack McVeigh rule"; added 12 November).** The rookie-centred half of this phase: each rookie's starting profile (style, body, production, role), the paths players with that profile actually took (which kinds they moved into; how often each path led to a breakout, a star season, a long or short career), the **windows** when each kind of growth tends to happen or stop, and **drift**: how far a player has moved from the usual path for his starting profile. Builds on notebook 03 (normal development), Phase C and E1–E5. A single worked example first.
+- [ ] **E7. Record** the decisions and update the README.
+
+### Phase F — Value or reputation? ("the Jaylen Brown rule"; added 12 November)
+
+**The question:** is a player actually good, or good to a casual fan? Two numbers for every player-season, and the gap between them.
+
+- [ ] **F1. Value:** our own measure of how much a player helps his team win, which can be added to a box score as one number. Start with a box-score regression (as BPM is built): weight every box-score statistic by how well it explains the team's point margin with the player on the court. Plus-minus adjusted for teammates and opponents (RAPM-style) only later, if it clearly helps: it needs play-by-play or lineup data and is noisy for one season. Compare with our star score (notebook 05).
+- [ ] **F2. Reputation:** what a casual fan sees: points per game, All-Star selections, perhaps award votes.
+- [ ] **F3. Does it work?** The value measure must predict next season's team results and on-court margin better than points per game, tested strictly on later seasons.
+- [ ] **F4. The gap:** who is better than his reputation, and who is worse; how the gap changes over a career.
+- [ ] **F5. Use it:** as an input to the breakout and Most Improved models (the natural end point of Phase B), and record the decisions.
+
+### Phase G — A live site (added 12 November)
+
+- [ ] **G1. GitHub Pages** (chosen over reviving the Streamlit app): a static site at `dan-j-e.github.io/unicorn-hunting` with the live Most Improved race (today's board, the daily chart, each stage's view), the breakout board and the eight kinds of player.
+- [ ] **G2. Rebuilt by GitHub Actions** after each race update, once the tests (T1–T3) are in place, so every rebuild is checked first.
+- [ ] **G3. Publish derived rankings and charts only,** never NBA.com's raw data.
 
 ## Scheduled
 - **All-Star break (February):** re-run notebook 12. It prints Alexander-Walker's blip test verdict (set in advance, D33) and freezes the live race's turning point (D32). Then update the README.
@@ -86,7 +111,6 @@ The aim: every notebook, chart and section is **relevant**, **easy to understand
 
 ## Later
 - **Sentiment trial** (moved here 10 November). Does public attention explain voters beyond the box score, such as Harden's 7th in 2012-13? Options: Google Trends first (history back to 2004, free, but unofficial and measures fans rather than voters); news headlines (GDELT); writers' Most Improved ladders; Reddit or X going forward only. Each source must show what people said at that date, or it leaks the result.
-- **Tests and automatic checks:** leakage tests and GitHub Actions, so every pull request shows a green tick.
 - **Scouting cards:** the three or four reasons behind each pick, with the closest comparisons from Phase C.
 - **Basketball-Reference / CraftedNBA metrics** (VORP, BPM, WS): as extra breakout inputs, or as a check on star labels.
 - **Early playoff experience** as a predictor of development, unicorns or breakouts.
@@ -96,6 +120,7 @@ The aim: every notebook, chart and section is **relevant**, **easy to understand
 - **Do Pests take more charges?** A check on The Pest's description using hustle stats from 2015-16.
 
 ## Done
+- **Every stage of the predictor on the 2026-27 race** (12 November; notebook 19B; pull request #6).
 - **Audit (Phase A):** every notebook relevant, opening with In brief and closing with dated findings; glossary and reading path in the README; numbers checked against outputs; shared scoring and live-race code (10 November; [docs/AUDIT.md](docs/AUDIT.md); pull request #5).
 - **Already an All-Star counts against a Most Improved candidate** (9 November; notebook 17, D38; pull request #1).
 - **The Ty Jerome effect:** lookalikes since 2000-01, and "back from a lost season" added to both models (10 November; notebooks 18–19, D39; pull requests #2–#3). Age × early jump, "head start" and games share were tested and rejected.
@@ -104,7 +129,7 @@ The aim: every notebook, chart and section is **relevant**, **easy to understand
 
 ## Parked
 - **Blogging and story-led write-ups:** not for now.
-- **Streamlit dashboard:** archived on 10 November (kept locally in `archive/dashboard/`, not in the repository). To revisit some time.
+- **Streamlit dashboard:** archived on 10 November (kept locally in `archive/dashboard/`, not in the repository). The live site is now Phase G, on GitHub Pages; the Streamlit app stays parked as a possible add-on for exploring.
 
 ## Decided against
 - **Betting markets as a factor:** not used in the model.
