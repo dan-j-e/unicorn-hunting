@@ -3,7 +3,7 @@
 ![Python 3.12](https://img.shields.io/badge/python-3.12-2a78d6)
 ![Data: NBA.com and Basketball-Reference](https://img.shields.io/badge/data-NBA.com%20%7C%20Basketball--Reference-1baf7a)
 ![Method: walk-forward backtesting](https://img.shields.io/badge/method-walk--forward%20backtesting-eb6834)
-![Decisions logged: 42](https://img.shields.io/badge/decisions%20logged-42-eda100)
+![Decisions logged: 45](https://img.shields.io/badge/decisions%20logged-45-eda100)
 
 **Could we have identified future NBA breakouts, stars and "unicorns" before they became obvious, using only what was known at the time?**
 
@@ -367,7 +367,7 @@ Where points did stand alone was in four **rules** that shape the models. Each i
 ## The live 2026-27 Most Improved race
 
 > [!TIP]
-> **Last updated 11 November 2026 (day 23 of the season).** Run `./scripts/update_mip_race.sh`, or re-run [notebook 12](notebooks/12_mip_live_race.ipynb), to add the newest days.
+> **Last updated 11 November 2026 (day 23 of the season). The model is frozen until the season ends ([D44](docs/DECISIONS.md)),** so 2026-27 is a genuine out-of-sample test; the race still updates daily. Run `./scripts/update_mip_race.sh`, or re-run [notebook 12](notebooks/12_mip_live_race.ipynb), to add the newest days.
 
 | Rank | Player | Chance | Points a game (baseline season) |
 |---|---|---|---|
@@ -584,7 +584,7 @@ Each notebook opens with **In brief** (the question, the answer, the decisions i
 
 ## Key decisions
 
-All 42 decisions, each with its evidence, are logged in [docs/DECISIONS.md](docs/DECISIONS.md). The ones that most shape the results:
+All 45 decisions, each with its evidence, are logged in [docs/DECISIONS.md](docs/DECISIONS.md). The ones that most shape the results:
 
 | # | Decision | Why |
 |---|---|---|
@@ -596,6 +596,8 @@ All 42 decisions, each with its evidence, are logged in [docs/DECISIONS.md](docs
 | D32 | The live race's turning point chosen by the data each day, frozen at the All-Star break | The same leak-free method as the 2000-26 backtest; stops late swings |
 | D41 | The live race's turning point on game score, not points; preseason keeps points | Won the strict test at 2 of 3 points of the season by a rule set before the results; voters discount established all-round players, not just scorers |
 | D42 | "Already clearly a star" (baseline game score 16+, last season in our star tier) counts against a candidate | Both together beat either alone on the same seasons (+6.4% strict); elite stars who improve get MVP votes, not Most Improved |
+| D44 | The live model frozen until the end of 2026-27 | The core gains are robust; the recent tweaks are small or noise, and several were prompted by the live board ([audit](docs/AUDIT.md)) |
+| D45 | Betting markets as a benchmark, never an input | Weekly snapshots scored against our chances at season's end |
 | D33 | The blip test written down before the answer is known | The verdict cannot be adjusted with hindsight |
 | D35 | Eight playing-style clusters | Less stable than five, but every split has a basketball meaning |
 | D38 | "Already an All-Star" counts against a candidate | 0 of 26 winners; improved every backtest |
@@ -630,6 +632,7 @@ src/unicorn/      reusable code
   gamelogs, mip, bref        game-level data, the Most Improved model, voting results
   preseason                  preseason game logs and the pre-opening-night view of each player
   mip_history, leaps         Most Improved 2000-26 backtest; the blip test
+  established                'already clearly a star' inputs (D42)
   mip_eval                   how every Most Improved model is scored (strict and leave-one-out)
   live_race                  the live race's game table and candidates on any day
   allstars                   prior All-Star selections, matched by player ID
@@ -637,7 +640,8 @@ src/unicorn/      reusable code
   calibration                temperature scaling and out-of-sample scores
   archetypes, style_history  playing-style clusters; 3-season style windows 2000-26
   board, stats, plotting     breakout board, statistics helpers, chart style
-scripts/          update_mip_race.sh: refresh the live race in one command
+scripts/          update_mip_race.sh: refresh the live race in one command; audit_gains.py: are the model's gains real?
+benchmarks/       weekly betting-market snapshots, scored against our chances at season's end (never a model input)
 docs/             DECISIONS.md (decision log), EIGHT_CLUSTERS.md (the eight kinds of player), AUDIT.md (the project audit)
 outputs/          figures and tables
 data/             raw and processed data (not in git; rebuilt from code)
