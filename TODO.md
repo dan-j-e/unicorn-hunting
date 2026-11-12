@@ -36,12 +36,13 @@ The aim: every notebook, chart and section is **relevant**, **easy to understand
 | **The blip test and leaps** (D33, notebook 16) | Share of the PPG jump kept | **The definition** |
 | **Ty Jerome lookalikes** (notebook 18) | Up 8+ PPG at day 19 | **The definition** |
 
-- [ ] **B1. Inventory.** Confirm and extend the table above for every model and rule, and add it to the README.
+- [x] **B1. Inventory** (12 November; notebook 21A). Confirm and extend the table above for every model and rule, and add it to the README.
 - [ ] **B2. Test all-round versions of the PPG-defined rules.** For each rule above, test the same idea on an all-round measure (game score, or a combination of production measures) and keep whichever does better in the strict test:
-  - the turning point on last season's game score;
+  - [x] the turning point on last season's game score (12 November; notebook 21B, D41): **game score in the live race; points kept before the season**;
   - "a star left", measured by usage or game score rather than points;
   - the blip test and leaps on game score;
   - lookalikes on an all-round jump.
+- [ ] **B2b. "Already clearly a star" beyond All-Star selections** (raised 12 November: Wembanyama and Flagg high in the live race). A candidate input, tested as D38 was: last season in our star tier (notebook 05), or a high star score. Kept only if it helps in the strict test, not because it moves particular players.
 - [ ] **B3. Test more metrics in the Most Improved models.** Usage, shot profile and the other style measures from notebook 13, and box-score defence. Note: some only exist from 2011-12, which shortens the test.
 - [ ] **B4. Say it plainly.** A README section and a line in chart captions: "PPG is shown for readability; the model uses these inputs: …". Each model lists its inputs in plain words.
 - [ ] **B5. Record** the results as decisions.

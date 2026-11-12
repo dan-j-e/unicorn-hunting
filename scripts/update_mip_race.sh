@@ -15,7 +15,7 @@ last = d["day"].max()
 today = d[d["day"] == last].nsmallest(7, "rank")
 prev = d[d["day"] == last - 1].set_index("player_id")["rank"]
 k = today["turning_point"].iloc[0]
-print(f"\nMost Improved race after day {last} ({today['date'].iloc[0]:%d %b %Y}); scoring turning point: {'none' if pd.isna(k) else int(k)}\n")
+print(f"\nMost Improved race after day {last} ({today['date'].iloc[0]:%d %b %Y}); turning point (baseline game score, D41): {'none' if pd.isna(k) else f'{k:g}'}\n")
 for _, r in today.iterrows():
     was = prev.get(r["player_id"])
     move = "new" if pd.isna(was) else f"{int(was) - int(r['rank']):+d}"
