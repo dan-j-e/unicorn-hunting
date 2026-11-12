@@ -316,6 +316,17 @@ The current model was not designed in one step. It was built through a series of
 - **The latest steps are smaller, as expected:** about 7% for the All-Star input and 1–2% for the lost-season input. Each was kept because it improved every test, and both matter most at the top of the list, where they remove players voters were never going to choose.
 - **The preseason predictor followed the same path,** from 1.4× a blind guess on last season alone to 6.0× with everything known on opening night. Its largest steps were preseason form ([D26](docs/DECISIONS.md)) and an open role (D29).
 
+#### Every stage on today's race
+
+The same seven stages, each trained as the live race is and applied to 2026-27 (10 November, day 21 after opening night). Stage 6 is the live race itself.
+
+![The 2026-27 race under each stage](outputs/figures/19_stages_live.png)
+
+- **The stages agree on the leader, and disagree on how sure to be.** From stage 2 onwards Ty Jerome is #1 under every stage, with a chance of 22–35%. Only the last decision, counting his lost 2025-26 season against him (D39), brings him down to 7.8%.
+- **The baseline fix (stage 2) is what puts Jerome on top.** Against his injury-shortened 2025-26 (15 games, 19.7 points) his jump is about +7 points; against his last full season (12.5 points) it is +14.
+- **The All-Star input (stage 5) is what moves Victor Wembanyama** from 2nd to 6th: his jump is big, but voters have never picked a prior All-Star.
+- **The voter inputs (stage 3) bring in Anthony Black,** who is young (23) and whose jump is large for him. **The turning point (stage 4) brings in Franz Wagner,** whose 20.6-point baseline sits right at it, and **pushes out Luka Dončić,** an established scorer far above it.
+
 ## The live 2026-27 Most Improved race
 
 > [!TIP]
@@ -468,7 +479,7 @@ The test is not specific to Alexander-Walker, so it was run on 609 leaps from 20
 | `16_do_leaps_last` | The blip test on 609 leaps since 2000-01, and its victims |
 | `17_already_a_star` | Do voters pass over players who are already stars? |
 | `18_ty_jerome_effect` | Past players who started like Ty Jerome, how their seasons ended, and the inputs tested as a result |
-| `19_predictor_evolution` | The Most Improved predictor rebuilt one decision at a time, from the first baseline to today |
+| `19_predictor_evolution` | The Most Improved predictor rebuilt one decision at a time, from the first baseline to today; every stage on the 2026-27 race (19B) |
 | `20_calibration` | Are the Most Improved chances honest? Reliability, temperature scaling and big early favourites |
 
 ### Terms used throughout
