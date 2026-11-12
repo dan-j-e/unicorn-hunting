@@ -624,9 +624,15 @@ The full list, with options and priorities, is in [TODO.md](TODO.md).
 - [x] Show how the predictor evolved, one decision at a time ([notebook 19](notebooks/19_predictor_evolution.ipynb))
 - [x] Check whether the chances are honest: they are, except for big early favourites, which are now flagged ([D40](docs/DECISIONS.md))
 - [x] Audit the project: relevant, easy to understand and educational throughout ([what changed](docs/AUDIT.md))
+- [x] Run every stage of the predictor on today's race ([notebook 19B](notebooks/19_predictor_evolution.ipynb))
 - [ ] Make points per game the illustration, not the model: test all-round versions of every PPG-defined rule, and more metrics in the models
+- [ ] Tests and automatic checks on every pull request
+- [ ] Value or reputation? Our own measure of what a player is worth, against what a casual fan sees
 - [ ] Find similar players at the same career stage, with era adjustment, and follow how their seasons and careers turned out
-- [ ] Later: a sentiment trial, scouting cards, and tests with automatic checks
+- [ ] Track the 2026-27 breakout predictions as the season unfolds
+- [ ] Does changing your game pay off? Moves between the eight kinds, and the growth paths open to rookies
+- [ ] A live site on GitHub Pages
+- [ ] Later: a sentiment trial and scouting cards
 
 [^strict]: **Strict** or **walk-forward**: each season is predicted by a model trained only on earlier seasons, exactly as it could have been at the time. **Leave-one-season-out**, used where noted, predicts each season from all the others, including later ones; it uses more data but is less faithful to what was knowable.
 [^gamescore]: **Game score** (John Hollinger) combines a player's points, shooting, rebounds, assists, steals, blocks, fouls and turnovers into a single number for one game. About 10 is an average game; 40 is an exceptional one.
