@@ -122,6 +122,7 @@ Moved up from Later: the strongest sign that the work is engineered, not just ex
 - **Do Pests take more charges?** A check on The Pest's description using hustle stats from 2015-16.
 
 ## Done
+- **Beyond points per game, first rules:** the live race's turning point on game score (D41) and "already clearly a star" (D42); notebook 21 (12 November; pull request #7).
 - **Every stage of the predictor on the 2026-27 race** (12 November; notebook 19B; pull request #6).
 - **Audit (Phase A):** every notebook relevant, opening with In brief and closing with dated findings; glossary and reading path in the README; numbers checked against outputs; shared scoring and live-race code (10 November; [docs/AUDIT.md](docs/AUDIT.md); pull request #5).
 - **Already an All-Star counts against a Most Improved candidate** (9 November; notebook 17, D38; pull request #1).
