@@ -42,7 +42,7 @@ The aim: every notebook, chart and section is **relevant**, **easy to understand
   - "a star left", measured by usage or game score rather than points;
   - the blip test and leaps on game score;
   - lookalikes on an all-round jump.
-- [ ] **B2b. "Already clearly a star" beyond All-Star selections** (raised 12 November: Wembanyama and Flagg high in the live race). A candidate input, tested as D38 was: last season in our star tier (notebook 05), or a high star score. Kept only if it helps in the strict test, not because it moves particular players.
+- [x] **B2b. "Already clearly a star" beyond All-Star selections** (12 November; notebook 21C–21D, D42): a baseline game score of 16+ and last season in our star tier, both now in the live race. Decided by the strict test on the same seasons, not by the board.
 - [ ] **B3. Test more metrics in the Most Improved models.** Usage, shot profile and the other style measures from notebook 13, and box-score defence. Note: some only exist from 2011-12, which shortens the test.
 - [ ] **B4. Say it plainly.** A README section and a line in chart captions: "PPG is shown for readability; the model uses these inputs: …". Each model lists its inputs in plain words.
 - [ ] **B5. Record** the results as decisions.
@@ -111,6 +111,7 @@ Moved up from Later: the strongest sign that the work is engineered, not just ex
 - **Whenever you like:** `./scripts/update_mip_race.sh` updates the live race. Its README lines and notebook findings are updated by hand.
 
 ## Later
+- **Speed: parallel backtests and parquet caches** (added 12 November; not needed yet). Notebook 21 takes about 30 minutes, almost all of it model fitting: thresholds are chosen inside every training set, so a tuned variant is about 500 fits. Options, by payoff: (1) run the season loops in parallel with joblib (roughly 4–6× faster, identical results); (2) cache the historical game tables (2000-26, both baseline versions) as parquet in `data/processed` (about 2 minutes saved per Most Improved notebook; the live season always loads fresh); (3) save expensive results and reload them unless asked to recompute (only with a clear recompute switch, as notebook 12's daily file does). Parquet rather than pickle: pickle can run code when loaded and breaks across pandas versions.
 - **Sentiment trial** (moved here 10 November). Does public attention explain voters beyond the box score, such as Harden's 7th in 2012-13? Options: Google Trends first (history back to 2004, free, but unofficial and measures fans rather than voters); news headlines (GDELT); writers' Most Improved ladders; Reddit or X going forward only. Each source must show what people said at that date, or it leaks the result.
 - **Scouting cards:** the three or four reasons behind each pick, with the closest comparisons from Phase C.
 - **Basketball-Reference / CraftedNBA metrics** (VORP, BPM, WS): as extra breakout inputs, or as a check on star labels.
