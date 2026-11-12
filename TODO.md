@@ -6,6 +6,8 @@
 
 Work through the phases in order. Tick each box when it is done, and record any decision in [docs/DECISIONS.md](docs/DECISIONS.md).
 
+> **The live Most Improved model is frozen until the end of 2026-27 (D44, 12 November).** Bug fixes only. New Most Improved ideas are tested and recorded, but take effect from 2027-28. See [Audit 2](docs/AUDIT.md).
+
 **Order (agreed 12 November, from the ideas review):** B → tests (below) → F → C → D (from January, when there are enough games) → E → G. A is done.
 
 ### Phase A — Audit what we have
@@ -39,11 +41,11 @@ The aim: every notebook, chart and section is **relevant**, **easy to understand
 - [x] **B1. Inventory** (12 November; notebook 21A). Confirm and extend the table above for every model and rule, and add it to the README.
 - [ ] **B2. Test all-round versions of the PPG-defined rules.** For each rule above, test the same idea on an all-round measure (game score, or a combination of production measures) and keep whichever does better in the strict test:
   - [x] the turning point on last season's game score (12 November; notebook 21B, D41): **game score in the live race; points kept before the season**;
-  - "a star left", measured by usage or game score rather than points;
+  - [x] "a star left", measured by usage or game score rather than points (12 November; notebook 21E, D43): **points kept**;
   - the blip test and leaps on game score;
   - lookalikes on an all-round jump.
 - [x] **B2b. "Already clearly a star" beyond All-Star selections** (12 November; notebook 21C–21D, D42): a baseline game score of 16+ and last season in our star tier, both now in the live race. Decided by the strict test on the same seasons, not by the board.
-- [ ] **B3. Test more metrics in the Most Improved models.** Usage, shot profile and the other style measures from notebook 13, and box-score defence. Note: some only exist from 2011-12, which shortens the test.
+- [ ] **B3. Test more metrics in the Most Improved models** (after the season, for 2027-28: the live model is frozen, D44). Usage, shot profile and the other style measures from notebook 13, and box-score defence. Note: some only exist from 2011-12, which shortens the test.
 - [ ] **B4. Say it plainly.** A README section and a line in chart captions: "PPG is shown for readability; the model uses these inputs: …". Each model lists its inputs in plain words.
 - [ ] **B5. Record** the results as decisions.
 
@@ -107,6 +109,8 @@ Moved up from Later: the strongest sign that the work is engineered, not just ex
 - [ ] **G3. Publish derived rankings and charts only,** never NBA.com's raw data.
 
 ## Scheduled
+- **Weekly: a betting-market snapshot** (D45). Add the top names' prices to `benchmarks/mip_markets_2026_27.csv` from the public pages (date seen, source, price, the page's link). Never used as a model input.
+- **End of 2026-27: score the season.** Our dated chances against the market snapshots (same scoring for both), the preseason top 7, and the breakout predictions (Phase D). Then open the model for changes again (D44).
 - **All-Star break (February):** re-run notebook 12. It prints Alexander-Walker's blip test verdict (set in advance, D33) and freezes the live race's turning point (D32). Then update the README.
 - **Whenever you like:** `./scripts/update_mip_race.sh` updates the live race. Its README lines and notebook findings are updated by hand.
 
@@ -135,4 +139,4 @@ Moved up from Later: the strongest sign that the work is engineered, not just ex
 - **Streamlit dashboard:** archived on 10 November (kept locally in `archive/dashboard/`, not in the repository). The live site is now Phase G, on GitHub Pages; the Streamlit app stays parked as a possible add-on for exploring.
 
 ## Decided against
-- **Betting markets as a factor:** not used in the model.
+- **Betting markets as a factor:** not used in the model. They are a benchmark only (D45).

@@ -1,0 +1,5 @@
+date_seen,source,market_type,player,price,implied_chance,verified,url,note
+2026-11-12,Kalshi,prediction market,Ty Jerome,,0.37,no (search summary; page refused the request),https://kalshi.com/markets/kxnbamimp/nba-most-improved-player/kxnbamimp-27,check the season label on the page
+2026-11-12,Kalshi,prediction market,Ajay Mitchell,,0.21,no (search summary; page refused the request),https://kalshi.com/markets/kxnbamimp/nba-most-improved-player/kxnbamimp-27,check the season label on the page
+2026-11-12,FanDuel (via a search summary),sportsbook,Ty Jerome,+250,,no (search summary),,implied chance before the bookmaker's margin: 100/(250+100) = 0.286
+2026-11-12,FanDuel (via a search summary),sportsbook,Ajay Mitchell,+600,,no (search summary),,implied chance before the bookmaker's margin: 100/(600+100) = 0.143

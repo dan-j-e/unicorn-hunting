@@ -198,3 +198,27 @@ def add_star_left(frame, pre, regular, threshold=STAR_LEFT_PPG):
     f["star_arrived"] = [float(k in gained) for k in keys]
     f["star_left"] = f["star_left_any"] * (1 - f["star_arrived"])
     return f
+
+
+def departures(pre, regular, ps):
+    """Every player seen with a different team in the next preseason: his last team, his new team, and last season's
+    points, game score (per game, from game logs) and usage (player_season). Used to test D29 on other measures (notebook 21E)."""
+    g = regular[regular["season_start"] >= 2011]
+    end = g.sort_values("game_date").groupby(["player_id", "season_start"]).agg(
+        team=("team_id", "last"), games=("game_id", "size"), ppg=("pts", "mean"), gspg=("game_score", "mean")).reset_index()
+    usg = ps.set_index(["player_id", "season_start"])["usg_pct"]
+    end["usg"] = [usg.get(k, float("nan")) for k in zip(end["player_id"], end["season_start"])]
+    pre_team = pre.sort_values("game_date").groupby(["player_id", "season_start"])["team_id"].last()
+    end["pre_team_next"] = [pre_team.get((p, s + 1)) for p, s in zip(end["player_id"], end["season_start"])]
+    moved = end[end["pre_team_next"].notna() & (end["pre_team_next"] != end["team"])].copy()
+    moved["season_start_next"] = moved["season_start"] + 1
+    return end, moved
+
+
+def star_left_on(frame, moved, col, k):
+    """star_left on any measure: 1 if a player with `col` >= k left the team over the summer and none with `col` >= k arrived."""
+    big = moved[moved[col] >= k]
+    lost = set(zip(big["team"], big["season_start_next"]))
+    gained = set(zip(big["pre_team_next"], big["season_start_next"]))
+    keys = list(zip(frame["team_id"], frame["season_start"]))
+    return frame.assign(extra=[float(t in lost and t not in gained) for t in keys])

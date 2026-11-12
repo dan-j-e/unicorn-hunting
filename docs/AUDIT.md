@@ -149,3 +149,49 @@ Every section is relevant. Two gaps carry into later steps:
 - Notebook 15's `score` summarises the 2000-26 walk-forward backtest (`mip_history.walk_forward`); the notebook is historical.
 - Notebook 10 uses the earlier `out_of_sample_probabilities` and `summarize` in `mip.py`, which choose λ inside each fold (before D30); the notebook is historical.
 - Two names shared by unrelated helpers (`frame` in 16 is a chart helper; `short` in 08 and 10 shortens player names) are not duplicated logic.
+
+---
+
+# Audit 2: overfitting, focus and the betting markets (12 November 2026)
+
+**Why:** after three model changes in three days (D41–D43 tested, D41 and D42 adopted), and a live board that disagrees with the betting markets, the question was whether the model is improving or overfitting, and whether the work is on track.
+
+## Are the recent gains real?
+
+Method ([scripts/audit_gains.py](../scripts/audit_gains.py)): for each model version, every season's strict-test score (the log of the winner's chance times the number of candidates); versions compared season by season; the seasons resampled 5,000 times.
+
+| Comparison | Day 19 | Day 85 | Season's end | Seasons better / worse (season's end) | Verdict |
+|---|---|---|---|---|---|
+| Stage 3 (the voter inputs) → today (D42) | 5.1× → 6.8× | 16.1× → 20.5× | 19.2× → 26.1× | 16 / 5 | **Real:** better in every resample (+21% to +54% at season's end) |
+| 10 November (D39) → D41 (game-score turning point) | 6.5× → 6.6× | 19.9× → 19.8× | 24.9× → 24.9× | 9 / 12 | **No measurable change:** 40–57% of resamples |
+| D41 → D42 (already clearly a star) | 6.6× → 6.8× | 19.8× → 20.5× | 24.9× → 26.1× | 19 / 2 | **Consistent but small:** +2% to +7% |
+| 10 November → today | 6.5× → 6.8× | 19.9× → 20.5× | 24.9× → 26.1× | 11 / 10 | **Not clearly:** 71–86% of resamples; the range includes no gain |
+
+**Reading it:**
+- The model's structure (baseline fix, voter inputs, turning point, already an All-Star) is robust.
+- The recent changes are small. D41 is a tie on this test bed (it passed notebook 21B's rule by margins too small to detect). D42 is consistent, but it was chosen *after* looking at these seasons, which resampling cannot correct for.
+- About 21 inputs now explain 26 winners, after roughly a dozen tests on the same seasons. The penalty (λ = 3) limits the damage, but each new input is now more likely to fit noise than signal.
+
+## Are we getting sidetracked?
+
+- **Three of the last five model changes were prompted by names on the live board** (D38: Sengun; D39: Jerome; D42: Wembanyama and Flagg). Each passed a test written in advance, but choosing what to test because the board "looks wrong" pulls the model towards our intuitions.
+- **Phase B drifted.** Two of its four rules are tested (D41, D43); an unplanned input was added (D42); the blip test, the lookalikes and B3 are still open.
+- **Two bugs reached the outputs** on 12 November (a calibration cell building its own frame on the old turning point; missing baselines in the new inputs). Both were caught by hand and fixed; automated tests (T1–T3) would catch this class of bug.
+
+## Our board against the betting markets (12 November)
+
+| | Our board (11 November) | Markets (snapshots of varying dates) |
+|---|---|---|
+| Ty Jerome | #1, 12.3% | #1: about 37% (Kalshi), +250 at FanDuel (about 28% before the margin) |
+| Ajay Mitchell | 5th, 3.3% | #2: 21% (Kalshi), +600 |
+| Brandon Miller, Dylan Harper | 42nd; not near the top | near the top on some books |
+
+- **Agreement on who leads; disagreement on how sure to be.** Our caution is deliberate and tested: 3 of 19 early favourites given 25%+ won (D40), and no player returning from a lost season has won (D39).
+- **The market names we lack come from expectations, not the box score.** Brandon Miller (20.2 → 20.6 points) has not jumped yet; Dylan Harper is a second-year player, and none has won since 2006-07.
+- **Markets are not the truth either,** and copying them would be its own form of overfitting.
+
+## Decisions
+
+- **D44: the live model is frozen** from 12 November until the end of 2026-27 (bug fixes only), so this season is a genuine out-of-sample test. New ideas are tested and recorded for 2027-28.
+- **D45: the markets become a benchmark, not an input.** A weekly snapshot (`benchmarks/mip_markets_2026_27.csv`) is scored against our dated chances at season's end.
+- **Next:** finish Phase B without touching the live model (the blip test shown alongside; the lookalikes), then the automated tests (T1–T3).
