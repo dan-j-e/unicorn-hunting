@@ -8,6 +8,7 @@ import pandas as pd
 from nba_api.stats.endpoints import leaguegamelog
 
 from unicorn.allstars import add_prior_allstar
+from unicorn.established import add_established
 from unicorn.gamelogs import BASELINE_MIN_SHARE, GAMELOG_SEASONS, build_game_table, load_game_logs, mip_candidates
 from unicorn.hot_start import add_stale
 from unicorn.labels import MIP_WINNERS
@@ -39,11 +40,11 @@ def player_table_with_live_season(ps=None):
 
 def race(games, ps_live, day, selections):
     """Eligible candidates in every season from 2011-12, using only games up to `day` days after that season's opener.
-    Previous winners stay in the pool (flagged); already an All-Star (D38) and back from a lost season (D39) are added."""
+    Previous winners stay in the pool (flagged); already an All-Star (D38), back from a lost season (D39) and already clearly a star (D42) are added."""
     first_win = {pid: int(s[:4]) for s, pid in sorted(MIP_WINNERS.items(), reverse=True)}
     c = mip_candidates(games[games["day"] <= day], ps_live, min_prior_seasons=1, season_stats=False)
     c["second_year"] = (c["prior_seasons"] == 1).astype(float)
     c["mip"] = [MIP_WINNERS.get(s) == p for s, p in zip(c["season"], c["player_id"])]
     c["previous_winner"] = [first_win.get(p, 9999) < y for p, y in zip(c["player_id"], c["season_start"])]
-    c = add_stale(add_prior_allstar(c, selections))
+    c = add_established(add_stale(add_prior_allstar(c, selections)))     # D38, D39, D42
     return c[c["eligible"] & (c["season_start"] >= FIRST_SEASON)].reset_index(drop=True)
