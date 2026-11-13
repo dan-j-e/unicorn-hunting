@@ -4,11 +4,24 @@
 
 ## Current plan
 
+### Restructure: one notebook per segment (agreed 13 November, D47)
+
+Each segment is one notebook, built from the existing ones, on its own branch and pull request, in this order. The originals move to `notebooks/archive/` as each segment replaces them. Every number is checked against the original output before it goes in.
+
+- [x] **0 Data** (`0_data.ipynb`, from 00–03 and the table builds of 04, 10 and 17; 13 November). Builds every table the segments read. Breakout, star and unicorn work (04–09) archived.
+- [ ] **1 The basic Most Improved race** (`1_mip_basic.ipynb`, from 10).
+- [ ] **2 Playing styles** (`2_play_styles.ipynb`, from 13).
+- [ ] **3 Candidate investigations** (`3_mip_investigations.ipynb`, from 14, 16, 17, 18, 20, 21): short case files (question, finding, what it changed in the model).
+- [ ] **4 The revised race** (`4_mip_race.ipynb`, from 11, 15, 19, 22): every model iteration and both leak-free tests at five checkpoints: after the previous season, preseason, 15 team games, the All-Star break, season's end. **To decide first:** the exact rule for "15 team games" (the day the median team reaches 15, or each player's own team).
+- [ ] **4b The live race** (`4b_live_race.ipynb`, from 12): the daily board only. Update the script's path.
+- [ ] **README** rewritten around the four segments once they exist.
+
+
 Work through the phases in order. Tick each box when it is done, and record any decision in [docs/DECISIONS.md](docs/DECISIONS.md).
 
 > **The live Most Improved model is frozen until the end of 2026-27 (D44, 12 November).** Bug fixes only. New Most Improved ideas are tested and recorded, but take effect from 2027-28. See [Audit 2](docs/AUDIT.md).
 
-**Order (agreed 12 November, from the ideas review):** B → tests (below) → F → C → D (from January, when there are enough games) → E → G. A is done; B is done (13 November) apart from B3, the 2027-28 package.
+**Order:** the restructure (below, agreed 13 November) → tests → F → C → D (from January, when there are enough games) → E → G. A is done; B is done (13 November) apart from B3, the 2027-28 package.
 
 ### Phase A — Audit what we have
 
@@ -121,6 +134,7 @@ Moved up from Later: the strongest sign that the work is engineered, not just ex
 - **Whenever you like:** `./scripts/update_mip_race.sh` updates the live race. Its README lines and notebook findings are updated by hand.
 
 ## Later
+- **The shrinkage prior can be unidentified** (found 13 November, notebook 0G): for bigs' three-point shooting in 2014-15 the likelihood keeps rising as the prior grows stronger, so the fitted strength (28 million attempts, then 45 million in a new environment) is arbitrary. Results are unaffected (those players are shrunk fully to the group average either way), but a cap on prior strength would make the build exactly reproducible. A methodological change, so to decide.
 - **Speed: parallel backtests and parquet caches** (added 12 November; not needed yet). Notebook 21 takes about 30 minutes, almost all of it model fitting: thresholds are chosen inside every training set, so a tuned variant is about 500 fits. Options, by payoff: (1) run the season loops in parallel with joblib (roughly 4–6× faster, identical results); (2) cache the historical game tables (2000-26, both baseline versions) as parquet in `data/processed` (about 2 minutes saved per Most Improved notebook; the live season always loads fresh); (3) save expensive results and reload them unless asked to recompute (only with a clear recompute switch, as notebook 12's daily file does). Parquet rather than pickle: pickle can run code when loaded and breaks across pandas versions.
 - **Sentiment trial** (moved here 10 November). Does public attention explain voters beyond the box score, such as Harden's 7th in 2012-13? Options: Google Trends first (history back to 2004, free, but unofficial and measures fans rather than voters); news headlines (GDELT); writers' Most Improved ladders; Reddit or X going forward only. Each source must show what people said at that date, or it leaks the result.
 - **Scouting cards:** the three or four reasons behind each pick, with the closest comparisons from Phase C.
