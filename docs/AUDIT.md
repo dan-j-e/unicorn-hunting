@@ -230,3 +230,8 @@ Method ([scripts/audit_gains.py](../scripts/audit_gains.py)): for each model ver
 - **Notebook 15 kept, with a corrected status note.** It was thought fully superseded by notebook 19, but two parts exist only here: the end-of-previous-season view and every season's top 3 back to 2005-06. Its mid-season and end-of-season numbers are the 30 October model; the note and the README now say so and point to 19 for the current ones.
 - **Notebook 17: section 17D removed.** It showed the 2026-27 board as it was on 9 November, before D39–D42, which no longer matched the live race. 17A–17C stay: they are the evidence D38 was decided on, they cover views notebook 19 doesn't (end of previous season, preseason), and they draw the README's chart. The finding that described 17D is now dated.
 - **Notebook 10: two of three versions of the probability chart removed** (10F, 10G); 10L's final version stays. This reverses part of Audit 1, which kept every early chart: the three were near-identical, about 290 KB each, and their numbers are in the findings. The small weight charts, which show the model taking shape, stay.
+
+## Follow-up: closing Phase B (13 November 2026)
+
+- **Notebook 18 was not pinned to its date.** Its findings describe Ty Jerome on 8 November (day 19), but two cells used the latest live games, so every re-run moved them (Jerome's season line, and the board in 18C). Both now use day 19, which reproduces the written findings exactly (26.5% → 8.3% with the lost-season input).
+- **Captions (B4):** every chart where points stand in for a model (notebooks 10, 11, 12, 16, 18) now says, in one line, what the model uses instead. Labels only; every number is unchanged.
