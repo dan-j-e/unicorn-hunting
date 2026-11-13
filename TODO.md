@@ -9,7 +9,7 @@
 Each segment is one notebook, built from the existing ones, on its own branch and pull request, in this order. The originals move to `notebooks/archive/` as each segment replaces them. Every number is checked against the original output before it goes in.
 
 - [x] **0 Data** (`0_data.ipynb`, from 00–03 and the table builds of 04, 10 and 17; 13 November). Builds every table the segments read. Breakout, star and unicorn work (04–09) archived.
-- [ ] **1 The basic Most Improved race** (`1_mip_basic.ipynb`, from 10).
+- [x] **1 The basic Most Improved race** (`1_mip_basic.ipynb`, from 10; 13 November). One finding corrected: 9 of 15 winners, not 11, had 80%+ of their leap in their first 10 games.
 - [ ] **2 Playing styles** (`2_play_styles.ipynb`, from 13).
 - [ ] **3 Candidate investigations** (`3_mip_investigations.ipynb`, from 14, 16, 17, 18, 20, 21): short case files (question, finding, what it changed in the model).
 - [ ] **4 The revised race** (`4_mip_race.ipynb`, from 11, 15, 19, 22): every model iteration and both leak-free tests at five checkpoints: after the previous season, preseason, 15 team games, the All-Star break, season's end. **To decide first:** the exact rule for "15 team games" (the day the median team reaches 15, or each player's own team).
