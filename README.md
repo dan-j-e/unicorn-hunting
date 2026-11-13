@@ -271,16 +271,3 @@ data/             raw and processed data (not in git; rebuilt from code)
 > - **Few positive cases.** 15–26 Most Improved winners, depending on the period, mean wide uncertainty around every result.
 > - **Voters are not only box-score readers.** Reputation and narrative (Harden finishing 7th in 2012-13) are not in the model.
 > - **Big early favourites are over-rated;** the live race flags them.
-
-## What's next
-
-The full plan is in [TODO.md](TODO.md).
-
-- [x] Restructure into one notebook per segment ([D47](docs/DECISIONS.md)); points per game kept as the illustration, not the model ([D46](docs/DECISIONS.md))
-- [ ] Tests and automatic checks on every pull request
-- [ ] Value or reputation? Our own measure of what a player is worth, against what a casual fan sees
-- [ ] Similar players at the same career stage, and how their careers turned out
-- [ ] Track the 2026-27 breakout predictions (from January)
-- [ ] Does changing your game pay off? Moves between the eight kinds
-- [ ] A live site on GitHub Pages
-- [ ] When the model reopens (2027-28): one package of improvements, tested once ([D46](docs/DECISIONS.md))
