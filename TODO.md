@@ -45,7 +45,8 @@ The aim: every notebook, chart and section is **relevant**, **easy to understand
   - the blip test and leaps on game score;
   - lookalikes on an all-round jump.
 - [x] **B2b. "Already clearly a star" beyond All-Star selections** (12 November; notebook 21C–21D, D42): a baseline game score of 16+ and last season in our star tier, both now in the live race. Decided by the strict test on the same seasons, not by the board.
-- [ ] **B3. Test more metrics in the Most Improved models** (after the season, for 2027-28: the live model is frozen, D44). Usage, shot profile and the other style measures from notebook 13, and box-score defence. Note: some only exist from 2011-12, which shortens the test.
+- [ ] **B3. Test more metrics in the Most Improved models** (after the season, for 2027-28: the live model is frozen, D44).
+- [ ] **B3b. When the model reopens (2027-28; Audit 3):** (1) replace the five overlapping "established player" inputs (baseline game score, the turning point, the 16+ flag, the star tier, already an All-Star) with one measure, tested once; (2) fix the turning point before the season instead of re-choosing it daily, since it flips between values with no change in the evidence (D32). Usage, shot profile and the other style measures from notebook 13, and box-score defence. Note: some only exist from 2011-12, which shortens the test.
 - [ ] **B4. Say it plainly.** A README section and a line in chart captions: "PPG is shown for readability; the model uses these inputs: …". Each model lists its inputs in plain words.
 - [ ] **B5. Record** the results as decisions.
 
@@ -126,6 +127,7 @@ Moved up from Later: the strongest sign that the work is engineered, not just ex
 - **Do Pests take more charges?** A check on The Pest's description using hustle stats from 2015-16.
 
 ## Done
+- **Audit 3, a sweep of every notebook:** claims made more honest (in-sample settings, strict results first, best-of-many models); notebook 12 split so the daily update takes about 20 seconds (backtests now in notebook 22); complete nights only; one day convention (13 November; [docs/AUDIT.md](docs/AUDIT.md)).
 - **Audit 2 and the freeze:** "a star left" stays on points (D43); overfitting check; live model frozen for 2026-27 (D44); markets as a benchmark (D45) (12 November; pull request #8).
 - **Beyond points per game, first rules:** the live race's turning point on game score (D41) and "already clearly a star" (D42); notebook 21 (12 November; pull request #7).
 - **Every stage of the predictor on the 2026-27 race** (12 November; notebook 19B; pull request #6).
