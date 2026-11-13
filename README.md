@@ -33,7 +33,7 @@ This project treats scouting like backtesting an investment strategy. For every 
 - **What holds up:** the core of the model (the baseline fix, what voters reward, the turning point, already an All-Star) improves on every resampling of the seasons ([Audit 2](docs/AUDIT.md)). The chances are honest except for big early favourites, which are flagged ([D40](docs/DECISIONS.md)).
 - **What is fragile:** the latest small tweaks (D41, D42) are within noise, and the preseason model (16 inputs, 14 winners, 9 strict seasons) is the most at risk of fitting noise. Breakout lifts are the best of several models, so slightly optimistic.
 - **The live race** is updated in about 20 seconds (`./scripts/update_mip_race.sh`); its backtests now live in [notebook 22](notebooks/22_live_race_backtests.ipynb). Ty Jerome leads; betting markets are kept as a benchmark only ([D45](docs/DECISIONS.md)).
-- **Being restructured (13 November, [D47](docs/DECISIONS.md)):** one notebook per segment: 0 Data, 1 the basic Most Improved race, 2 playing styles, 3 candidate investigations, 4 the revised race (with a separate live-race notebook). [0 Data](notebooks/0_data.ipynb) is done; the breakout, star and unicorn work is archived.
+- **Being restructured (13 November, [D47](docs/DECISIONS.md)):** one notebook per segment: 0 Data, 1 the basic Most Improved race, 2 playing styles, 3 candidate investigations, 4 the revised race (with a separate live-race notebook). [0 Data](notebooks/0_data.ipynb) and [1 The basic race](notebooks/1_mip_basic.ipynb) are done; the breakout, star and unicorn work is archived.
 - **Next:** segments 1–4, then automated tests (T1–T3) and value against reputation (Phase F). The points-per-game phase closed on 13 November: points are now the illustration, and every chart that shows them says what the model uses instead. When the model reopens for 2027-28, one package tested once ([D46](docs/DECISIONS.md)): more metrics, one "established player" measure in place of five overlapping inputs, a turning point fixed before the season, and every setting chosen inside training. The latest sweep is [Audit 3](docs/AUDIT.md).
 
 ## Contents
@@ -77,7 +77,7 @@ The notebooks are numbered in the order the work was done, not the order a reade
 
 | Step | Notebook | Why read it |
 |---|---|---|
-| 1 | [10](notebooks/10_mip_leaps.ipynb) | How winners' seasons unfolded, and the first model of what voters reward. Historical, but it is where the reasoning starts |
+| 1 | [1 Basic race](notebooks/1_mip_basic.ipynb) | How winners' seasons unfold, and the first model of what voters reward: where the reasoning starts |
 | 2 | [14](notebooks/14_team_changes.ipynb) | Where the best preseason clue came from: a 20-point scorer leaving |
 | 3 | [11](notebooks/11_mip_preseason.ipynb) | Predicting before a game is played |
 | 4 | [17](notebooks/17_already_a_star.ipynb), [18](notebooks/18_ty_jerome_effect.ipynb) | Two questions the live race raised, each tested and turned into an input |
@@ -100,7 +100,7 @@ The notebooks are numbered in the order the work was done, not the order a reade
 
 **Route 3: Unicorns and playing styles:** [04](notebooks/archive/04_unicorn_hunting.ipynb) (rare combinations and extremes), then [13](notebooks/13_archetypes.ipynb) (the eight kinds of player).
 
-**The data:** [0 Data](notebooks/0_data.ipynb) shows which NBA.com sources can be trusted, and why some cannot, and builds every table the other notebooks read. The original data notebooks (00–03) are in the [archive](notebooks/archive/).
+**The data:** [0 Data](notebooks/0_data.ipynb) shows which NBA.com sources can be trusted, and why some cannot, and builds every table the other notebooks read. The original data notebooks (00–03) are in the [archive](notebooks/archive).
 
 ---
 
@@ -200,7 +200,7 @@ These longer-run groups are less stable (0.45 agreement at eight), partly becaus
 
 ## Most Improved Player
 
-**Could each Most Improved Player (MIP) have been named from the numbers, and what do the votes say "improved" means?** ([notebook 10](notebooks/10_mip_leaps.ipynb))
+**Could each Most Improved Player (MIP) have been named from the numbers, and what do the votes say "improved" means?** ([notebook 1](notebooks/1_mip_basic.ipynb); every intermediate step in the archived [notebook 10](notebooks/archive/10_mip_leaps.ipynb))
 
 The model is a **choice model** (conditional logit): in each season exactly one eligible player wins, so every player's score is turned into a share of a single 100% chance:
 
@@ -233,18 +233,20 @@ where $x_i$ holds the player's inputs (changes in his box-score numbers, his tea
 - **Voters reward** a jump in all-round production (odds ×1.57 per extra point of game score), in scoring (×1.39 per extra point a game), a larger offensive load, and a team that improved (×1.28 for winning 10% more games).
 - **Voters discount** age (×0.88 per year), gains that come only from extra minutes, and above all second-year players: 19% of the voting top 7, but no winner in the last 15 seasons (the last was Monta Ellis in 2006-07).
 - **Voters pass over players who are already stars.** No winner from 2000-01 to 2025-26 had been an All-Star before his winning season ([see below](#why-already-an-all-star-counts-against-a-player)).
-- **Most winning leaps are visible from opening night.** For 11 of 15 winners, the first 10 games already held 80% or more of the season's jump. One huge night is not a signal: after 1,089 "eruption" games, the next seven looked like the seven before.
+- **Most winning leaps are visible early.** For 9 of 15 winners, the first 10 games already held 80% or more of the season's jump, and two more were just short (78–79%). *Corrected 13 November: this said 11 of 15, counting those two.* One huge night is not a signal: after 1,089 "eruption" games, the next seven looked like the seven before.
 - **The winners the model misses crossed a milestone** rather than making the largest jump: a first 20-point season (Goran Dragić), a first star-level season (Julius Randle), or becoming the team's leading scorer (Tyrese Maxey, Paul George).
 
 <details>
-<summary><b>Charts: chances, weights and every winner's season</b></summary>
+<summary><b>Charts: weights, every winner's season, and our top 7 against the real vote</b></summary>
 
 | | |
 |---|---|
-| ![Most Improved probabilities](outputs/figures/10_mip_final_probability_bars.png) | ![What voters reward](outputs/figures/10_mip_final_weights.png) |
-| Predicted chance of winning (blue = our top 3; orange star = the actual winner) | Every model weight, with 90% ranges from 500 refits |
-| ![Winners week by week](outputs/figures/10_mip_week_by_week.png) | ![Top 7 against the real vote](outputs/figures/10_mip_top7_vs_real.png) |
-| Each winner's season, week by week, against his baseline | Our top 7 against the real voting top 7 |
+| ![What voters reward](outputs/figures/1_what_voters_reward.png) | ![Winners week by week](outputs/figures/1_winners_week_by_week.png) |
+| Every model weight, with 90% ranges from 500 refits | Each winner's season, week by week, against his baseline |
+
+![Top 7 against the real vote](outputs/figures/1_top7_vs_real_vote.png)
+
+*Our top 7 against the real voting top 7, each season predicted from the other seasons only.*
 
 ![Three views of every season, 2005-06 to 2025-26](outputs/figures/15_mip_2000_2026.png)
 
@@ -516,7 +518,7 @@ The test is not specific to Alexander-Walker, so it was run on 609 leaps from 20
 |---|---|
 | `0_data` | Where the data comes from and the traps found; builds every table the other notebooks read (player-seasons, shrinkage, season-relative measures, trajectories with a leakage test, position and star-score inputs, game logs, All-Star selections) |
 | `archive/00`–`09` | The original data notebooks (00–03) and the breakout, star and unicorn work (04–09), archived on 13 November ([D47](docs/DECISIONS.md)) |
-| `10_mip_leaps` | Most Improved: weekly leaps, the choice model, the mid-season race, our top 7 against the real vote *(historical: the first model)* |
+| `1_mip_basic` | **Segment 1.** The basic Most Improved race: how winners' seasons unfold, what early form to trust, the biggest points jump, the first choice model and what voters reward, and the misses |
 | `11_mip_preseason` | What preseason numbers are worth; the 2026-27 preseason top 7 |
 | `12_mip_live_race` | The live 2026-27 race, day by day; three snapshots with reasons; the blip test |
 | `13_archetypes` | Playing-style clusters: how many, five and then eight named groups ([write-up](docs/EIGHT_CLUSTERS.md)); 2000-01 → 2025-26 on 3-season windows |
@@ -624,7 +626,7 @@ pip install -e .                 # makes `import unicorn` available
 python -m unicorn.download       # about 733 NBA.com requests; 40 minutes the first time; resumable
 ```
 
-Then run `0_data` first: it builds every table the other notebooks read. After that, the notebooks run in any order. Raw responses are cached in `data/raw/`, so re-runs make no API calls. Notebook 10 also fetches game logs and the Basketball-Reference award pages; notebooks 13E and 15–22 go back to 1998-99 and fetch the All-Star pages (all cached).
+Then run `0_data` first: it builds every table the other notebooks read. After that, the notebooks run in any order. Raw responses are cached in `data/raw/`, so re-runs make no API calls. Notebook 0 also builds the game logs (back to 1998-99) and the All-Star selections; the Most Improved notebooks fetch the Basketball-Reference award pages (all cached).
 
 **To update the live Most Improved race:** `./scripts/update_mip_race.sh` re-runs notebook 12 with the newest games and prints today's top 7.
 
