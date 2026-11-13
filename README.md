@@ -3,7 +3,7 @@
 ![Python 3.12](https://img.shields.io/badge/python-3.12-2a78d6)
 ![Data: NBA.com and Basketball-Reference](https://img.shields.io/badge/data-NBA.com%20%7C%20Basketball--Reference-1baf7a)
 ![Method: walk-forward backtesting](https://img.shields.io/badge/method-walk--forward%20backtesting-eb6834)
-![Decisions logged: 46](https://img.shields.io/badge/decisions%20logged-46-eda100)
+![Decisions logged: 47](https://img.shields.io/badge/decisions%20logged-47-eda100)
 
 **Could we have identified future NBA breakouts, stars and "unicorns" before they became obvious, using only what was known at the time?**
 
@@ -33,7 +33,8 @@ This project treats scouting like backtesting an investment strategy. For every 
 - **What holds up:** the core of the model (the baseline fix, what voters reward, the turning point, already an All-Star) improves on every resampling of the seasons ([Audit 2](docs/AUDIT.md)). The chances are honest except for big early favourites, which are flagged ([D40](docs/DECISIONS.md)).
 - **What is fragile:** the latest small tweaks (D41, D42) are within noise, and the preseason model (16 inputs, 14 winners, 9 strict seasons) is the most at risk of fitting noise. Breakout lifts are the best of several models, so slightly optimistic.
 - **The live race** is updated in about 20 seconds (`./scripts/update_mip_race.sh`); its backtests now live in [notebook 22](notebooks/22_live_race_backtests.ipynb). Ty Jerome leads; betting markets are kept as a benchmark only ([D45](docs/DECISIONS.md)).
-- **Next:** automated tests (T1–T3), then value against reputation (Phase F). The points-per-game phase closed on 13 November: points are now the illustration, and every chart that shows them says what the model uses instead. When the model reopens for 2027-28, one package tested once ([D46](docs/DECISIONS.md)): more metrics, one "established player" measure in place of five overlapping inputs, a turning point fixed before the season, and every setting chosen inside training. The latest sweep is [Audit 3](docs/AUDIT.md).
+- **Being restructured (13 November, [D47](docs/DECISIONS.md)):** one notebook per segment: 0 Data, 1 the basic Most Improved race, 2 playing styles, 3 candidate investigations, 4 the revised race (with a separate live-race notebook). [0 Data](notebooks/0_data.ipynb) is done; the breakout, star and unicorn work is archived.
+- **Next:** segments 1–4, then automated tests (T1–T3) and value against reputation (Phase F). The points-per-game phase closed on 13 November: points are now the illustration, and every chart that shows them says what the model uses instead. When the model reopens for 2027-28, one package tested once ([D46](docs/DECISIONS.md)): more metrics, one "established player" measure in place of five overlapping inputs, a turning point fixed before the season, and every setting chosen inside training. The latest sweep is [Audit 3](docs/AUDIT.md).
 
 ## Contents
 
@@ -87,19 +88,19 @@ The notebooks are numbered in the order the work was done, not the order a reade
 
 [15](notebooks/15_mip_2000_2026.ipynb) is optional: notebook 19 reruns its mid-season and end-of-season tests with every later decision. Notebook 15 still has the only end-of-previous-season view and every season's top 3 back to 2005-06.
 
-**Route 2: Breakouts and stars**
+**Route 2: Breakouts and stars** (archived on 13 November; [D47](docs/DECISIONS.md))
 
 | Step | Notebook | Why read it |
 |---|---|---|
-| 1 | [02](notebooks/02_player_seasons.ipynb), [03](notebooks/03_player_trajectories.ipynb) | The data: shrinkage, season-relative measures, and how each player has been changing |
-| 2 | [05](notebooks/05_breakout_hunting.ipynb) | What counts as a breakout and a star |
-| 3 | [06](notebooks/06_breakout_backtest.ipynb) | The backtest: which models work, honestly tested |
-| 4 | [09](notebooks/09_routes_to_stardom.ipynb) | Two routes to stardom |
-| 5 | [08](notebooks/08_breakout_board.ipynb), [07](notebooks/07_current_players.ipynb) | Every past season's picks, then the 2026-27 outlook |
+| 1 | [0 Data](notebooks/0_data.ipynb) | The data: shrinkage, season-relative measures, and how each player has been changing |
+| 2 | [05](notebooks/archive/05_breakout_hunting.ipynb) | What counts as a breakout and a star |
+| 3 | [06](notebooks/archive/06_breakout_backtest.ipynb) | The backtest: which models work, honestly tested |
+| 4 | [09](notebooks/archive/09_routes_to_stardom.ipynb) | Two routes to stardom |
+| 5 | [08](notebooks/archive/08_breakout_board.ipynb), [07](notebooks/archive/07_current_players.ipynb) | Every past season's picks, then the 2026-27 outlook |
 
-**Route 3: Unicorns and playing styles:** [04](notebooks/04_unicorn_hunting.ipynb) (rare combinations and extremes), then [13](notebooks/13_archetypes.ipynb) (the eight kinds of player).
+**Route 3: Unicorns and playing styles:** [04](notebooks/archive/04_unicorn_hunting.ipynb) (rare combinations and extremes), then [13](notebooks/13_archetypes.ipynb) (the eight kinds of player).
 
-**For checking the data:** [00](notebooks/00_setup.ipynb) and [01](notebooks/01_data_exploration.ipynb) show which NBA.com sources can be trusted, and why some cannot.
+**The data:** [0 Data](notebooks/0_data.ipynb) shows which NBA.com sources can be trusted, and why some cannot, and builds every table the other notebooks read. The original data notebooks (00–03) are in the [archive](notebooks/archive/).
 
 ---
 
@@ -513,15 +514,8 @@ The test is not specific to Alexander-Walker, so it was run on 609 leaps from 20
 
 | Notebook | What it does |
 |---|---|
-| `00`–`01` | Set-up; which `nba_api` endpoints are league-wide and time-correct |
-| `02_player_seasons` | 733 cached API responses → a clean player-season table; shrinkage of noisy shooting percentages; season-relative scaling |
-| `03_player_trajectories` | Level, trend and change for every feature, tested to be leakage-free |
-| `04_unicorn_hunting` | Listed, body and style position spectrum; rarity and strangeness scores |
-| `05_breakout_hunting` | Breakout labels relative to each player's own past; a six-pillar star measure |
-| `06_breakout_backtest` | Walk-forward backtest: rules, logistic regression, boosted trees, comparables; intervals, calibration, sensitivity |
-| `07_current_players` | 2026-27 outlook; Dëmin's profile and historical comparisons |
-| `08_breakout_board` | Each season's top-10 breakout picks against what happened (also as an [interactive page](outputs/breakout_board.html)) |
-| `09_routes_to_stardom` | The breakout route against the steady route into the star tier |
+| `0_data` | Where the data comes from and the traps found; builds every table the other notebooks read (player-seasons, shrinkage, season-relative measures, trajectories with a leakage test, position and star-score inputs, game logs, All-Star selections) |
+| `archive/00`–`09` | The original data notebooks (00–03) and the breakout, star and unicorn work (04–09), archived on 13 November ([D47](docs/DECISIONS.md)) |
 | `10_mip_leaps` | Most Improved: weekly leaps, the choice model, the mid-season race, our top 7 against the real vote *(historical: the first model)* |
 | `11_mip_preseason` | What preseason numbers are worth; the 2026-27 preseason top 7 |
 | `12_mip_live_race` | The live 2026-27 race, day by day; three snapshots with reasons; the blip test |
@@ -600,7 +594,7 @@ Each notebook opens with **In brief** (the question, the answer, the decisions i
 
 ## Key decisions
 
-All 46 decisions, each with its evidence, are logged in [docs/DECISIONS.md](docs/DECISIONS.md). The ones that most shape the results:
+All 47 decisions, each with its evidence, are logged in [docs/DECISIONS.md](docs/DECISIONS.md). The ones that most shape the results:
 
 | # | Decision | Why |
 |---|---|---|
@@ -630,7 +624,7 @@ pip install -e .                 # makes `import unicorn` available
 python -m unicorn.download       # about 733 NBA.com requests; 40 minutes the first time; resumable
 ```
 
-Then run the notebooks in order (`00` → `22`). Each writes the table that the next one reads. Raw responses are cached in `data/raw/`, so re-runs make no API calls. Notebook 10 also fetches game logs and the Basketball-Reference award pages; notebooks 13E and 15–22 go back to 1998-99 and fetch the All-Star pages (all cached).
+Then run `0_data` first: it builds every table the other notebooks read. After that, the notebooks run in any order. Raw responses are cached in `data/raw/`, so re-runs make no API calls. Notebook 10 also fetches game logs and the Basketball-Reference award pages; notebooks 13E and 15–22 go back to 1998-99 and fetch the All-Star pages (all cached).
 
 **To update the live Most Improved race:** `./scripts/update_mip_race.sh` re-runs notebook 12 with the newest games and prints today's top 7.
 
