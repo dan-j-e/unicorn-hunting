@@ -33,7 +33,7 @@ This project treats scouting like backtesting an investment strategy. For every 
 - **What holds up:** the core of the model (the baseline fix, what voters reward, the turning point, already an All-Star) improves on every resampling of the seasons ([Audit 2](docs/AUDIT.md)). The chances are honest except for big early favourites, which are flagged ([D40](docs/DECISIONS.md)).
 - **What is fragile:** the latest small tweaks (D41, D42) are within noise, and the preseason model (16 inputs, 14 winners, 9 strict seasons) is the most at risk of fitting noise. Breakout lifts are the best of several models, so slightly optimistic.
 - **The live race** is updated in about 20 seconds (`./scripts/update_mip_race.sh`); its backtests now live in [notebook 22](notebooks/22_live_race_backtests.ipynb). Ty Jerome leads; betting markets are kept as a benchmark only ([D45](docs/DECISIONS.md)).
-- **Being restructured (13 November, [D47](docs/DECISIONS.md)):** one notebook per segment: 0 Data, 1 the basic Most Improved race, 2 playing styles, 3 candidate investigations, 4 the revised race (with a separate live-race notebook). [0 Data](notebooks/0_data.ipynb), [1 The basic race](notebooks/1_mip_basic.ipynb) and [2 Playing styles](notebooks/2_play_styles.ipynb) are done; the breakout, star and unicorn work is archived.
+- **Being restructured (13 November, [D47](docs/DECISIONS.md)):** one notebook per segment: 0 Data, 1 the basic Most Improved race, 2 playing styles, 3 candidate investigations, 4 the revised race (with a separate live-race notebook). [0 Data](notebooks/0_data.ipynb), [1 The basic race](notebooks/1_mip_basic.ipynb) and [2 Playing styles](notebooks/2_play_styles.ipynb) and [3 Investigations](notebooks/3_mip_investigations.ipynb) are done; the breakout, star and unicorn work is archived.
 - **Next:** segments 1–4, then automated tests (T1–T3) and value against reputation (Phase F). The points-per-game phase closed on 13 November: points are now the illustration, and every chart that shows them says what the model uses instead. When the model reopens for 2027-28, one package tested once ([D46](docs/DECISIONS.md)): more metrics, one "established player" measure in place of five overlapping inputs, a turning point fixed before the season, and every setting chosen inside training. The latest sweep is [Audit 3](docs/AUDIT.md).
 
 ## Contents
@@ -78,13 +78,11 @@ The notebooks are numbered in the order the work was done, not the order a reade
 | Step | Notebook | Why read it |
 |---|---|---|
 | 1 | [1 Basic race](notebooks/1_mip_basic.ipynb) | How winners' seasons unfold, and the first model of what voters reward: where the reasoning starts |
-| 2 | [14](notebooks/14_team_changes.ipynb) | Where the best preseason clue came from: a 20-point scorer leaving |
+| 2 | [3 Investigations](notebooks/3_mip_investigations.ipynb) | Four cases the live board raised, each tested: did Alexander-Walker's leap last, is Ty Jerome's lead believable, already a star, an open role |
 | 3 | [11](notebooks/11_mip_preseason.ipynb) | Predicting before a game is played |
-| 4 | [17](notebooks/17_already_a_star.ipynb), [18](notebooks/18_ty_jerome_effect.ipynb) | Two questions the live race raised, each tested and turned into an input |
-| 5 | [19](notebooks/19_predictor_evolution.ipynb) | What every decision added, on one test bed |
-| 6 | [20](notebooks/20_calibration.ipynb) | Whether the chances can be taken at face value |
-| 7 | [12](notebooks/12_mip_live_race.ipynb), [22](notebooks/22_live_race_backtests.ipynb) | The live race, using everything above; how far to trust it at each point of the season |
-| 8 | [16](notebooks/16_do_leaps_last.ipynb) | Does a leap last? The blip test on 609 past leaps |
+| 4 | [19](notebooks/19_predictor_evolution.ipynb) | What every decision added, on one test bed |
+| 5 | [20](notebooks/20_calibration.ipynb) | Whether the chances can be taken at face value |
+| 6 | [12](notebooks/12_mip_live_race.ipynb), [22](notebooks/22_live_race_backtests.ipynb) | The live race, using everything above; how far to trust it at each point of the season |
 
 [15](notebooks/15_mip_2000_2026.ipynb) is optional: notebook 19 reruns its mid-season and end-of-season tests with every later decision. Notebook 15 still has the only end-of-previous-season view and every season's top 3 back to 2005-06.
 
@@ -268,7 +266,7 @@ where $x_i$ holds the player's inputs (changes in his box-score numbers, his tea
   $$\beta_1 \cdot \text{ppg} \;+\; \beta_2 \cdot \max(0,\ \text{ppg} - 20)$$
 
   Every turning point from 14 to 26 was backtested; 20 fitted best.
-- **A star leaving matters more than changing teams** ([notebook 14](notebooks/14_team_changes.ipynb), [D29](docs/DECISIONS.md)). Winners changed teams no more often than anyone else (29% against 27%), but 7 of 21 had a 20-point scorer leave their team (against 11% of candidates). A yes/no input, "a 20-point scorer left and was not replaced", lifted the winner into our preseason top 7 in 7 of 14 seasons, up from 3. Finer scoring bands fitted better on paper, but they learned a shape with no basketball sense (losing a 21-point scorer "hurt", losing a 23-point scorer helped), so the simple version was kept.
+- **A star leaving matters more than changing teams** ([notebook 3, case 3D](notebooks/3_mip_investigations.ipynb); detail in the archived [notebook 14](notebooks/archive/14_team_changes.ipynb); [D29](docs/DECISIONS.md)). Winners changed teams no more often than anyone else (29% against 27%), but 7 of 21 had a 20-point scorer leave their team (against 11% of candidates). A yes/no input, "a 20-point scorer left and was not replaced", lifted the winner into our preseason top 7 in 7 of 14 seasons, up from 3. Finer scoring bands fitted better on paper, but they learned a shape with no basketball sense (losing a 21-point scorer "hurt", losing a 23-point scorer helped), so the simple version was kept.
 - **Track record:** from about 375 candidates a season, the eventual winner was in our preseason top 7 in **5 of 9 seasons in the strict test** (median rank 7), and in 9 of 14 in the kinder leave-one-out test. 44% of top-7 picks went on to jump 3+ points a game, against 14% of all candidates.
 - **The model most at risk of fitting noise:** 16 inputs learned from 14 winners, with only 9 seasons in the strict test. Each input was kept only if it helped, but one season can decide whether it did.
 
@@ -283,7 +281,7 @@ where $x_i$ holds the player's inputs (changes in his box-score numbers, his tea
 
 **The problem.** In early November the live leaderboard had Alperen Sengun at #2, with Victor Wembanyama and Scottie Barnes in the top 7. All three had already been All-Stars. The scoring turning point only applies above 20 points a game, and these players sat around or below that line.
 
-**The evidence** ([notebook 17](notebooks/17_already_a_star.ipynb)):
+**The evidence** ([notebook 3, case 3C](notebooks/3_mip_investigations.ipynb); detail in the archived [notebook 17](notebooks/archive/17_already_a_star.ipynb)):
 
 | | Prior All-Stars | Everyone else |
 |---|---|---|
@@ -349,7 +347,7 @@ The same nine stages, each trained as the live race is and applied to 2026-27 (1
 
 ### Beyond points per game
 
-**Points per game is the illustration, not the model.** Charts and tables show points because every reader knows them. The models use far more: the live race weighs changes in every box-score statistic, the preseason model uses minutes, usage, preseason production and the team's situation, and the breakout models use 197 features. [Notebook 21](notebooks/21_beyond_ppg.ipynb) lists what every model and rule uses.
+**Points per game is the illustration, not the model.** Charts and tables show points because every reader knows them. The models use far more: the live race weighs changes in every box-score statistic, the preseason model uses minutes, usage, preseason production and the team's situation, and the breakout models use 197 features. [Notebook 21](notebooks/archive/21_beyond_ppg.ipynb) lists what every model and rule uses.
 
 Where points did stand alone was in a few **rules**. Those inside a model were tested against an all-round version and kept only if it did better in the strict test; the blip test predicts nothing and was written in advance, so its all-round version is shown alongside rather than tested ([D46](docs/DECISIONS.md)):
 
@@ -369,7 +367,7 @@ Where points did stand alone was in a few **rules**. Those inside a model were t
 - **Before the season, points stayed.** Nothing beat it, and usage was worse.
 - **The differences are small, and that is the finding.** Baseline points and game score correlate at 0.955. Voters discount *established* players, whether their standing comes from scoring or from all-round production; the rule was never really about points.
 
-**Already clearly a star, tested.** The game-score turning point turned out to *neutralise* an elite level rather than count against it, so a star with a big jump (Victor Wembanyama this season) could still rank highly. Since 2000-01, 75 candidates had a baseline game score of 22+; none finished in the top 5 of the vote. Three options were tested ([notebook 21C–21D](notebooks/21_beyond_ppg.ipynb)):
+**Already clearly a star, tested.** The game-score turning point turned out to *neutralise* an elite level rather than count against it, so a star with a big jump (Victor Wembanyama this season) could still rank highly. Since 2000-01, 75 candidates had a baseline game score of 22+; none finished in the top 5 of the vote. Three options were tested ([notebook 21C–21D](notebooks/archive/21_beyond_ppg.ipynb)):
 
 | Option | Strict test, same seasons (2012-13 → 2025-26) | Leave-one-out |
 |---|---|---|
@@ -423,7 +421,7 @@ Where points did stand alone was in a few **rules**. Those inside a model were t
 > [!WARNING]
 > **Not at the 26% the model first gave him.** Players with Jerome's profile have rarely won, and big early favourites in general have won only about 1 time in 6 ([see below](#are-the-chances-honest)). Since 10 November the model counts his lost 2025-26 season against him ([D39](docs/DECISIONS.md)), which brought his chance down to about 8%; with the later changes (D41, D42) it is 12.3% on 11 November.
 
-**Have there been Ty Jeromes before?** Every player since 2000-01 who looked like him at the same point of the season (day 19), and how his season ended ([notebook 18](notebooks/18_ty_jerome_effect.ipynb)):
+**Have there been Ty Jeromes before?** Every player since 2000-01 who looked like him at the same point of the season (day 19), and how his season ended ([notebook 3, case 3B](notebooks/3_mip_investigations.ipynb); detail in the archived [notebook 18](notebooks/archive/18_ty_jerome_effect.ipynb)):
 
 | Up 8+ points a game at day 19 | Players | Jump kept by season's end | Top 3 | Won |
 |---|---|---|---|---|
@@ -446,7 +444,7 @@ Where points did stand alone was in a few **rules**. Those inside a model were t
 
 **Conclusion:** Jerome is a genuine candidate but an unlikely winner. If he keeps the typical 58% of his jump, he will finish near 20.7 points a game: still a large leap, but one that voters have rewarded only once for a player of his age.
 
-**Teaching the model.** Four candidate inputs were then tested at five points of the season, in both tests ([notebook 18C](notebooks/18_ty_jerome_effect.ipynb)):
+**Teaching the model.** Four candidate inputs were then tested at five points of the season, in both tests ([notebook 18C](notebooks/archive/18_ty_jerome_effect.ipynb)):
 
 | Input | Tests where the fit improved (of 10) | Result |
 |---|---|---|
@@ -493,12 +491,12 @@ $$
 - **Why these lines:** they separate the 14 past winners into clear groups. Nine kept 80%+ the following season, two kept most of it (Markkanen, Daniels) and three fell back sharply (Dragić, Oladipo, Randle).
 - **Why the All-Star break is early enough:** for all 14 past winners, the verdict at the break matched the verdict over the full season.
 - **So far (12 games, to 11 November):** 21.9 points a game, 110% kept. On track for "real", but it is early.
-- **Alongside, not the verdict:** on game score he has kept 91% (7.5 → 15.3 → 14.6). Across 541 past leaps, game score and points give the same verdict about five times in six ([notebook 16D](notebooks/16_do_leaps_last.ipynb), [D46](docs/DECISIONS.md)).
+- **Alongside, not the verdict:** on game score he has kept 91% (7.5 → 15.3 → 14.6). Across 541 past leaps, game score and points give the same verdict about five times in six ([notebook 16D](notebooks/archive/16_do_leaps_last.ipynb), [D46](docs/DECISIONS.md)).
 
 <details>
 <summary><b>Backtest: the blip test on 609 leaps since 2000-01, and its victims</b></summary>
 
-The test is not specific to Alexander-Walker, so it was run on 609 leaps from 2000-01 to 2024-25: every MIP vote-getter who jumped 3+ points a game, and everyone who jumped 5+, voted for or not ([notebook 16](notebooks/16_do_leaps_last.ipynb)).
+The test is not specific to Alexander-Walker, so it was run on 609 leaps from 2000-01 to 2024-25: every MIP vote-getter who jumped 3+ points a game, and everyone who jumped 5+, voted for or not ([notebook 16](notebooks/archive/16_do_leaps_last.ipynb)).
 
 - **It does what it claims.** The verdict at the break matched the full season for **86%** of the 541 leaps with enough games, and most misses were within 10 points of a cut-off. "Real" at the break never became "blip" by season's end.
 - **Its victims are about the longer run.** The test looks one season ahead. Two seasons on:
@@ -522,14 +520,10 @@ The test is not specific to Alexander-Walker, so it was run on 609 leaps from 20
 | `11_mip_preseason` | What preseason numbers are worth; the 2026-27 preseason top 7 |
 | `12_mip_live_race` | The live 2026-27 race, day by day; three snapshots with reasons; the blip test |
 | `2_play_styles` | **Segment 2.** Playing styles: how many kinds, the eight named kinds and who is in each, players moving between kinds, and 2000-01 → 2025-26 with no era adjustment ([write-up](docs/EIGHT_CLUSTERS.md)) |
-| `14_team_changes` | Does a new team or new teammates make a Most Improved Player? (No; a star leaving does) |
+| `3_mip_investigations` | **Segment 3.** Four cases the live board raised, each tested: did Alexander-Walker's leap last (the blip test), is Ty Jerome's lead believable (back from a lost season), already a star (All-Star and elite level), an open role (a 20-point scorer left). Full detail in the archived notebooks 14, 16, 17, 18 and 21 |
 | `15_mip_2000_2026` | Most Improved 2000-01 → 2025-26 at three points of each season, strictly walk-forward *(partly historical: the model before D38–D42; notebook 19 has the current mid-season and end-of-season numbers, while the end-of-previous-season view and every season's top 3 are only here)* |
-| `16_do_leaps_last` | The blip test on 609 leaps since 2000-01, and its victims |
-| `17_already_a_star` | Do voters pass over players who are already stars? |
-| `18_ty_jerome_effect` | Past players who started like Ty Jerome, how their seasons ended, and the inputs tested as a result |
 | `19_predictor_evolution` | The Most Improved predictor rebuilt one decision at a time, from the first baseline to today; every stage on the 2026-27 race (19B) |
 | `20_calibration` | Are the Most Improved chances honest? Reliability, temperature scaling and big early favourites |
-| `21_beyond_ppg` | Points per game as the illustration, not the model: what every model and rule uses, and all-round versions of the points-defined rules (so far: the turning point, D41) |
 | `22_live_race_backtests` | How far to trust the live race at each point of the season; our three lists against the real vote, 2021-22 → 2025-26 (split from notebook 12 so the daily update stays fast) |
 
 ### Terms used throughout
@@ -677,7 +671,7 @@ data/             raw and processed data (not in git; rebuilt from code)
 The full list, with options and priorities, is in [TODO.md](TODO.md).
 
 - [x] Count "already an All-Star" against Most Improved candidates ([D38](docs/DECISIONS.md))
-- [x] Investigate the Ty Jerome effect ([notebook 18](notebooks/18_ty_jerome_effect.ipynb))
+- [x] Investigate the Ty Jerome effect ([notebook 3, case 3B](notebooks/3_mip_investigations.ipynb))
 - [x] Test hot-start inputs: only "back from a lost season" helped ([D39](docs/DECISIONS.md))
 - [x] Show how the predictor evolved, one decision at a time ([notebook 19](notebooks/19_predictor_evolution.ipynb))
 - [x] Check whether the chances are honest: they are, except for big early favourites, which are now flagged ([D40](docs/DECISIONS.md))
