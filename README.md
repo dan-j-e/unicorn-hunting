@@ -466,6 +466,8 @@ When the race gives a player a 20% chance, do such players win about one time in
 
 ### The blip test: did Alexander-Walker's leap last?
 
+*From [notebook 3, case 3A](notebooks/3_mip_investigations.ipynb), which prints the final verdict after the All-Star break.*
+
 Last season's winner, Nickeil Alexander-Walker, went from 9.4 to 20.8 points a game. Will the jump last, or was it a one-season spike?
 
 **Why we examined him.**
@@ -517,7 +519,7 @@ The test is not specific to Alexander-Walker, so it was run on 609 leaps from 20
 | `2_play_styles` | **Segment 2.** Playing styles: how many kinds, the eight named kinds and who is in each, players moving between kinds, and 2000-01 → 2025-26 with no era adjustment ([write-up](docs/EIGHT_CLUSTERS.md)) |
 | `3_mip_investigations` | **Segment 3.** Four cases the live board raised, each tested: did Alexander-Walker's leap last (the blip test), is Ty Jerome's lead believable (back from a lost season), already a star (All-Star and elite level), an open role (a 20-point scorer left). Full detail in the archived notebooks 14, 16, 17, 18 and 21 |
 | `4_mip_race` | **Segment 4.** The revised race: the current model at six checkpoints (after the previous season, preseason, day 15, day 30, the All-Star break, season's end), how it evolved one decision at a time, whether its chances are honest, and 2026-27 at each checkpoint |
-| `4b_live_race` | The live 2026-27 race, one leaderboard per day; three snapshots with reasons; the blip test for Alexander-Walker. Updated by `./scripts/update_mip_race.sh` |
+| `4b_live_race` | The live 2026-27 race, one leaderboard per day; three snapshots with reasons. Updated by `./scripts/update_mip_race.sh` |
 | `archive/` | All 23 original notebooks (00–22), kept as the detailed record: every intermediate step, and the evidence the decision log cites. The breakout, star and unicorn work (04–09) lives only here ([D47](docs/DECISIONS.md)) |
 
 ### Terms used throughout

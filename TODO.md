@@ -130,7 +130,7 @@ Moved up from Later: the strongest sign that the work is engineered, not just ex
 ## Scheduled
 - **Weekly: a betting-market snapshot** (D45). Add the top names' prices to `benchmarks/mip_markets_2026_27.csv` from the public pages (date seen, source, price, the page's link). Never used as a model input.
 - **End of 2026-27: score the season.** Our dated chances against the market snapshots (same scoring for both), the preseason top 7, and the breakout predictions (Phase D). Then open the model for changes again (D44).
-- **All-Star break (February):** re-run notebook 12. It prints Alexander-Walker's blip test verdict (set in advance, D33) and freezes the live race's turning point (D32). Then update the README.
+- **All-Star break (February):** run `./scripts/update_mip_race.sh` (it freezes the live race's turning point, D32), then re-run notebook 3: case 3A prints Alexander-Walker's final blip-test verdict (set in advance, D33). Then update the README.
 - **Whenever you like:** `./scripts/update_mip_race.sh` updates the live race. Its README lines and notebook findings are updated by hand.
 
 ## Later
