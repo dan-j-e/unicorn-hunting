@@ -14,7 +14,7 @@ Each segment is one notebook, built from the existing ones, on its own branch an
 - [x] **3 Candidate investigations** (`3_mip_investigations.ipynb`, from 14, 16, 17, 18 and 21; 13 November): four player-driven case files (Alexander-Walker, Ty Jerome, already a star, an open role). Calibration (20) and the game-score turning point (21B) move to segment 4. Quick tests re-run; the slow ones (17, 21) cited.
 - [x] **4 The revised race** (`4_mip_race.ipynb`, from 11, 15, 19, 20, 21B and 22; 13 November): six checkpoints (after the previous season, preseason, day 15, day 30, the All-Star break, season's end; D48), every model iteration, both tests, honest chances, and 2026-27 at each checkpoint. New finding: by the All-Star break the race is essentially decided (winner in the top 7 in 19 of 21 strict seasons).
 - [x] **4b The live race** (`4b_live_race.ipynb`, renamed from 12; 13 November). The update script points to it.
-- [ ] **README** rewritten around the four segments once they exist.
+- [x] **README** rewritten around the four segments (13 November): one section per segment, the breakout work in a short archived section, about 290 lines instead of 690.
 
 
 Work through the phases in order. Tick each box when it is done, and record any decision in [docs/DECISIONS.md](docs/DECISIONS.md).
