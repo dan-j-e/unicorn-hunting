@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
-# Re-run the live 2026-27 Most Improved race (notebook 12) and print today's leaderboard.
+# Re-run the live 2026-27 Most Improved race (notebook 4b) and print today's leaderboard.
 # Usage, from the project folder:   ./scripts/update_mip_race.sh
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-echo "Downloading the newest games and re-running notebook 12..."
+echo "Downloading the newest games and re-running notebook 4b..."
 .venv/bin/jupyter nbconvert --to notebook --execute --inplace \
-  --ExecutePreprocessor.timeout=3600 notebooks/12_mip_live_race.ipynb 2>&1 | grep -v -i "warning" || true
+  --ExecutePreprocessor.timeout=3600 notebooks/4b_live_race.ipynb 2>&1 | grep -v -i "warning" || true
 
 .venv/bin/python - <<'PY'
 import pandas as pd

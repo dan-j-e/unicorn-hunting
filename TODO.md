@@ -12,8 +12,8 @@ Each segment is one notebook, built from the existing ones, on its own branch an
 - [x] **1 The basic Most Improved race** (`1_mip_basic.ipynb`, from 10; 13 November). One finding corrected: 9 of 15 winners, not 11, had 80%+ of their leap in their first 10 games.
 - [x] **2 Playing styles** (`2_play_styles.ipynb`, from 13; 13 November). Stability re-measured over 20 pairs of halves: five and six are about equally stable (0.83, 0.79), not 0.87 and 0.76.
 - [x] **3 Candidate investigations** (`3_mip_investigations.ipynb`, from 14, 16, 17, 18 and 21; 13 November): four player-driven case files (Alexander-Walker, Ty Jerome, already a star, an open role). Calibration (20) and the game-score turning point (21B) move to segment 4. Quick tests re-run; the slow ones (17, 21) cited.
-- [ ] **4 The revised race** (`4_mip_race.ipynb`, from 11, 15, 19, 22, plus calibration from 20 and the game-score turning point from 21B): every model iteration and both leak-free tests at five checkpoints: after the previous season, preseason, 15 team games, the All-Star break, season's end. **To decide first:** the exact rule for "15 team games" (the day the median team reaches 15, or each player's own team).
-- [ ] **4b The live race** (`4b_live_race.ipynb`, from 12): the daily board only. Update the script's path.
+- [x] **4 The revised race** (`4_mip_race.ipynb`, from 11, 15, 19, 20, 21B and 22; 13 November): six checkpoints (after the previous season, preseason, day 15, day 30, the All-Star break, season's end; D48), every model iteration, both tests, honest chances, and 2026-27 at each checkpoint. New finding: by the All-Star break the race is essentially decided (winner in the top 7 in 19 of 21 strict seasons).
+- [x] **4b The live race** (`4b_live_race.ipynb`, renamed from 12; 13 November). The update script points to it.
 - [ ] **README** rewritten around the four segments once they exist.
 
 
@@ -130,7 +130,7 @@ Moved up from Later: the strongest sign that the work is engineered, not just ex
 ## Scheduled
 - **Weekly: a betting-market snapshot** (D45). Add the top names' prices to `benchmarks/mip_markets_2026_27.csv` from the public pages (date seen, source, price, the page's link). Never used as a model input.
 - **End of 2026-27: score the season.** Our dated chances against the market snapshots (same scoring for both), the preseason top 7, and the breakout predictions (Phase D). Then open the model for changes again (D44).
-- **All-Star break (February):** re-run notebook 12. It prints Alexander-Walker's blip test verdict (set in advance, D33) and freezes the live race's turning point (D32). Then update the README.
+- **All-Star break (February):** run `./scripts/update_mip_race.sh` (it freezes the live race's turning point, D32), then re-run notebook 3: case 3A prints Alexander-Walker's final blip-test verdict (set in advance, D33). Then update the README.
 - **Whenever you like:** `./scripts/update_mip_race.sh` updates the live race. Its README lines and notebook findings are updated by hand.
 
 ## Later
