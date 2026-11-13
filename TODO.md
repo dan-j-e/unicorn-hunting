@@ -42,13 +42,17 @@ The aim: every notebook, chart and section is **relevant**, **easy to understand
 - [ ] **B2. Test all-round versions of the PPG-defined rules.** For each rule above, test the same idea on an all-round measure (game score, or a combination of production measures) and keep whichever does better in the strict test:
   - [x] the turning point on last season's game score (12 November; notebook 21B, D41): **game score in the live race; points kept before the season**;
   - [x] "a star left", measured by usage or game score rather than points (12 November; notebook 21E, D43): **points kept**;
-  - the blip test and leaps on game score;
-  - lookalikes on an all-round jump.
+  - [ ] the blip test and leaps: **shown on game score alongside the points verdict, not decided** (D46). D33's points verdict for Alexander-Walker stays as written; the game-score share kept is printed next to it (12D), and notebook 16's agreement check is repeated on game score as a description;
+  - ~~lookalikes on an all-round jump~~: **moved to Phase C** (C8, D46), which finds similar players at the same stage on every metric.
 - [x] **B2b. "Already clearly a star" beyond All-Star selections** (12 November; notebook 21C–21D, D42): a baseline game score of 16+ and last season in our star tier, both now in the live race. Decided by the strict test on the same seasons, not by the board.
-- [ ] **B3. Test more metrics in the Most Improved models** (after the season, for 2027-28: the live model is frozen, D44).
-- [ ] **B3b. When the model reopens (2027-28; Audit 3):** (1) replace the five overlapping "established player" inputs (baseline game score, the turning point, the 16+ flag, the star tier, already an All-Star) with one measure, tested once; (2) fix the turning point before the season instead of re-choosing it daily, since it flips between values with no change in the evidence (D32). Usage, shot profile and the other style measures from notebook 13, and box-score defence. Note: some only exist from 2011-12, which shortens the test.
-- [ ] **B4. Say it plainly.** A README section and a line in chart captions: "PPG is shown for readability; the model uses these inputs: …". Each model lists its inputs in plain words.
-- [ ] **B5. Record** the results as decisions.
+- [ ] **B3. The 2027-28 package: one test, written before the season ends** (D46; the live model is frozen until then, D44). Tested together, once, instead of one idea at a time:
+  - more metrics in the Most Improved models: usage, shot profile and the other style measures from notebook 13, and box-score defence (some only exist from 2011-12, which shortens the test);
+  - one "established player" measure in place of the five overlapping inputs (baseline game score, the turning point, the 16+ flag, the star tier, already an All-Star; Audit 3);
+  - a turning point fixed before the season instead of re-chosen daily (it flips between values with no change in the evidence; D32);
+  - **every setting chosen inside each training window** (λ, turning points, thresholds), so the strict score is genuinely strict (Audit 3);
+  - 2026-27 as the final holdout. The decision rule is written and agreed before any of it runs.
+- [ ] **B4. Say it plainly** (do now; only the README's live section says it so far). A README section and a line in chart captions: "PPG is shown for readability; the model uses these inputs: …". Each model lists its inputs in plain words.
+- [ ] **B5. Record** the results as decisions. The revision of this phase is D46 (13 November).
 
 ### Between phases — Tests and automatic checks
 Moved up from Later: the strongest sign that the work is engineered, not just explored, and it guards the shared code from the audit.
@@ -67,6 +71,7 @@ Moved up from Later: the strongest sign that the work is engineered, not just ex
 - [ ] **C5. Outcomes.** For each group of lookalikes: how the rest of that season went (jump kept, Most Improved votes) and how the career went (next one to three seasons, star and breakout labels, peak, moves between the eight kinds).
 - [ ] **C6. Apply it** to the 2026-27 candidates, and show it in the live race.
 - [ ] **C7. Record** the decisions and update the README.
+- [ ] **C8. The Ty Jerome lookalikes, redone** (moved from B2, D46): notebook 18's hot starters (up 8+ points at day 19) found again on every metric at the same stage, as the first worked example of this phase. Descriptive: it feeds no model while the live model is frozen.
 
 ### Phase D — Has the breakout prophecy come true so far? (later)
 

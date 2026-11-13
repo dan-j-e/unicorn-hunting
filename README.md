@@ -3,7 +3,7 @@
 ![Python 3.12](https://img.shields.io/badge/python-3.12-2a78d6)
 ![Data: NBA.com and Basketball-Reference](https://img.shields.io/badge/data-NBA.com%20%7C%20Basketball--Reference-1baf7a)
 ![Method: walk-forward backtesting](https://img.shields.io/badge/method-walk--forward%20backtesting-eb6834)
-![Decisions logged: 45](https://img.shields.io/badge/decisions%20logged-45-eda100)
+![Decisions logged: 46](https://img.shields.io/badge/decisions%20logged-46-eda100)
 
 **Could we have identified future NBA breakouts, stars and "unicorns" before they became obvious, using only what was known at the time?**
 
@@ -33,7 +33,7 @@ This project treats scouting like backtesting an investment strategy. For every 
 - **What holds up:** the core of the model (the baseline fix, what voters reward, the turning point, already an All-Star) improves on every resampling of the seasons ([Audit 2](docs/AUDIT.md)). The chances are honest except for big early favourites, which are flagged ([D40](docs/DECISIONS.md)).
 - **What is fragile:** the latest small tweaks (D41, D42) are within noise, and the preseason model (16 inputs, 14 winners, 9 strict seasons) is the most at risk of fitting noise. Breakout lifts are the best of several models, so slightly optimistic.
 - **The live race** is updated in about 20 seconds (`./scripts/update_mip_race.sh`); its backtests now live in [notebook 22](notebooks/22_live_race_backtests.ipynb). Ty Jerome leads; betting markets are kept as a benchmark only ([D45](docs/DECISIONS.md)).
-- **Next:** finish the points-per-game checks (the blip test and the lookalikes), then automated tests. When the model reopens for 2027-28: one "established player" measure in place of five overlapping inputs, and a turning point fixed before the season. The latest sweep is [Audit 3](docs/AUDIT.md).
+- **Next:** close the points-per-game phase (the blip test shown on game score; plain captions), then automated tests. When the model reopens for 2027-28, one package tested once ([D46](docs/DECISIONS.md)): more metrics, one "established player" measure in place of five overlapping inputs, a turning point fixed before the season, and every setting chosen inside training. The latest sweep is [Audit 3](docs/AUDIT.md).
 
 ## Contents
 
@@ -348,15 +348,15 @@ The same nine stages, each trained as the live race is and applied to 2026-27 (1
 
 **Points per game is the illustration, not the model.** Charts and tables show points because every reader knows them. The models use far more: the live race weighs changes in every box-score statistic, the preseason model uses minutes, usage, preseason production and the team's situation, and the breakout models use 197 features. [Notebook 21](notebooks/21_beyond_ppg.ipynb) lists what every model and rule uses.
 
-Where points did stand alone was in four **rules** that shape the models. Each is being tested against an all-round version, and kept only if it does better in the strict test:
+Where points did stand alone was in a few **rules**. Those inside a model were tested against an all-round version and kept only if it did better in the strict test; the blip test predicts nothing and was written in advance, so its all-round version is shown alongside rather than tested ([D46](docs/DECISIONS.md)):
 
 | Rule | Defined on | Status |
 |---|---|---|
 | The turning point ([D27](docs/DECISIONS.md)) | Last season's points above 20 | **Tested:** game score in the live race, points kept before the season ([D41](docs/DECISIONS.md)) |
 | "Already a star" (D38) | All-Star selections only | **Extended:** a baseline game score of 16+ and last season in our star tier also count against a candidate ([D42](docs/DECISIONS.md)) |
 | "A 20-point scorer left" ([D29](docs/DECISIONS.md)) | The departed player's points | **Tested:** points kept; game score and usage did worse ([D43](docs/DECISIONS.md)) |
-| The blip test ([D33](docs/DECISIONS.md)) | Share of the points jump kept | To test: game score shown alongside; the points verdict stays, as written in advance |
-| Ty Jerome lookalikes (notebook 18) | Up 8+ points at day 19 | To test: an all-round jump |
+| The blip test ([D33](docs/DECISIONS.md)) | Share of the points jump kept | **Next:** game score shown alongside; the points verdict stays, as written in advance ([D46](docs/DECISIONS.md)) |
+| Ty Jerome lookalikes (notebook 18) | Up 8+ points at day 19 | **Moved** to similar players at the same stage, on every metric (Phase C, [D46](docs/DECISIONS.md)) |
 
 **The turning point, tested.** For each measure, the turning point was chosen inside each training set, from five values at the same percentiles of candidates as 16–24 points. The rule for deciding was written before the results: a measure replaces points only if it improves the strict test at most points of the season, without losing a winner from the top 7.
 
@@ -599,7 +599,7 @@ Each notebook opens with **In brief** (the question, the answer, the decisions i
 
 ## Key decisions
 
-All 45 decisions, each with its evidence, are logged in [docs/DECISIONS.md](docs/DECISIONS.md). The ones that most shape the results:
+All 46 decisions, each with its evidence, are logged in [docs/DECISIONS.md](docs/DECISIONS.md). The ones that most shape the results:
 
 | # | Decision | Why |
 |---|---|---|
@@ -688,14 +688,14 @@ The full list, with options and priorities, is in [TODO.md](TODO.md).
 - [x] Run every stage of the predictor on today's race ([notebook 19B](notebooks/19_predictor_evolution.ipynb))
 - [x] Audit 2: are the recent gains real? The model frozen for 2026-27 (D44); markets as a benchmark only (D45)
 - [x] Audit 3: every notebook swept; claims made more honest; the daily update cut to about 20 seconds ([docs/AUDIT.md](docs/AUDIT.md))
-- [ ] Make points per game the illustration, not the model: the turning point (D41), "already clearly a star" (D42) and "a star left" (D43) are done; the blip test and the lookalikes remain
+- [ ] Make points per game the illustration, not the model: the turning point (D41), "already clearly a star" (D42) and "a star left" (D43) are done; the blip test shown on game score and plain captions remain; the lookalikes move to similar players (D46)
 - [ ] Tests and automatic checks on every pull request
 - [ ] Value or reputation? Our own measure of what a player is worth, against what a casual fan sees
 - [ ] Find similar players at the same career stage, with era adjustment, and follow how their seasons and careers turned out
 - [ ] Track the 2026-27 breakout predictions as the season unfolds
 - [ ] Does changing your game pay off? Moves between the eight kinds, and the growth paths open to rookies
 - [ ] A live site on GitHub Pages
-- [ ] When the model reopens (2027-28): one "established player" measure instead of five overlapping inputs; a turning point fixed before the season
+- [ ] When the model reopens (2027-28): one package tested once, with its rule written first (D46)
 - [ ] Later: a sentiment trial and scouting cards
 
 [^strict]: **Strict** or **walk-forward**: each season is predicted by a model trained only on earlier seasons, exactly as it could have been at the time. **Leave-one-season-out**, used where noted, predicts each season from all the others, including later ones; it uses more data but is less faithful to what was knowable.
