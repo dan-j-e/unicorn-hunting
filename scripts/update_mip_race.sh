@@ -4,7 +4,7 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-echo "Downloading the newest games and re-running notebook 12 (takes about 3-5 minutes)..."
+echo "Downloading the newest games and re-running notebook 12..."
 .venv/bin/jupyter nbconvert --to notebook --execute --inplace \
   --ExecutePreprocessor.timeout=3600 notebooks/12_mip_live_race.ipynb 2>&1 | grep -v -i "warning" || true
 
@@ -15,7 +15,7 @@ last = d["day"].max()
 today = d[d["day"] == last].nsmallest(7, "rank")
 prev = d[d["day"] == last - 1].set_index("player_id")["rank"]
 k = today["turning_point"].iloc[0]
-print(f"\nMost Improved race after day {last} ({today['date'].iloc[0]:%d %b %Y}); turning point (baseline game score, D41): {'none' if pd.isna(k) else f'{k:g}'}\n")
+print(f"\nMost Improved race, day {last} after opening night ({today['date'].iloc[0]:%d %b %Y}); turning point (baseline game score, D41): {'none' if pd.isna(k) else f'{k:g}'}\n")
 for _, r in today.iterrows():
     was = prev.get(r["player_id"])
     move = "new" if pd.isna(was) else f"{int(was) - int(r['rank']):+d}"

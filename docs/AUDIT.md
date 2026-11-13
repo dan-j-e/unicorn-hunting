@@ -195,3 +195,38 @@ Method ([scripts/audit_gains.py](../scripts/audit_gains.py)): for each model ver
 - **D44: the live model is frozen** from 12 November until the end of 2026-27 (bug fixes only), so this season is a genuine out-of-sample test. New ideas are tested and recorded for 2027-28.
 - **D45: the markets become a benchmark, not an input.** A weekly snapshot (`benchmarks/mip_markets_2026_27.csv`) is scored against our dated chances at season's end.
 - **Next:** finish Phase B without touching the live model (the blip test shown alongside; the lookalikes), then the automated tests (T1–T3).
+
+---
+
+# Audit 3: a sweep of every notebook (13 November 2026)
+
+**Why:** a full pass over all 22 notebooks for overfitting, wasted work and material that is stale or off-topic. No model, decision or saved result was changed (the live model is frozen, D44).
+
+## Claims made more honest
+
+- **Notebook 19's "strict" scores are partly in-sample.** Each season is predicted from earlier seasons, but λ = 3, the turning points and the elite threshold were chosen by looking at all seasons, and each later stage was added after seeing how it did on them. Said in notebook 19, in the README (at a glance, how the predictor evolved, limitations).
+- **The preseason model leads with its strict result** (5 of 9 seasons), not the kinder leave-one-out one (9 of 14), and says plainly that 16 inputs learned from 14 winners is the project's biggest overfitting risk (notebook 11, README).
+- **"Best model" in the breakout backtest** is the best of six to eight models chosen after the test, so its lift is slightly optimistic (notebook 06, README).
+- **Leave-one-out labelled** where the README quoted it without saying so ("how early is too early"); a stale count corrected there (day 90: 13 of 15, not 12).
+
+## Faster updates
+
+- **Notebook 12 split in two.** Its backtests (12A, 12D) moved to **notebook 22**, so a daily update no longer recomputes them, and the finished 2026-27 preseason is read from the cache instead of being downloaded again. `update_mip_race.sh` went from about 4 minutes to about 20 seconds. Notebook 22's tables are identical to the old 12A and 12D outputs; notebook 12's sections are now 12A (today), 12B (three snapshots), 12C (daily board), 12D (blip test).
+- **Complete nights only.** The live race now leaves out a night's games until 4 a.m. US Eastern the next morning, so an update run during a game night can never save a half-played day (a bug fix under D44).
+
+## Consistency
+
+- **One way to count days:** days after opening night, opening night = day 0, everywhere. The daily file used to count opening night as day 1; its labels were shifted once (no value recomputed), and notebook 19B and the update script follow.
+- **Two "star" cut-offs defined** in the glossary: star season (top 5%) and star tier (top 10%).
+- **Notebooks address a reader, not the author:** "your choice", "decision for you" and similar rewritten in notebooks 11, 13 and 14.
+- **Stale lines corrected:** notebook 19's turning point note, notebook 20's list of inputs, the README's day 22/23 mix-up, its "14 every day" turning point, and "00 → 20" now that there are 22 notebooks.
+
+## Found, not changed
+
+- **NBA.com corrected one of Brandin Podziemski's games** after day 22 was saved, so recomputing day 22 now gives slightly different chances (Jerome 12.2% rather than 12.3%; Podziemski 5th rather than 6th). The saved board stands, as designed; notebook 19B's check notes it.
+- **For 2027-28, when the model reopens:** the live model discounts established players through five overlapping inputs, and the daily re-chosen turning point flips between values with no change in the evidence. Both are candidates for simplification.
+## Older notebooks (10, 15, 17)
+
+- **Notebook 15 kept, with a corrected status note.** It was thought fully superseded by notebook 19, but two parts exist only here: the end-of-previous-season view and every season's top 3 back to 2005-06. Its mid-season and end-of-season numbers are the 30 October model; the note and the README now say so and point to 19 for the current ones.
+- **Notebook 17: section 17D removed.** It showed the 2026-27 board as it was on 9 November, before D39–D42, which no longer matched the live race. 17A–17C stay: they are the evidence D38 was decided on, they cover views notebook 19 doesn't (end of previous season, preseason), and they draw the README's chart. The finding that described 17D is now dated.
+- **Notebook 10: two of three versions of the probability chart removed** (10F, 10G); 10L's final version stays. This reverses part of Audit 1, which kept every early chart: the three were near-identical, about 290 KB each, and their numbers are in the findings. The small weight charts, which show the model taking shape, stay.
