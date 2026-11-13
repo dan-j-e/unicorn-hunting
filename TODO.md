@@ -8,7 +8,7 @@ Work through the phases in order. Tick each box when it is done, and record any 
 
 > **The live Most Improved model is frozen until the end of 2026-27 (D44, 12 November).** Bug fixes only. New Most Improved ideas are tested and recorded, but take effect from 2027-28. See [Audit 2](docs/AUDIT.md).
 
-**Order (agreed 12 November, from the ideas review):** B → tests (below) → F → C → D (from January, when there are enough games) → E → G. A is done.
+**Order (agreed 12 November, from the ideas review):** B → tests (below) → F → C → D (from January, when there are enough games) → E → G. A is done; B is done (13 November) apart from B3, the 2027-28 package.
 
 ### Phase A — Audit what we have
 
@@ -21,7 +21,7 @@ The aim: every notebook, chart and section is **relevant**, **easy to understand
 - [x] **A5. Code** (done 10 November; see [docs/AUDIT.md](docs/AUDIT.md)). Shared logic lives in `src/unicorn/`, not copied between notebooks (for example, the live-race candidate builder appears in notebooks 12, 17, 18 and 19). Consistent names.
 - [x] **A6. Record** (done 10 November; see [docs/AUDIT.md](docs/AUDIT.md)). Write the audit results down (what changed and why), and update the README.
 
-### Phase B — Points per game is the illustration, not the model
+### Phase B — Points per game is the illustration, not the model (closed 13 November; B3 waits for 2027-28)
 
 **The principle:** charts use points per game (PPG) because it is the most familiar statistic for a casual reader. The models should use **every relevant metric we have**, as the playing-style clusters in notebook 13 do with 15 measures.
 
@@ -39,7 +39,7 @@ The aim: every notebook, chart and section is **relevant**, **easy to understand
 | **Ty Jerome lookalikes** (notebook 18) | Up 8+ PPG at day 19 | **The definition** |
 
 - [x] **B1. Inventory** (12 November; notebook 21A). Confirm and extend the table above for every model and rule, and add it to the README.
-- [ ] **B2. Test all-round versions of the PPG-defined rules.** For each rule above, test the same idea on an all-round measure (game score, or a combination of production measures) and keep whichever does better in the strict test:
+- [x] **B2. Test all-round versions of the PPG-defined rules.** For each rule above, test the same idea on an all-round measure (game score, or a combination of production measures) and keep whichever does better in the strict test:
   - [x] the turning point on last season's game score (12 November; notebook 21B, D41): **game score in the live race; points kept before the season**;
   - [x] "a star left", measured by usage or game score rather than points (12 November; notebook 21E, D43): **points kept**;
   - [x] the blip test and leaps (13 November; notebook 16D, 12D): **shown on game score alongside the points verdict, not decided** (D46). Game score agrees with points on 84% of verdicts; the break matches the full season 83% of the time (86% on points). D33's points verdict for Alexander-Walker stays as written; the game-score share kept is printed next to it (12D), and notebook 16's agreement check is repeated on game score as a description;
@@ -51,8 +51,8 @@ The aim: every notebook, chart and section is **relevant**, **easy to understand
   - a turning point fixed before the season instead of re-chosen daily (it flips between values with no change in the evidence; D32);
   - **every setting chosen inside each training window** (λ, turning points, thresholds), so the strict score is genuinely strict (Audit 3);
   - 2026-27 as the final holdout. The decision rule is written and agreed before any of it runs.
-- [ ] **B4. Say it plainly** (do now; only the README's live section says it so far). A README section and a line in chart captions: "PPG is shown for readability; the model uses these inputs: …". Each model lists its inputs in plain words.
-- [ ] **B5. Record** the results as decisions. The revision of this phase is D46 (13 November).
+- [x] **B4. Say it plainly** (13 November): one caption line on every chart where points stand in for the model (notebooks 10, 11, 12, 16, 18), saying what the model uses instead; notebooks 11 and 12 say so under their inputs; the README's "Beyond points per game" section and its inventory table list each model's inputs.
+- [x] **B5. Record** (13 November): the results are D41, D42 and D43; the revision and the blip test shown alongside are D46. Nothing else needed deciding.
 
 ### Between phases — Tests and automatic checks
 Moved up from Later: the strongest sign that the work is engineered, not just explored, and it guards the shared code from the audit.
