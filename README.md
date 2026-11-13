@@ -33,7 +33,7 @@ This project treats scouting like backtesting an investment strategy. For every 
 - **What holds up:** the core of the model (the baseline fix, what voters reward, the turning point, already an All-Star) improves on every resampling of the seasons ([Audit 2](docs/AUDIT.md)). The chances are honest except for big early favourites, which are flagged ([D40](docs/DECISIONS.md)).
 - **What is fragile:** the latest small tweaks (D41, D42) are within noise, and the preseason model (16 inputs, 14 winners, 9 strict seasons) is the most at risk of fitting noise. Breakout lifts are the best of several models, so slightly optimistic.
 - **The live race** is updated in about 20 seconds (`./scripts/update_mip_race.sh`); its backtests now live in [notebook 22](notebooks/22_live_race_backtests.ipynb). Ty Jerome leads; betting markets are kept as a benchmark only ([D45](docs/DECISIONS.md)).
-- **Next:** close the points-per-game phase (the blip test shown on game score; plain captions), then automated tests. When the model reopens for 2027-28, one package tested once ([D46](docs/DECISIONS.md)): more metrics, one "established player" measure in place of five overlapping inputs, a turning point fixed before the season, and every setting chosen inside training. The latest sweep is [Audit 3](docs/AUDIT.md).
+- **Next:** close the points-per-game phase (plain captions), then automated tests. When the model reopens for 2027-28, one package tested once ([D46](docs/DECISIONS.md)): more metrics, one "established player" measure in place of five overlapping inputs, a turning point fixed before the season, and every setting chosen inside training. The latest sweep is [Audit 3](docs/AUDIT.md).
 
 ## Contents
 
@@ -355,7 +355,7 @@ Where points did stand alone was in a few **rules**. Those inside a model were t
 | The turning point ([D27](docs/DECISIONS.md)) | Last season's points above 20 | **Tested:** game score in the live race, points kept before the season ([D41](docs/DECISIONS.md)) |
 | "Already a star" (D38) | All-Star selections only | **Extended:** a baseline game score of 16+ and last season in our star tier also count against a candidate ([D42](docs/DECISIONS.md)) |
 | "A 20-point scorer left" ([D29](docs/DECISIONS.md)) | The departed player's points | **Tested:** points kept; game score and usage did worse ([D43](docs/DECISIONS.md)) |
-| The blip test ([D33](docs/DECISIONS.md)) | Share of the points jump kept | **Next:** game score shown alongside; the points verdict stays, as written in advance ([D46](docs/DECISIONS.md)) |
+| The blip test ([D33](docs/DECISIONS.md)) | Share of the points jump kept | **Shown alongside:** game score agrees with points on 84% of verdicts, and the break is as good a guide (83% against 86%); the points verdict stays, as written in advance ([D46](docs/DECISIONS.md), notebook 16D) |
 | Ty Jerome lookalikes (notebook 18) | Up 8+ points at day 19 | **Moved** to similar players at the same stage, on every metric (Phase C, [D46](docs/DECISIONS.md)) |
 
 **The turning point, tested.** For each measure, the turning point was chosen inside each training set, from five values at the same percentiles of candidates as 16–24 points. The rule for deciding was written before the results: a measure replaces points only if it improves the strict test at most points of the season, without losing a winner from the top 7.
@@ -489,7 +489,8 @@ $$
 
 - **Why these lines:** they separate the 14 past winners into clear groups. Nine kept 80%+ the following season, two kept most of it (Markkanen, Daniels) and three fell back sharply (Dragić, Oladipo, Randle).
 - **Why the All-Star break is early enough:** for all 14 past winners, the verdict at the break matched the verdict over the full season.
-- **So far (12 games, to 10 November):** 21.9 points a game, 110% kept. On track for "real", but it is early.
+- **So far (12 games, to 11 November):** 21.9 points a game, 110% kept. On track for "real", but it is early.
+- **Alongside, not the verdict:** on game score he has kept 91% (7.5 → 15.3 → 14.6). Across 541 past leaps, game score and points give the same verdict about five times in six ([notebook 16D](notebooks/16_do_leaps_last.ipynb), [D46](docs/DECISIONS.md)).
 
 <details>
 <summary><b>Backtest: the blip test on 609 leaps since 2000-01, and its victims</b></summary>
@@ -688,7 +689,7 @@ The full list, with options and priorities, is in [TODO.md](TODO.md).
 - [x] Run every stage of the predictor on today's race ([notebook 19B](notebooks/19_predictor_evolution.ipynb))
 - [x] Audit 2: are the recent gains real? The model frozen for 2026-27 (D44); markets as a benchmark only (D45)
 - [x] Audit 3: every notebook swept; claims made more honest; the daily update cut to about 20 seconds ([docs/AUDIT.md](docs/AUDIT.md))
-- [ ] Make points per game the illustration, not the model: the turning point (D41), "already clearly a star" (D42) and "a star left" (D43) are done; the blip test shown on game score and plain captions remain; the lookalikes move to similar players (D46)
+- [ ] Make points per game the illustration, not the model: the turning point (D41), "already clearly a star" (D42) and "a star left" (D43) are done; plain captions remain (the blip test is now shown on game score); the lookalikes move to similar players (D46)
 - [ ] Tests and automatic checks on every pull request
 - [ ] Value or reputation? Our own measure of what a player is worth, against what a casual fan sees
 - [ ] Find similar players at the same career stage, with era adjustment, and follow how their seasons and careers turned out
