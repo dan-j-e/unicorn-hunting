@@ -1,10 +1,10 @@
 # Eight kinds of NBA player (2011-12 to 2025-26)
 
-*From [notebook 13](../notebooks/13_archetypes.ipynb), section 13D. Decisions D31, D34 and D35 in [DECISIONS.md](DECISIONS.md).*
+*From [notebook 2](../notebooks/2_play_styles.ipynb) (playing styles); every intermediate step is in the archived [notebook 13](../notebooks/archive/13_archetypes.ipynb). Decisions D31, D34 and D35 in [DECISIONS.md](DECISIONS.md).*
 
 We sorted every NBA player-season since 2011-12 (500+ minutes, 5,353 seasons) by **how** each player plays, not **how well**. The data drew the groups, not us: no names, size or position went in, and no list of expected types was written beforehand. The clusters were numbered first and named afterwards, from the players inside them.
 
-![Eight clusters: who is in which](../outputs/figures/13_eight_clusters_who.png)
+![Eight clusters: who is in which](../outputs/figures/2_eight_kinds_who.png)
 
 ## How the clusters were made
 
@@ -16,7 +16,7 @@ We sorted every NBA player-season since 2011-12 (500+ minutes, 5,353 seasons) by
 - **Each measure is compared with that season's league.** A 2014 big who shot some threes counts as "stretchy" even though the bar is higher in 2025.
 - **Left out on purpose:** shooting percentages, plus-minus and all-in-one ratings, so a good and a bad rim-runner land together. Height, weight and position were also left out, and are shown only afterwards.
 - **A soft mixture model**, so each season gets a share in every cluster. It turned out to be confident about almost everyone: 90%+ of seasons are 70%+ in one cluster.
-- **Why eight:** style is mostly a continuum, and 5 clusters is the most stable cut. But the 8 fit neatly inside the 5, and each extra split has a basketball reading.
+- **Why eight:** style is mostly a continuum. Three clusters are the most stable cut, and five and six are about equally stable; beyond six the groups get shakier. But the 8 fit neatly inside the 5, and each extra split has a basketball reading.
 
 ## The eight
 
@@ -33,7 +33,7 @@ Numbered from most inside (1) to most perimeter, then named. "Best-known" means 
 | **7** | **Kerr's Cult** | 15% | Mikal Bridges (2024-25), Nicolas Batum, Klay Thompson, Marcus Morris Sr., Jeff Green, Kentavious Caldwell-Pope | Tyler Johnson, Bogdan Bogdanović, Jerryd Bayless | threes | rim shots, offensive boards | 6'5", 205 lb, G |
 | **8** | **The Effective Operator** | 15% | Damian Lillard, Monta Ellis, Stephen Curry, Bradley Beal (2017-18), CJ McCollum, O.J. Mayo | D'Angelo Russell, Deron Williams, Raymond Felton | self-created makes, assists, usage | defensive and offensive boards | 6'3", 194 lb, G |
 
-The full profile on all 15 measures is in [the heatmap](../outputs/figures/13_eight_clusters.png).
+The full profile on all 15 measures is in [the heatmap](../outputs/figures/2_eight_kinds_profile.png).
 
 ## What's interesting
 
@@ -52,15 +52,15 @@ The full profile on all 15 measures is in [the heatmap](../outputs/figures/13_ei
 
 ## Caveats
 
-- **The eight are less stable than the five.** Fitted on two random halves of the data, they agree 54% of the time, against 87% for five. The groups in the middle of the map (Windex/Bruiser; The Pest/Peter Griffin's NBA Jam/Kerr's Cult) swap players most often.
+- **The eight are less stable than the five.** Fitted on two random halves of the data, they agree 54% of the time, against 83% for five (averaged over 20 pairs of halves; revised 13 November from 87%, which came from six pairs). The groups in the middle of the map (Windex/Bruiser; The Pest/Peter Griffin's NBA Jam/Kerr's Cult) swap players most often.
 - **Era:** each season is compared with its own league, so a cluster means the same *relative* role in 2012 and 2025, not the same raw numbers.
 - **Next:** the same exercise from 2000-01 to 2025-26 on 3-season rolling averages, to see whether the eight hold over a longer history.
 
-## Longer history: 2000-01 to 2025-26 (notebook 13E)
+## Longer history: 2000-01 to 2025-26 (notebook 2, section 2D)
 
 We reran the same exercise over 26 seasons, using **3-season rolling windows** and **no era adjustment**: raw values on one scale, so the league's changes show up in the clusters.
 
-![The mix over time](../outputs/figures/13_eight_clusters_2000_2026_by_season.png)
+![The mix over time](../outputs/figures/2_mix_2000_2026.png)
 
 - **The traditional rim big fell from 23% of players to 5%.** It was the largest group until about 2012, then collapsed by 2018. Typical members: Dwight Howard, Elton Brand, Ben Wallace, Dikembe Mutombo.
 - **The corner 3-and-D wing rose from 4% to 20%.** Bruce Bowen, Raja Bell and Shane Battier were early examples; Trevor Ariza and P.J. Tucker came later.
