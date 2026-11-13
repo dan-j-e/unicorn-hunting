@@ -48,13 +48,14 @@ def stability(X, k, groups=None, repeats=6, make=mixture):
     return np.mean(out)
 
 
-def how_many(X, k_range, groups=None):
+def how_many(X, k_range, groups=None, repeats=6):
+    """Stability (both methods), separation and fit for each number of clusters. More `repeats` = a steadier stability estimate."""
     kmeans = lambda k, seed: KMeans(k, n_init=10, random_state=seed)
     rows = []
     for k in k_range:
         gm = mixture(k).fit(X)
         lab = gm.predict(X)
-        rows.append({"clusters": k, "stability (soft mixture)": stability(X, k, groups), "stability (k-means)": stability(X, k, groups, make=kmeans),
+        rows.append({"clusters": k, "stability (soft mixture)": stability(X, k, groups, repeats), "stability (k-means)": stability(X, k, groups, repeats, make=kmeans),
                      "separation": silhouette_score(X, lab, sample_size=3000, random_state=0), "fit (BIC)": gm.bic(X)})
     return pd.DataFrame(rows).set_index("clusters")
 
@@ -78,7 +79,8 @@ def fit_clusters(X, k, pc, rows, minutes_col="min", min_minutes=1500, n=10):
     return lab, prob.max(axis=1), typical, known
 
 
-def profile_heatmap(prof, known, fname, title, value_label="vs the average (SD)"):
+def profile_heatmap(prof, known, fname, title, value_label="vs the average (SD)", names=None):
+    """One row per cluster, one column per style measure. `names` ({cluster: name}) labels rows by name instead of number."""
     k = len(prof)
     fig, ax = plt.subplots(figsize=(15, 0.62 * k + 1.6))
     im = ax.imshow(prof[FEATURES].to_numpy(), cmap=DIVERGING, vmin=-1.6, vmax=1.6, aspect="auto")
@@ -86,7 +88,9 @@ def profile_heatmap(prof, known, fname, title, value_label="vs the average (SD)"
         for j, col in enumerate(FEATURES):
             v = prof.iloc[i][col]
             ax.text(j, i, f"{v:+.1f}", ha="center", va="center", fontsize=9, color=SURFACE if abs(v) > 1.0 else INK)
-    ax.set_yticks(range(k), [f"Cluster {c}: " + ", ".join(known[c]["player_name"].head(3)) for c in prof.index], fontsize=9.5)
+    rows = [f"{c}. {names[c]}  ({', '.join(known[c]['player_name'].head(2))})" if names else f"Cluster {c}: " + ", ".join(known[c]["player_name"].head(3))
+            for c in prof.index]
+    ax.set_yticks(range(k), rows, fontsize=9.5)
     ax.set_xticks(range(len(FEATURES)), [SHORT[c] for c in FEATURES], rotation=35, ha="right", fontsize=9)
     x0 = 0
     for g, cs in GROUPS.items():
@@ -106,9 +110,10 @@ def traits(prof_row, n_hi=3, n_lo=2):
     return textwrap.fill("more: " + ", ".join(hi), 46) + ("\n" + textwrap.fill("less: " + ", ".join(lo), 46) if lo else "")
 
 
-def who_is_in_which(pc, lab, rows, known, typical, prof, sizes, when, fname, title, map_note=True):
+def who_is_in_which(pc, lab, rows, known, typical, prof, sizes, when, fname, title, map_note=True, names=None, unit="rows"):
     """Small multiples: the style map with one cluster highlighted, its best-known (black dots) and most typical players,
-    what it does most and least, and its typical size. `when(row)` formats the season or window shown after a name."""
+    what it does most and least, and its typical size. `when(row)` formats the season or window shown after a name.
+    `names` ({cluster: name}) titles each panel by name; `unit` names what a row is (for "x% of player-seasons")."""
     k = len(prof)
     nrows = (k + 1) // 2
     fig = plt.figure(figsize=(17, 4.75 * nrows))
@@ -124,8 +129,9 @@ def who_is_in_which(pc, lab, rows, known, typical, prof, sizes, when, fname, tit
         ax.scatter(pc[idx, 0], pc[idx, 1], s=34, color=INK, edgecolor=SURFACE, linewidth=0.8, zorder=3)
         ax.set_xticks([]); ax.set_yticks([])
         ax.set_xlim(lo[0], hi[0]); ax.set_ylim(lo[1], hi[1] + 0.25 * (hi[1] - lo[1]))
-        ax.text(0.03, 0.97, f"Cluster {c}", transform=ax.transAxes, fontsize=14, fontweight="bold", color=INK, va="top")
-        ax.text(0.03, 0.88, f"{m.mean():.0%} of rows", transform=ax.transAxes, fontsize=9, color=INK2, va="top")
+        head = textwrap.fill(f"{c}. {names[c]}", 26) if names else f"Cluster {c}"
+        ax.text(0.03, 0.97, head, transform=ax.transAxes, fontsize=12.5 if names else 14, fontweight="bold", color=INK, va="top", linespacing=1.15)
+        ax.text(0.03, 0.97 - 0.09 * (head.count("\n") + 1), f"{m.mean():.0%} of {unit}", transform=ax.transAxes, fontsize=9, color=INK2, va="top")
         if c == 1 and map_note:
             ax.text(0.98, 0.02, "map: ← perimeter · inside →, ↓ off-ball · on-ball ↑", transform=ax.transAxes, fontsize=7.5, color=INK2, ha="right")
         tx.axis("off")

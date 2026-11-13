@@ -33,7 +33,7 @@ This project treats scouting like backtesting an investment strategy. For every 
 - **What holds up:** the core of the model (the baseline fix, what voters reward, the turning point, already an All-Star) improves on every resampling of the seasons ([Audit 2](docs/AUDIT.md)). The chances are honest except for big early favourites, which are flagged ([D40](docs/DECISIONS.md)).
 - **What is fragile:** the latest small tweaks (D41, D42) are within noise, and the preseason model (16 inputs, 14 winners, 9 strict seasons) is the most at risk of fitting noise. Breakout lifts are the best of several models, so slightly optimistic.
 - **The live race** is updated in about 20 seconds (`./scripts/update_mip_race.sh`); its backtests now live in [notebook 22](notebooks/22_live_race_backtests.ipynb). Ty Jerome leads; betting markets are kept as a benchmark only ([D45](docs/DECISIONS.md)).
-- **Being restructured (13 November, [D47](docs/DECISIONS.md)):** one notebook per segment: 0 Data, 1 the basic Most Improved race, 2 playing styles, 3 candidate investigations, 4 the revised race (with a separate live-race notebook). [0 Data](notebooks/0_data.ipynb) and [1 The basic race](notebooks/1_mip_basic.ipynb) are done; the breakout, star and unicorn work is archived.
+- **Being restructured (13 November, [D47](docs/DECISIONS.md)):** one notebook per segment: 0 Data, 1 the basic Most Improved race, 2 playing styles, 3 candidate investigations, 4 the revised race (with a separate live-race notebook). [0 Data](notebooks/0_data.ipynb), [1 The basic race](notebooks/1_mip_basic.ipynb) and [2 Playing styles](notebooks/2_play_styles.ipynb) are done; the breakout, star and unicorn work is archived.
 - **Next:** segments 1–4, then automated tests (T1–T3) and value against reputation (Phase F). The points-per-game phase closed on 13 November: points are now the illustration, and every chart that shows them says what the model uses instead. When the model reopens for 2027-28, one package tested once ([D46](docs/DECISIONS.md)): more metrics, one "established player" measure in place of five overlapping inputs, a turning point fixed before the season, and every setting chosen inside training. The latest sweep is [Audit 3](docs/AUDIT.md).
 
 ## Contents
@@ -98,7 +98,7 @@ The notebooks are numbered in the order the work was done, not the order a reade
 | 4 | [09](notebooks/archive/09_routes_to_stardom.ipynb) | Two routes to stardom |
 | 5 | [08](notebooks/archive/08_breakout_board.ipynb), [07](notebooks/archive/07_current_players.ipynb) | Every past season's picks, then the 2026-27 outlook |
 
-**Route 3: Unicorns and playing styles:** [04](notebooks/archive/04_unicorn_hunting.ipynb) (rare combinations and extremes), then [13](notebooks/13_archetypes.ipynb) (the eight kinds of player).
+**Route 3: Playing styles:** [2 Playing styles](notebooks/2_play_styles.ipynb) (the eight kinds of player). The unicorn work (rare combinations and extremes) is archived in [04](notebooks/archive/04_unicorn_hunting.ipynb).
 
 **The data:** [0 Data](notebooks/0_data.ipynb) shows which NBA.com sources can be trusted, and why some cannot, and builds every table the other notebooks read. The original data notebooks (00–03) are in the [archive](notebooks/archive).
 
@@ -165,7 +165,7 @@ Rare *combinations* of strengths (Giannis, Jokić, Kevin Durant) are distinct fr
 | 7 | **Kerr's Cult** | Klay Thompson, Nicolas Batum, Mikal Bridges ('24-25) | Threes and movement; few rim shots or rebounds |
 | 8 | **The Effective Operator** | Damian Lillard, Stephen Curry, CJ McCollum | Self-created baskets, assists, usage; smaller, fewest rebounds |
 
-![Eight kinds of player: who is in which](outputs/figures/13_eight_clusters_who.png)
+![Eight kinds of player: who is in which](outputs/figures/2_eight_kinds_who.png)
 
 - **Players move between kinds as their game changes.** Mikal Bridges moved from The Pest to Kerr's Cult; Karl-Anthony Towns began as a Windex before he became a shooting big.
 - **2025-26 surprises:** Wembanyama is a Windex rather than a Bruiser, because his rim shots and rebounding outweigh his threes relative to the league. Draymond Green is in Kerr's Cult.
@@ -175,24 +175,24 @@ Rare *combinations* of strengths (Giannis, Jokić, Kevin Durant) are distinct fr
 
 Playing style turned out to be mostly a continuum rather than a set of islands. To judge how many groups are real, the clustering was fitted on two random halves of the data and the two results compared (1 = identical groups).
 
-| Groups | 3 | 5 | 6 | 8 |
-|---|---|---|---|---|
-| Agreement between halves (2011-26) | 0.94 | 0.87 | 0.76 | 0.54 |
+| Groups | 3 | 5 | 6 | 7 | 8 |
+|---|---|---|---|---|---|
+| Agreement between halves (2011-26; average of 20 pairs of halves) | 0.94 | 0.83 | 0.79 | 0.59 | 0.54 |
 
-Five groups are the most stable fine-grained choice. Eight were chosen ([D35](docs/DECISIONS.md)) because the eight fit neatly inside the five and each extra split has a clear basketball reading: stretch bigs, corner 3-and-D wings, and two different kinds of on-ball creator.
+Three groups are rock-solid; five and six are about equally stable; beyond six the groups depend on which seasons are in the sample. *Revised 13 November:* this table said five 0.87 and six 0.76, from only six pairs of halves, which made five look like a clear peak. Eight were chosen ([D35](docs/DECISIONS.md)) because the eight fit neatly inside the five and each extra split has a clear basketball reading: stretch bigs, corner 3-and-D wings, and two different kinds of on-ball creator.
 
 </details>
 
 <details>
 <summary><b>Back to 2000-01: how the league changed</b></summary>
 
-The same exercise over 26 seasons, on 3-season rolling windows and with **no era adjustment**, so the league's changes show up directly ([notebook 13E](notebooks/13_archetypes.ipynb), [D36](docs/DECISIONS.md)):
+The same exercise over 26 seasons, on 3-season rolling windows and with **no era adjustment**, so the league's changes show up directly ([notebook 2](notebooks/2_play_styles.ipynb), section 2D; [D36](docs/DECISIONS.md)):
 
 - **The traditional rim big fell from 23% of players to 5%.** It was the largest group until about 2012, then collapsed by 2018.
 - **The corner 3-and-D wing rose from 4% to 20%.** Bruce Bowen, Raja Bell and Shane Battier came first; Trevor Ariza and P.J. Tucker followed.
 - **Usage-heavy and pick-and-pop bigs held steady at 6–9%,** from Kevin Garnett, Tim Duncan and Dirk Nowitzki to Jokić, Giannis and Towns.
 
-![The mix over time](outputs/figures/13_eight_clusters_2000_2026_by_season.png)
+![The mix over time](outputs/figures/2_mix_2000_2026.png)
 
 These longer-run groups are less stable (0.45 agreement at eight), partly because players near a boundary switch groups as the league shifts around them.
 
@@ -521,7 +521,7 @@ The test is not specific to Alexander-Walker, so it was run on 609 leaps from 20
 | `1_mip_basic` | **Segment 1.** The basic Most Improved race: how winners' seasons unfold, what early form to trust, the biggest points jump, the first choice model and what voters reward, and the misses |
 | `11_mip_preseason` | What preseason numbers are worth; the 2026-27 preseason top 7 |
 | `12_mip_live_race` | The live 2026-27 race, day by day; three snapshots with reasons; the blip test |
-| `13_archetypes` | Playing-style clusters: how many, five and then eight named groups ([write-up](docs/EIGHT_CLUSTERS.md)); 2000-01 → 2025-26 on 3-season windows |
+| `2_play_styles` | **Segment 2.** Playing styles: how many kinds, the eight named kinds and who is in each, players moving between kinds, and 2000-01 → 2025-26 with no era adjustment ([write-up](docs/EIGHT_CLUSTERS.md)) |
 | `14_team_changes` | Does a new team or new teammates make a Most Improved Player? (No; a star leaving does) |
 | `15_mip_2000_2026` | Most Improved 2000-01 → 2025-26 at three points of each season, strictly walk-forward *(partly historical: the model before D38–D42; notebook 19 has the current mid-season and end-of-season numbers, while the end-of-previous-season view and every season's top 3 are only here)* |
 | `16_do_leaps_last` | The blip test on 609 leaps since 2000-01, and its victims |
