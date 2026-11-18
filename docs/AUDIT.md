@@ -16,7 +16,7 @@ A record of the audit begun on 10 November 2026 (TODO, Phase A). Each step lists
 
 **What it did not change:** no model, decision or result. Every correction was to wording, a stale number or a date, and the refactor was verified to leave every output unchanged.
 
-**Next:** Phase B (points per game as the illustration, not the model), then Phase C (similar players at the same career stage). See [TODO.md](../TODO.md).
+**Next:** Phase B (points per game as the illustration, not the model), then Phase C (similar players at the same career stage).
 
 ## A1. Relevance
 
