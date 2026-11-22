@@ -10,7 +10,7 @@
 The project treats scouting like backtesting an investment strategy. For every past season it rebuilds what was knowable at that moment, ranks the players, and scores the ranking against what actually happened. Only a method that passes that test is applied to the current season.
 
 > [!NOTE]
-> **Live: the 2026-27 Most Improved race.** Davion Mitchell leads with a 15.7% chance on 17 November (day 28 after opening night), ahead of Ty Jerome and Franz Wagner. The model is frozen for the season, so 2026-27 is its first clean test ([the live race](#4b--the-live-race)).
+> **Live: the 2026-27 Most Improved race.** Davion Mitchell leads with a 20.4% chance on 20 November (day 31 after opening night), ahead of Ty Jerome and Franz Wagner. The model is frozen for the season, so 2026-27 is its first clean test ([the live race](#4b--the-live-race)).
 
 ![The 2026-27 Most Improved race, day by day](outputs/figures/12_daily_worm.png)
 
@@ -150,17 +150,17 @@ Three of these changes were prompted by names on the board, which is why the mod
 
 **The 2026-27 race, one leaderboard per day** ([notebook 4b](notebooks/4b_live_race.ipynb)). Day *n* uses only games up to day *n*, scored by a model trained on past seasons cut at the same day. Each day is saved once and never recomputed, and a night's games count only once it is over (4 a.m. US Eastern).
 
-| Rank | Player | Chance (17 November) | Points a game (baseline season) |
+| Rank | Player | Chance (20 November) | Points a game (baseline season) |
 |---|---|---|---|
-| 1 | **Davion Mitchell** | 15.7% | 16.7 (9.3) |
-| 2 | Ty Jerome | 10.0% | 25.4 (12.5) |
-| 3 | Franz Wagner | 9.4% | 24.2 (20.6) |
-| 4 | Terrence Shannon Jr | 4.4% | 12.9 (5.6) |
-| 5 | Anthony Black | 3.3% | 16.7 (15.0) |
-| 6 | Ajay Mitchell | 2.9% | 18.1 (13.6) |
-| 7 | Ayo Dosunmu | 1.9% | 18.6 (14.8) |
+| 1 | **Davion Mitchell** | 20.4% | 17.2 (9.3) |
+| 2 | Ty Jerome | 17.3% | 25.4 (12.5) |
+| 3 | Franz Wagner | 11.0% | 25.1 (20.6) |
+| 4 | Terrence Shannon Jr | 5.0% | 12.7 (5.6) |
+| 5 | Jared McCain | 1.9% | 13.9 (8.3) |
+| 6 | Anthony Black | 1.7% | 16.2 (15.0) |
+| 7 | Jaden McDaniels | 1.5% | 17.1 (14.8) |
 
-*Points are shown for readability; the model uses the change in every box-score statistic.* Ty Jerome led on every day from day 1 to day 23 except day 9; Mitchell has led since day 25. Before the season the list was led by Rui Hachimura (now #50); established stars sit lower because "already clearly a star" counts against them (Cooper Flagg #36, Wembanyama #38). **The model is frozen until the season ends** ([D44](docs/DECISIONS.md)); betting markets are recorded weekly as a benchmark, never an input ([D45](docs/DECISIONS.md)). Update with `./scripts/update_mip_race.sh` (about 20 seconds).
+*Points are shown for readability; the model uses the change in every box-score statistic.* Ty Jerome led on every day from day 1 to day 23 except day 9; Mitchell has led since day 25. Jerome has played one game since day 22 (11 games in all). Before the season the list was led by Rui Hachimura (now #49); established stars sit lower because "already clearly a star" counts against them (Cooper Flagg #28, Wembanyama #30). **The model is frozen until the season ends** ([D44](docs/DECISIONS.md)); betting markets are recorded weekly as a benchmark, never an input ([D45](docs/DECISIONS.md)). Update with `./scripts/update_mip_race.sh` (about 20 seconds).
 
 ---
 
