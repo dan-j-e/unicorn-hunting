@@ -57,8 +57,9 @@ def _one(season, **kw):
 
 
 def rates(t):
-    """The 15 style rates from pooled totals."""
-    safe = lambda a, b: a / b.where(b > 0)
+    """The 15 style rates from pooled totals. A zero denominator means the action did not happen, so the rate is 0
+    (D62); a rate stays missing only when its data does not exist (D61)."""
+    safe = lambda a, b: (a / b.where(b > 0)).mask(b.eq(0) & a.notna(), 0.0)
     return pd.DataFrame({
         "rim_rate": safe(t["ra_fga"], t["fga"]), "paint_non_ra_rate": safe(t["paint_fga"], t["fga"]),
         "mid_rate": safe(t["mid_fga"], t["fga"]), "fg3a_rate": safe(t["fg3a"], t["fga"]),
@@ -175,10 +176,12 @@ def add_map(pool, last_train_season):
     out = pool.copy()
     for name, feats in [("position_body", BODY_FEATURES), ("position_style", STYLE_FEATURES)]:
         base = [f[:-2] for f in feats]
-        model = RidgeCV(alphas=ALPHAS).fit(train[feats].fillna(0.0).to_numpy(), train["position_num"])
-        X = _z(out, base).fillna(0.0).to_numpy()
-        out[name] = np.clip(model.predict(X), 1, 5)
-        out.loc[out[base].isna().all(axis=1), name] = np.nan
+        fit = train.dropna(subset=feats)                          # D61: rows with missing data are dropped, not filled
+        model = RidgeCV(alphas=ALPHAS).fit(fit[feats].to_numpy(), fit["position_num"])
+        Z = _z(out, base)
+        ok = Z.notna().all(axis=1)
+        out[name] = np.nan
+        out.loc[ok, name] = np.clip(model.predict(Z[ok].to_numpy()), 1, 5)
     out["style_vs_body"] = out["position_style"] - out["position_body"]   # <0: plays smaller than his body
     return out
 
