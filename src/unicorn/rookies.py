@@ -24,13 +24,13 @@ BOX_ONLY = [c for c in STYLE if c not in SHOT_ZONE_MEASURES]
 ZONES = {"Restricted Area__FGA": "ra_fga", "In The Paint (Non-RA)__FGA": "paint_fga", "Mid-Range__FGA": "mid_fga",
          "Corner 3__FGA": "corner3_fga", "Above the Break 3__FGA": "atb3_fga"}
 COUNTS = ["min", "fgm", "fga", "fg3a", "fta", "stl", "blk", "pf", "pts", "poss", *[z for z in ZONES.values()],
-          "usg_w", "ast_w", "oreb_w", "dreb_w", "uast_w", "fb_w"]
+          "usg_w", "ast_w", "oreb_w", "dreb_w", "uast_w", "fb_w", "tov_w"]
 
 
 def _one(season, **kw):
     """Totals for one league or season type (optionally one team), one row per player."""
     g = fetch(leaguegamelog.LeagueGameLog, season=season, player_or_team_abbreviation="P",
-              **{k: v for k, v in kw.items() if k in ("league_id", "season_type_all_star")})["LeagueGameLog"]
+              **{k: v for k, v in kw.items() if k in ("league_id", "season_type_all_star", "date_to_nullable")})["LeagueGameLog"]
     dash = {k.replace("league_id", "league_id_nullable"): v for k, v in kw.items()}
     if "team_id_nullable" in dash:
         g = g[g["TEAM_ID"].astype(str) == dash["team_id_nullable"]]
@@ -38,7 +38,7 @@ def _one(season, **kw):
                                      **{c.lower(): (c, "sum") for c in ["MIN", "FGM", "FGA", "FG3A", "FTA", "STL", "BLK", "PF", "PTS"]})
     lds = lambda m: fetch(leaguedashplayerstats.LeagueDashPlayerStats, season=season, measure_type_detailed_defense=m,
                           per_mode_detailed="Totals", **dash)["LeagueDashPlayerStats"].set_index("PLAYER_ID")
-    adv = lds("Advanced")[["POSS", "USG_PCT", "AST_PCT", "OREB_PCT", "DREB_PCT"]]
+    adv = lds("Advanced")[["POSS", "USG_PCT", "AST_PCT", "OREB_PCT", "DREB_PCT", "TM_TOV_PCT"]]
     sco = lds("Scoring")[["PCT_UAST_FGM", "PCT_PTS_FB"]]
     shots = fetch(leaguedashplayershotlocations.LeagueDashPlayerShotLocations, season=season, distance_range="By Zone",
                   per_mode_detailed="Totals", **dash)["ShotLocations"].set_index("PLAYER_ID").rename(columns=ZONES)[list(ZONES.values())]
@@ -48,6 +48,7 @@ def _one(season, **kw):
     d["usg_w"], d["ast_w"] = d["USG_PCT"] * d["poss"], d["AST_PCT"] * d["poss"]
     d["oreb_w"], d["dreb_w"] = d["OREB_PCT"] * d["poss"], d["DREB_PCT"] * d["poss"]
     d["uast_w"], d["fb_w"] = d["PCT_UAST_FGM"] * d["fgm"], d["PCT_PTS_FB"] * d["pts"]
+    d["tov_w"] = d["TM_TOV_PCT"] * d["poss"]   # for the position model (D5) only; not one of the 15 style measures
     d.index.name = "player_id"
     return d[["player_name", "games", *COUNTS]]
 
@@ -63,7 +64,7 @@ def rates(t):
         "ast_pct": safe(t["ast_w"], t["poss"]), "pct_pts_fb": safe(t["fb_w"], t["pts"]),
         "oreb_pct": safe(t["oreb_w"], t["poss"]), "dreb_pct": safe(t["dreb_w"], t["poss"]),
         "blk_per100": safe(100 * t["blk"], t["poss"]), "stl_per100": safe(100 * t["stl"], t["poss"]),
-        "pf_per36": safe(36 * t["pf"], t["min"])}, index=t.index)[STYLE]
+        "pf_per36": safe(36 * t["pf"], t["min"]), "tm_tov_pct": safe(t["tov_w"], t["poss"])}, index=t.index)[[*STYLE, "tm_tov_pct"]]
 
 
 def _finish(parts):
@@ -89,3 +90,23 @@ def summer_pool(season):
 
 def preseason_pool(season):
     return _finish([_one(season, season_type_all_star="Pre Season")])
+
+
+def regular_pool(season, through=None):
+    """A regular season, one row per player (all teams combined). `through` (a date) cuts it at that night,
+    for the season in progress; the cut is part of the cache key, so a dated snapshot never changes."""
+    kw = {"season_type_all_star": "Regular Season"}
+    if through is not None:
+        kw["date_to_nullable"] = pd.Timestamp(through).strftime("%m/%d/%Y")
+    return _finish([_one(season, **kw)])
+
+
+def regular_stints(season):
+    """A completed regular season split by team stint (D51): one row per (player, team)."""
+    g = fetch(leaguegamelog.LeagueGameLog, season=season, player_or_team_abbreviation="P",
+              season_type_all_star="Regular Season")["LeagueGameLog"]
+    parts = []
+    for tid in sorted(g["TEAM_ID"].unique()):
+        t = _finish([_one(season, season_type_all_star="Regular Season", team_id_nullable=str(tid))])
+        parts.append(t.assign(team_id=tid).reset_index())
+    return pd.concat(parts, ignore_index=True).set_index(["player_id", "team_id"])
