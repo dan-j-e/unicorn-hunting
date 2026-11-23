@@ -11,6 +11,9 @@ weighted parts and divided by the summed weight (D57):
 The same 15 rates as segment 2's play-style groups (`unicorn.style_history.STYLE`).
 """
 
+from pathlib import Path
+
+import numpy as np
 import pandas as pd
 from nba_api.stats.endpoints import leaguedashplayershotlocations, leaguedashplayerstats, leaguegamelog
 
@@ -110,3 +113,104 @@ def regular_stints(season):
         t = _finish([_one(season, season_type_all_star="Regular Season", team_id_nullable=str(tid))])
         parts.append(t.assign(team_id=tid).reset_index())
     return pd.concat(parts, ignore_index=True).set_index(["player_id", "team_id"])
+
+
+# ---------------------------------------------------------------- size (D58)
+
+def _bio(**kw):
+    from nba_api.stats.endpoints import leaguedashplayerbiostats
+    b = fetch(leaguedashplayerbiostats.LeagueDashPlayerBioStats, per_mode_simple="Totals", **kw)["LeagueDashPlayerBioStats"]
+    b = b.assign(height_in=pd.to_numeric(b["PLAYER_HEIGHT_INCHES"], errors="coerce"),
+                 weight_lb=pd.to_numeric(b["PLAYER_WEIGHT"], errors="coerce"))
+    b = b[(b["height_in"] > 0) & (b["weight_lb"] > 0)]
+    return b.drop_duplicates("PLAYER_ID").set_index("PLAYER_ID")[["height_in", "weight_lb"]]
+
+
+def nba_sizes(near_season_start):
+    """Each player's listed size from the NBA regular season nearest to the given season (NBA.com, D58 step 2)."""
+    import glob, gzip, json
+    from unicorn.raw import RAW_DIR
+    rows = []
+    for f in glob.glob(str(RAW_DIR / "LeagueDashPlayerBioStats" / "per_mode_simple=Totals__season=*.json.gz")):
+        rs = json.load(gzip.open(f, "rt"))["response"]["resultSets"][0]
+        d = pd.DataFrame(rs["rowSet"], columns=rs["headers"]).assign(season_start=int(f.split("season=")[1][:4]))
+        rows.append(d)
+    b = pd.concat(rows)
+    b["height_in"] = pd.to_numeric(b["PLAYER_HEIGHT_INCHES"], errors="coerce")
+    b["weight_lb"] = pd.to_numeric(b["PLAYER_WEIGHT"], errors="coerce")
+    b = b[(b["height_in"] > 0) & (b["weight_lb"] > 0)].assign(gap=lambda d: (d["season_start"] - near_season_start).abs())
+    return b.sort_values("gap").drop_duplicates("PLAYER_ID").set_index("PLAYER_ID")[["height_in", "weight_lb"]]
+
+
+def attach_sizes(pool, listing, season_start, extra=None):
+    """Size in D58's order: the pool's own listing, then the nearest NBA season, then `extra` (combine,
+    Basketball-Reference; a frame indexed by player_id with height_in, weight_lb, source). Missing = left out."""
+    out = pool.copy()
+    out[["height_in", "weight_lb"]] = listing.reindex(out.index).to_numpy()
+    out["size_source"] = out["height_in"].notna().map({True: "pool listing", False: None})
+    steps = [(nba_sizes(season_start), "NBA regular season")]
+    if extra is not None:
+        steps.append((extra, None))
+    for table, label in steps:
+        gap = out["height_in"].isna() & out.index.isin(table.index)
+        out.loc[gap, ["height_in", "weight_lb"]] = table.loc[out.index[gap], ["height_in", "weight_lb"]].to_numpy()
+        out.loc[gap, "size_source"] = label if label else table.loc[out.index[gap], "source"].to_numpy()
+    return out
+
+
+# ---------------------------------------------------------------- the map (D5) and uniqueness (D50, D57, D60)
+
+def _z(pool, cols):
+    return (pool[cols] - pool[cols].mean()) / pool[cols].std()
+
+
+def add_map(pool, last_train_season):
+    """Body and style positions (1-5) from the D5 models, fitted on regular seasons up to `last_train_season`;
+    the pool's measures are standardised within the pool."""
+    from sklearn.linear_model import RidgeCV
+    from unicorn.position import ALPHAS, BODY_FEATURES, FIT_MIN, STYLE_FEATURES
+    ps = pd.read_parquet(Path(__file__).resolve().parents[2] / "data" / "processed" / "player_season_unicorn.parquet")
+    train = ps[(ps["position_source"] == "roster") & (ps["min"] >= FIT_MIN) & ps["position_num"].notna()
+               & (ps["season_start"] <= last_train_season)]
+    out = pool.copy()
+    for name, feats in [("position_body", BODY_FEATURES), ("position_style", STYLE_FEATURES)]:
+        base = [f[:-2] for f in feats]
+        model = RidgeCV(alphas=ALPHAS).fit(train[feats].fillna(0.0).to_numpy(), train["position_num"])
+        X = _z(out, base).fillna(0.0).to_numpy()
+        out[name] = np.clip(model.predict(X), 1, 5)
+        out.loc[out[base].isna().all(axis=1), name] = np.nan
+    out["style_vs_body"] = out["position_style"] - out["position_body"]   # <0: plays smaller than his body
+    return out
+
+
+def _mahalanobis_tail(Z, cov):
+    """Chi-square tail probability of each row's Mahalanobis distance, on the measures the row has (D60)."""
+    from scipy.stats import chi2
+    p = np.full(len(Z), np.nan)
+    d2s = np.full(len(Z), np.nan)
+    for i, z in enumerate(Z):
+        ok = ~np.isnan(z)
+        if ok.sum() == 0:
+            continue
+        sub = cov[np.ix_(ok, ok)]
+        d2 = float(z[ok] @ np.linalg.pinv(sub) @ z[ok])
+        d2s[i], p[i] = d2, chi2.sf(d2, ok.sum())
+    return d2s, p
+
+
+def add_uniqueness(pool, measures=STYLE):
+    """Uniqueness on style and size together, plus each part alone (D50, D57, D60).
+    Players without a size are left out (D58). Higher percentile = stands out more from the pool."""
+    out = pool.copy()
+    has = out["height_in"].notna() & out["weight_lb"].notna()
+    parts = {"uniqueness": [*measures, "height_in", "weight_lb"], "uniqueness_style": list(measures),
+             "uniqueness_size": ["height_in", "weight_lb"]}
+    for name, cols in parts.items():
+        sub = out.loc[has, cols]
+        Z = ((sub - sub.mean()) / sub.std()).to_numpy(dtype=float)
+        cov = pd.DataFrame(Z).cov(min_periods=10).to_numpy()   # pairwise: each pair of measures on the players who have both
+        d2, p = _mahalanobis_tail(Z, cov)
+        out[name + "_d2"] = pd.Series(d2, index=sub.index)
+        tail = pd.Series(p, index=sub.index)
+        out[name + "_pctl"] = (1 - tail).rank(pct=True) * 100
+    return out
