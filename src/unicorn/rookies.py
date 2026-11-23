@@ -217,3 +217,95 @@ def add_uniqueness(pool, measures=STYLE):
         tail = pd.Series(p, index=sub.index)
         out[name + "_pctl"] = (1 - tail).rank(pct=True) * 100
     return out
+
+
+# ---------------------------------------------------------------- reasons and charts
+
+def reasons(pool, ids, n=2):
+    """Plain words for what makes each player stand out in his pool: his n most unusual style measures and his size,
+    each in standard deviations from the pool's average (descriptive, not a model)."""
+    from unicorn.archetypes import SHORT
+    z = _z(pool, [*STYLE, "height_in", "weight_lb"])
+    out = {}
+    for pid in ids:
+        if pid not in z.index:
+            continue
+        r = z.loc[pid]
+        style = r[STYLE].dropna().abs().sort_values(ascending=False).index[:n]
+        words = [f"{SHORT[c]} {'high' if r[c] > 0 else 'low'} ({r[c]:+.1f} SD)" for c in style]
+        if pd.notna(r["height_in"]):
+            words.append(f"height {r['height_in']:+.1f} SD, weight {r['weight_lb']:+.1f} SD")
+        out[pid] = "; ".join(words)
+    return pd.Series(out, name="what stands out")
+
+
+def plot_maps(pools, picks, title, path):
+    """Body position (x) against style position (y), one panel per pool; picks labelled, everyone else muted."""
+    import matplotlib.pyplot as plt
+    from adjustText import adjust_text
+    from unicorn.plotting import BLUE, INK, INK2, MUTED, apply_style
+    apply_style()
+    fig, axes = plt.subplots(1, len(pools), figsize=(5.2 * len(pools), 5.4), sharex=True, sharey=True)
+    for ax, (label, p) in zip(np.atleast_1d(axes), pools.items()):
+        ok = p["position_body"].notna() & p["position_style"].notna()
+        rest, mine = p[ok & ~p.index.isin(picks)], p[ok & p.index.isin(picks)]
+        ax.plot([1, 5], [1, 5], ls="--", lw=1, color=INK2, zorder=1)
+        ax.scatter(rest["position_body"], rest["position_style"], s=10, color=MUTED, alpha=0.6, lw=0, zorder=2)
+        ax.scatter(mine["position_body"], mine["position_style"], s=46, color=BLUE, edgecolor="white", lw=1.2, zorder=3)
+        texts = [ax.text(r["position_body"], r["position_style"], picks[i], fontsize=8, color=INK) for i, r in mine.iterrows()]
+        adjust_text(texts, ax=ax, arrowprops=dict(arrowstyle="-", color=INK2, lw=0.5))
+        ax.set_title(f"{label}\n{ok.sum()} players with a size and style", fontsize=10)
+        ax.set_xlim(0.8, 5.2); ax.set_ylim(0.8, 5.2)
+        ax.set_xlabel("body position (1 guard → 5 centre), from height and weight")
+    np.atleast_1d(axes)[0].set_ylabel("style position (1 guard → 5 centre), from how he plays")
+    fig.suptitle(title, x=0.01, ha="left", fontsize=12, fontweight="bold")
+    fig.text(0.01, -0.04, "Blue dots = lottery picks; grey = everyone else in that pool. On the dashed line: he plays the position his body "
+             "suggests. Below it: he plays smaller than his body; above it: bigger.", fontsize=8.5, color=INK2)
+    fig.tight_layout()
+    fig.savefig(path, dpi=150, bbox_inches="tight")
+    return fig
+
+
+def plot_uniqueness(table, pools, title, path):
+    """Uniqueness percentile of each pick in each pool: one row per pick, one marker per pool."""
+    import matplotlib.pyplot as plt
+    from unicorn.plotting import INK2, SERIES, apply_style
+    apply_style()
+    t = table.sort_values(pools[-1])
+    fig, ax = plt.subplots(figsize=(8.5, 0.36 * len(t) + 1.6))
+    y = np.arange(len(t))
+    for i, (pool, marker) in enumerate(zip(pools, ["o", "s", "D", "^"])):
+        ax.scatter(t[pool], y, s=52, marker=marker, color=SERIES[i], edgecolor="white", lw=1.2, zorder=3, label=pool)
+    for yi, (_, r) in zip(y, t.iterrows()):
+        vals = r[pools].dropna()
+        if len(vals) > 1:
+            ax.plot([vals.min(), vals.max()], [yi, yi], color=INK2, lw=0.8, alpha=0.5, zorder=2)
+    ax.set_yticks(y, t.index); ax.set_xlim(0, 100); ax.grid(axis="y", visible=False)
+    ax.set_xlabel("uniqueness percentile within the pool (100 = stands out most in style and size together)")
+    ax.legend(loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=len(pools), frameon=False, fontsize=8.5)
+    ax.set_title(title, loc="left", pad=28)
+    fig.tight_layout()
+    fig.savefig(path, dpi=150, bbox_inches="tight")
+    return fig
+
+
+def plot_parts(pool, picks, title, path):
+    """What drives uniqueness: style part (x) against size part (y), percentiles within the pool."""
+    import matplotlib.pyplot as plt
+    from adjustText import adjust_text
+    from unicorn.plotting import BLUE, INK, INK2, MUTED, apply_style
+    apply_style()
+    ok = pool["uniqueness_style_pctl"].notna() & pool["uniqueness_size_pctl"].notna()
+    rest, mine = pool[ok & ~pool.index.isin(picks)], pool[ok & pool.index.isin(picks)]
+    fig, ax = plt.subplots(figsize=(6.4, 6))
+    ax.scatter(rest["uniqueness_style_pctl"], rest["uniqueness_size_pctl"], s=10, color=MUTED, alpha=0.6, lw=0)
+    ax.scatter(mine["uniqueness_style_pctl"], mine["uniqueness_size_pctl"], s=46, color=BLUE, edgecolor="white", lw=1.2, zorder=3)
+    texts = [ax.text(r["uniqueness_style_pctl"], r["uniqueness_size_pctl"], picks[i], fontsize=8, color=INK) for i, r in mine.iterrows()]
+    adjust_text(texts, ax=ax, arrowprops=dict(arrowstyle="-", color=INK2, lw=0.5))
+    ax.axvline(50, color=INK2, lw=0.6, ls=":"); ax.axhline(50, color=INK2, lw=0.6, ls=":")
+    ax.set_xlim(0, 100); ax.set_ylim(0, 100)
+    ax.set_xlabel("style uniqueness percentile"); ax.set_ylabel("size uniqueness percentile")
+    ax.set_title(title, loc="left")
+    fig.tight_layout()
+    fig.savefig(path, dpi=150, bbox_inches="tight")
+    return fig
