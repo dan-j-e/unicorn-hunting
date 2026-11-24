@@ -132,9 +132,13 @@ def nba_sizes(near_season_start):
     import glob, gzip, json
     from unicorn.raw import RAW_DIR
     rows = []
-    for f in glob.glob(str(RAW_DIR / "LeagueDashPlayerBioStats" / "per_mode_simple=Totals__season=*.json.gz")):
+    # regular-season listings are cached under two file names ("season=..." and "per_mode_simple=Totals__season=...")
+    for f in glob.glob(str(RAW_DIR / "LeagueDashPlayerBioStats" / "*season=*.json.gz")):
+        name = Path(f).name
+        if name.startswith("league_id") or "Pre_Season" in name:
+            continue
         rs = json.load(gzip.open(f, "rt"))["response"]["resultSets"][0]
-        d = pd.DataFrame(rs["rowSet"], columns=rs["headers"]).assign(season_start=int(f.split("season=")[1][:4]))
+        d = pd.DataFrame(rs["rowSet"], columns=rs["headers"]).assign(season_start=int(name.split("season=")[1][:4]))
         rows.append(d)
     b = pd.concat(rows)
     b["height_in"] = pd.to_numeric(b["PLAYER_HEIGHT_INCHES"], errors="coerce")
@@ -308,4 +312,168 @@ def plot_parts(pool, picks, title, path):
     ax.set_title(title, loc="left")
     fig.tight_layout()
     fig.savefig(path, dpi=150, bbox_inches="tight")
+    return fig
+
+
+# ---------------------------------------------------------------- Stage 2: play-style groups on team stints (D51, D64)
+
+STINT_MIN_MINUTES = 500
+
+
+def load_stints(min_minutes=STINT_MIN_MINUTES):
+    """Team stints 2000-01 to 2025-26 with 500+ minutes (D64), each style measure standardised within its season."""
+    d = pd.read_parquet(Path(__file__).resolve().parents[2] / "data" / "processed" / "style_stints_2000_2026.parquet")
+    d = d[d["min"] >= min_minutes].copy()
+    z = d.groupby("season_start")[STYLE].transform(lambda c: (c - c.mean()) / c.std())
+    d[[f"{c}_z" for c in STYLE]] = z.to_numpy()
+    return d.reset_index(drop=True)
+
+
+GROUP_NAMES = {1: "The One Where He Never Leaves the Paint", 2: "The Big Salad", 3: "Captain Holt",
+               4: "Have You Met My Wingman?", 5: "Master of His Domain", 6: "Somebody Puts Baby in the Corner",
+               7: "Six Seasons and a Movie"}   # D66
+FIRM = 0.85   # D52
+
+
+def stage2_groups(k=7):
+    """Seven groups on team stints (D64, D65), numbered inside to perimeter as in segment 2; each stint's group,
+    membership, state (its group if 85%+, else "between"; D52), first game date, team and listed size."""
+    from unicorn.archetypes import FEATURES, fit_clusters, style_axes
+    from unicorn.gamelogs import load_game_logs
+    d = load_stints()
+    X = d[[f"{c}_z" for c in FEATURES]].to_numpy()
+    pc = style_axes(X)
+    lab, memb, typical, known = fit_clusters(X, k, pc, d, min_minutes=1500)
+    d = d.assign(group=lab, membership=memb)
+    d["state"] = np.where(d["membership"] >= FIRM, d["group"].astype(str), "between")
+    g = load_game_logs([f"{y}-{str(y + 1)[-2:]}" for y in range(2000, 2026)])
+    first = g.groupby(["player_id", "team_id", "season_start"])["game_date"].min().rename("first_game")
+    abbr = g.groupby(["team_id", "season_start"])["team_abbreviation"].last().rename("team")
+    d = d.join(first, on=["player_id", "team_id", "season_start"]).join(abbr, on=["team_id", "season_start"])
+    sizes = {y: nba_sizes(y) for y in range(2000, 2026)}
+    hw = pd.concat([s.assign(season_start=y) for y, s in sizes.items()]).reset_index().rename(columns={"PLAYER_ID": "player_id"})
+    d = d.merge(hw, on=["player_id", "season_start"], how="left")
+    order = d.sort_values(["player_id", "season_start", "first_game"]).index   # date order for paths (D68)
+    d, X, pc = d.loc[order].reset_index(drop=True), X[order], pc[order]
+    key = ["player_id", "team_id", "season_start"]
+    pos = pd.Series(d.index, index=pd.MultiIndex.from_frame(d[key]))
+    relabel = lambda t: d.loc[pos.loc[list(map(tuple, t[key].to_numpy()))].to_numpy()]   # same rows, new positions
+    typical = {c: relabel(t) for c, t in typical.items()}
+    known = {c: relabel(t) for c, t in known.items()}
+    return d, X, pc, typical, known
+
+
+def careers(stints):
+    """One row per player who debuted in 2000-01 or later (D65): seasons played so far, active flag,
+    group changes (D52), average step and total path (D68), and net distance for 6+ seasons (D68)."""
+    from nba_api.stats.endpoints import drafthistory
+    from unicorn.gamelogs import load_game_logs
+    g = load_game_logs([f"{y}-{str(y + 1)[-2:]}" for y in range(1999, 2026)])
+    seasons = g[g["min"] > 0].groupby("player_id")["season_start"].agg(debut="min", last="max", seasons_played="nunique")
+    dh = fetch(drafthistory.DraftHistory)["DraftHistory"]
+    drafted = dh.assign(year=dh["SEASON"].astype(int)).groupby(dh["PERSON_ID"].astype(int))["year"].min()
+    ok = (seasons["debut"] >= 2000) & ~(drafted.reindex(seasons.index) <= 1998)
+    out = seasons[ok].assign(active=lambda s: s["last"] == 2025)
+    zc = [f"{c}_z" for c in STYLE]
+    rows = {}
+    for pid, s in stints.groupby("player_id"):
+        firm = [x for x in s["state"] if x != "between"]
+        r = {"player_name": s["player_name"].iloc[-1], "stints": len(s), "firm_stints": len(firm),
+             "between_stints": int((s["state"] == "between").sum()),
+             "group_changes": sum(a != b for a, b in zip(firm, firm[1:])), "path": " > ".join(s["state"])}
+        v = s[zc].to_numpy()
+        steps = np.linalg.norm(np.diff(v, axis=0), axis=1)   # consecutive stints in date order (D68)
+        r["steps"] = len(steps)
+        r["average_step"] = float(steps.mean()) if len(steps) else np.nan
+        r["total_path"] = float(steps.sum()) if len(steps) else np.nan
+        seas = s.groupby("season_start").apply(lambda x: pd.Series(np.average(x[zc], axis=0, weights=x["min"]), index=zc))
+        if len(seas) >= 6:   # D68: first and latest three seasons never overlap
+            w = s.groupby("season_start")["min"].sum()
+            first, latest = seas.iloc[:3], seas.iloc[-3:]
+            a = np.average(first, axis=0, weights=w.loc[first.index]); b = np.average(latest, axis=0, weights=w.loc[latest.index])
+            r["net_distance"] = float(np.linalg.norm(b - a))
+        else:
+            r["net_distance"] = np.nan
+        r["seasons_500"] = len(seas)
+        rows[pid] = r
+    return out.join(pd.DataFrame.from_dict(rows, orient="index"), how="left")
+
+
+def group_sweep(d, k_range=range(2, 15), repeats=20):
+    """Fit, stability (20 pairs of halves split by player) and share of firm stints for each number of groups (D64)."""
+    from unicorn.archetypes import FEATURES, how_many, mixture
+    X = d[[f"{c}_z" for c in FEATURES]].to_numpy()
+    res = how_many(X, k_range, groups=d["player_id"].to_numpy(), repeats=repeats)
+    res["firm (85%+)"] = [(mixture(k).fit(X).predict_proba(X).max(axis=1) >= FIRM).mean() for k in res.index]
+    return res
+
+
+def plot_sweep(res, path):
+    import matplotlib.pyplot as plt
+    from unicorn.plotting import INK2, SERIES, apply_style
+    apply_style()
+    fig, axes = plt.subplots(1, 2, figsize=(11, 4))
+    ax = axes[0]
+    ax.plot(res.index, res["stability (soft mixture)"], marker="o", color=SERIES[0], label="soft mixture (the method used)")
+    ax.plot(res.index, res["stability (k-means)"], marker="s", color=SERIES[1], label="k-means (a check)")
+    ax.plot(res.index, res["firm (85%+)"], marker="D", color=SERIES[2], label="share of stints firmly in one group (85%+)")
+    ax.set_xlabel("number of groups"); ax.set_ylim(0, 1); ax.set_xticks(list(res.index))
+    ax.set_title("Stability and firmness", loc="left"); ax.legend(frameon=False, fontsize=8, loc="lower left")
+    ax = axes[1]
+    ax.plot(res.index, res["fit (BIC)"] / 1000, marker="o", color=SERIES[0]); ax.set_xticks(list(res.index))
+    ax.set_xlabel("number of groups"); ax.set_ylabel("BIC (thousands; lower = better fit)")
+    ax.set_title("Fit keeps improving, so it does not choose", loc="left")
+    fig.suptitle("How many play-style groups? Team stints with 500+ minutes, 2000-01 to 2025-26", x=0.01, ha="left", fontsize=12, fontweight="bold")
+    fig.text(0.01, -0.03, "Stability = agreement (adjusted Rand index) between groups found on two random halves of players, averaged over "
+             "20 pairs; 1 = identical. Seven were chosen (D65).", fontsize=8.5, color=INK2)
+    fig.tight_layout(); fig.savefig(path, dpi=150, bbox_inches="tight")
+    return fig
+
+
+def steps(stints):
+    """Every step between consecutive stints (D68), labelled same team or new team and banded by the smaller stint's minutes (D69)."""
+    zc = [f"{c}_z" for c in STYLE]
+    rows = []
+    for pid, s in stints.groupby("player_id"):
+        v, t, m = s[zc].to_numpy(), s["team_id"].to_numpy(), s["min"].to_numpy()
+        for i in range(len(s) - 1):
+            rows.append(dict(player_id=pid, step=float(np.linalg.norm(v[i + 1] - v[i])),
+                             kind="same team" if t[i] == t[i + 1] else "new team", minutes=min(m[i], m[i + 1])))
+    st = pd.DataFrame(rows)
+    st["band"] = pd.cut(st["minutes"], [500, 1000, 1500, 2000, 1e9], right=False,
+                        labels=["500-999", "1,000-1,499", "1,500-1,999", "2,000+"])
+    base = st[st["kind"] == "same team"].groupby("band", observed=True)["step"].median()
+    st["extra"] = st["step"] - st["band"].map(base).astype(float)   # D70: beyond the wobble expected for its minutes
+    return st
+
+
+def plot_net_vs_career(c, labels, path):
+    """Net distance (6+ seasons, D68) against seasons played; active careers hollow (seasons so far, D65)."""
+    import matplotlib.pyplot as plt
+    from adjustText import adjust_text
+    from unicorn.plotting import BLUE, INK, INK2, apply_style
+    apply_style()
+    m = c[c["net_distance"].notna()]
+    fig, ax = plt.subplots(figsize=(8, 5.6))
+    jit = np.random.default_rng(0).uniform(-0.25, 0.25, len(m))
+    done, act = ~m["active"], m["active"]
+    ax.scatter(m.loc[done, "seasons_played"] + jit[done.to_numpy()], m.loc[done, "net_distance"], s=14, color=BLUE, alpha=0.55, lw=0, label="career over")
+    ax.scatter(m.loc[act, "seasons_played"] + jit[act.to_numpy()], m.loc[act, "net_distance"], s=16, facecolor="none", edgecolor=BLUE,
+               alpha=0.7, lw=0.8, label="still active (seasons so far)")
+    g = m.groupby("seasons_played")["net_distance"]
+    med = g.median()[g.size() >= 10]   # only career lengths with 10+ players
+    ax.plot(med.index, med.to_numpy(), color=INK, lw=2, label="median at each career length (10+ players)")
+    texts = []
+    for name in labels:
+        r = m[m["player_name"] == name]
+        if len(r):
+            ax.scatter(r["seasons_played"], r["net_distance"], s=40, color=INK, zorder=3)
+            texts.append(ax.text(r["seasons_played"].iat[0], r["net_distance"].iat[0], name, fontsize=8.5, color=INK))
+    adjust_text(texts, ax=ax, arrowprops=dict(arrowstyle="-", color=INK2, lw=0.5))
+    ax.set_xlabel("NBA seasons played (debuts from 2000-01)"); ax.set_ylabel("net distance: first three seasons to latest three (SD units)")
+    ax.legend(frameon=False, fontsize=8.5, loc="upper left")
+    ax.set_title("Players who moved further from where they started had longer careers", loc="left")
+    fig.text(0.01, -0.03, "Players with 6+ seasons of 500+ minutes. Filled = career over; hollow = still active, so their careers are longer than shown. "
+             "Association only (D53).", fontsize=8, color=INK2)
+    fig.tight_layout(); fig.savefig(path, dpi=150, bbox_inches="tight")
     return fig
