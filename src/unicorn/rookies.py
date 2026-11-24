@@ -132,9 +132,13 @@ def nba_sizes(near_season_start):
     import glob, gzip, json
     from unicorn.raw import RAW_DIR
     rows = []
-    for f in glob.glob(str(RAW_DIR / "LeagueDashPlayerBioStats" / "per_mode_simple=Totals__season=*.json.gz")):
+    # regular-season listings are cached under two file names ("season=..." and "per_mode_simple=Totals__season=...")
+    for f in glob.glob(str(RAW_DIR / "LeagueDashPlayerBioStats" / "*season=*.json.gz")):
+        name = Path(f).name
+        if name.startswith("league_id") or "Pre_Season" in name:
+            continue
         rs = json.load(gzip.open(f, "rt"))["response"]["resultSets"][0]
-        d = pd.DataFrame(rs["rowSet"], columns=rs["headers"]).assign(season_start=int(f.split("season=")[1][:4]))
+        d = pd.DataFrame(rs["rowSet"], columns=rs["headers"]).assign(season_start=int(name.split("season=")[1][:4]))
         rows.append(d)
     b = pd.concat(rows)
     b["height_in"] = pd.to_numeric(b["PLAYER_HEIGHT_INCHES"], errors="coerce")
@@ -323,3 +327,67 @@ def load_stints(min_minutes=STINT_MIN_MINUTES):
     z = d.groupby("season_start")[STYLE].transform(lambda c: (c - c.mean()) / c.std())
     d[[f"{c}_z" for c in STYLE]] = z.to_numpy()
     return d.reset_index(drop=True)
+
+
+GROUP_NAMES = {1: "The One Where He Never Leaves the Paint", 2: "The Big Salad", 3: "Captain Holt",
+               4: "Have You Met My Wingman?", 5: "Master of His Domain", 6: "Somebody Puts Baby in the Corner",
+               7: "Six Seasons and a Movie"}   # D66
+FIRM = 0.85   # D52
+
+
+def stage2_groups(k=7):
+    """Seven groups on team stints (D64, D65), numbered inside to perimeter as in segment 2; each stint's group,
+    membership, state (its group if 85%+, else "between"; D52), first game date, team and listed size."""
+    from unicorn.archetypes import FEATURES, fit_clusters, style_axes
+    from unicorn.gamelogs import load_game_logs
+    d = load_stints()
+    X = d[[f"{c}_z" for c in FEATURES]].to_numpy()
+    pc = style_axes(X)
+    lab, memb, typical, known = fit_clusters(X, k, pc, d, min_minutes=1500)
+    d = d.assign(group=lab, membership=memb)
+    d["state"] = np.where(d["membership"] >= FIRM, d["group"].astype(str), "between")
+    g = load_game_logs([f"{y}-{str(y + 1)[-2:]}" for y in range(2000, 2026)])
+    first = g.groupby(["player_id", "team_id", "season_start"])["game_date"].min().rename("first_game")
+    abbr = g.groupby(["team_id", "season_start"])["team_abbreviation"].last().rename("team")
+    d = d.join(first, on=["player_id", "team_id", "season_start"]).join(abbr, on=["team_id", "season_start"])
+    sizes = {y: nba_sizes(y) for y in range(2000, 2026)}
+    hw = pd.concat([s.assign(season_start=y) for y, s in sizes.items()]).reset_index().rename(columns={"PLAYER_ID": "player_id"})
+    d = d.merge(hw, on=["player_id", "season_start"], how="left")
+    d = d.sort_values(["player_id", "season_start", "first_game"]).reset_index(drop=True)
+    return d, X, pc, typical, known
+
+
+def careers(stints):
+    """One row per player who debuted in 2000-01 or later (D65): seasons played so far, active flag,
+    group changes (D52), average step and total path (D68), and net distance for 6+ seasons (D68)."""
+    from nba_api.stats.endpoints import drafthistory
+    from unicorn.gamelogs import load_game_logs
+    g = load_game_logs([f"{y}-{str(y + 1)[-2:]}" for y in range(1999, 2026)])
+    seasons = g[g["min"] > 0].groupby("player_id")["season_start"].agg(debut="min", last="max", seasons_played="nunique")
+    dh = fetch(drafthistory.DraftHistory)["DraftHistory"]
+    drafted = dh.assign(year=dh["SEASON"].astype(int)).groupby(dh["PERSON_ID"].astype(int))["year"].min()
+    ok = (seasons["debut"] >= 2000) & ~(drafted.reindex(seasons.index) <= 1998)
+    out = seasons[ok].assign(active=lambda s: s["last"] == 2025)
+    zc = [f"{c}_z" for c in STYLE]
+    rows = {}
+    for pid, s in stints.groupby("player_id"):
+        firm = [x for x in s["state"] if x != "between"]
+        r = {"player_name": s["player_name"].iloc[-1], "stints": len(s), "firm_stints": len(firm),
+             "between_stints": int((s["state"] == "between").sum()),
+             "group_changes": sum(a != b for a, b in zip(firm, firm[1:])), "path": " > ".join(s["state"])}
+        v = s[zc].to_numpy()
+        steps = np.linalg.norm(np.diff(v, axis=0), axis=1)   # consecutive stints in date order (D68)
+        r["steps"] = len(steps)
+        r["average_step"] = float(steps.mean()) if len(steps) else np.nan
+        r["total_path"] = float(steps.sum()) if len(steps) else np.nan
+        seas = s.groupby("season_start").apply(lambda x: pd.Series(np.average(x[zc], axis=0, weights=x["min"]), index=zc))
+        if len(seas) >= 6:   # D68: first and latest three seasons never overlap
+            w = s.groupby("season_start")["min"].sum()
+            first, latest = seas.iloc[:3], seas.iloc[-3:]
+            a = np.average(first, axis=0, weights=w.loc[first.index]); b = np.average(latest, axis=0, weights=w.loc[latest.index])
+            r["net_distance"] = float(np.linalg.norm(b - a))
+        else:
+            r["net_distance"] = np.nan
+        r["seasons_500"] = len(seas)
+        rows[pid] = r
+    return out.join(pd.DataFrame.from_dict(rows, orient="index"), how="left")
