@@ -309,3 +309,17 @@ def plot_parts(pool, picks, title, path):
     fig.tight_layout()
     fig.savefig(path, dpi=150, bbox_inches="tight")
     return fig
+
+
+# ---------------------------------------------------------------- Stage 2: play-style groups on team stints (D51, D64)
+
+STINT_MIN_MINUTES = 500
+
+
+def load_stints(min_minutes=STINT_MIN_MINUTES):
+    """Team stints 2000-01 to 2025-26 with 500+ minutes (D64), each style measure standardised within its season."""
+    d = pd.read_parquet(Path(__file__).resolve().parents[2] / "data" / "processed" / "style_stints_2000_2026.parquet")
+    d = d[d["min"] >= min_minutes].copy()
+    z = d.groupby("season_start")[STYLE].transform(lambda c: (c - c.mean()) / c.std())
+    d[[f"{c}_z" for c in STYLE]] = z.to_numpy()
+    return d.reset_index(drop=True)
